@@ -71,7 +71,6 @@
             const buttonsRowRef = useRef(null);
             const underlineRef = useRef(null);
 
-            // Botanical stroke-draw effect
             useEffect(() => {
                 if (!HAS_GSAP) return;
                 if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -88,7 +87,6 @@
                 return () => ctx.revert();
             }, []);
 
-            // Kinetic wordmark and underline
             useEffect(() => {
                 if (!HAS_GSAP) return;
                 if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -96,7 +94,6 @@
                 const ctx = gsap.context(() => {
                     const isMobile = window.innerWidth < 768;
                     const mult = isMobile ? 0.75 : 1;
-
                     try {
                         split = SplitText.create(wordmarkRef.current, { type: 'chars', mask: 'chars' });
                         gsap.fromTo(split.chars,
@@ -108,7 +105,6 @@
                             { y: 0, opacity: 1, duration: MOTION.dur.md * mult, ease: MOTION.ease.out, delay: 0.3 }
                         );
                     }
-
                     const path = underlineRef.current?.querySelector('path');
                     if (path) {
                         const len = path.getTotalLength();
@@ -119,7 +115,6 @@
                 return () => { ctx.revert(); if (split) split.revert(); };
             }, []);
 
-            // Scroll-linked parallax exit
             useEffect(() => {
                 if (!HAS_GSAP) return;
                 if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -135,7 +130,6 @@
                 return () => ctx.revert();
             }, []);
 
-            // Ambient video layer
             const showVideo = HERO_VIDEO_SRC && !window.matchMedia('(prefers-reduced-motion: reduce)').matches && !(navigator.connection && navigator.connection.saveData);
 
             return (
@@ -172,7 +166,7 @@
                         <div ref={buttonsRowRef} className="mt-6 sm:mt-10 hero-line flex flex-wrap justify-center gap-3 sm:gap-4">
                             <Reveal variant="rise" stagger={0.12} delay={1.4} as="div" className="flex flex-wrap justify-center gap-3 sm:gap-4">
                                 <a href={WHATSAPP_RESERVE_URL} target="_blank" rel="noopener noreferrer" className="magnetic-btn text-sm sm:text-base">Reserve a Table</a>
-                                <button className="magnetic-btn magnetic-btn-outline text-sm sm:text-base" onClick={() => scrollToEl(document.getElementById('menu-start'), -80)}>Explore Menu</button>
+                                <a href="menu.html" className="magnetic-btn magnetic-btn-outline text-sm sm:text-base">Explore Menu</a>
                             </Reveal>
                         </div>
                     </div>
@@ -180,45 +174,7 @@
             );
         };
 
-        // ---- PinnedReveal (unpinned) ----
-        const PinnedReveal = () => {
-            const ref = useRef(null);
-            const words = ['Every', 'dish', 'tells', 'a', 'story.'];
-            const isMobile = useMobile();
-
-            useEffect(() => {
-                if (!HAS_GSAP) return;
-                const el = ref.current;
-                if (!el) return;
-                const spans = el.querySelectorAll('.word-reveal span');
-                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || isMobile) {
-                    gsap.set(spans, { y: '0%', opacity: 1 });
-                    return;
-                }
-                const tl = gsap.timeline({
-                    scrollTrigger: {
-                        trigger: el,
-                        start: 'top 75%',
-                        toggleActions: 'play none none none'
-                    }
-                });
-                tl.fromTo(spans, { y: '100%', opacity:0 }, { y:'0%', opacity:1, duration:0.8, stagger:0.15, ease:'power2.out' });
-            }, [isMobile]);
-
-            return (
-                <section ref={ref} className="h-screen flex items-center justify-center bg-bone-dark/20 relative overflow-hidden">
-                    <div className="botanical-bg absolute inset-0 opacity-20 pointer-events-none" />
-                    <div className="text-center px-4">
-                        <div className="text-3xl sm:text-5xl md:text-7xl serif-head text-forest leading-tight">
-                            {words.map((word, i) => (<span key={i} className="word-reveal inline-block mx-1"><span>{word}</span></span>))}
-                        </div>
-                        <p className="sans-body text-xs sm:text-base text-forest-light/70 mt-4 sm:mt-6 max-w-md mx-auto">— from our kitchen to your table</p>
-                    </div>
-                </section>
-            );
-        };
-
-        // ---- About (with id="about" and updated hours) ----
+        // ---- About (with id="about" and updated hours + tagline) ----
         const About = () => {
             return (
                 <section id="about" className="skew-target py-12 sm:py-24 px-4 sm:px-8 max-w-4xl mx-auto text-center">
@@ -227,6 +183,7 @@
                             <div className="botanical-bg absolute inset-0 opacity-30 pointer-events-none" />
                             <Reveal variant="rise" stagger={0.15} as="div">
                                 <p className="about-line script-head text-2xl sm:text-3xl text-forest-light/60">一皿 一皿</p>
+                                <p className="about-line serif-head text-xl sm:text-2xl text-forest-light/70 mt-2 italic">Every dish tells a story — from our kitchen to your table.</p>
                                 <h2 className="about-line serif-head text-2xl sm:text-4xl text-forest mt-2">Where the East meets the East</h2>
                                 <p className="about-line sans-body text-sm sm:text-lg text-forest-light/80 mt-3 leading-relaxed max-w-2xl mx-auto">At Yokoso, we honour the culinary threads that bind Asia—from the bustling streets of Tokyo to the spice gardens of Bangkok, from Seoul's fermented traditions to the tropical soul of Manila. Every dish is a conversation, every plate a journey.</p>
                                 <div className="about-line h-px bg-forest/10 w-20 mx-auto my-5" />
@@ -238,34 +195,34 @@
             );
         };
 
-        // ---- Location (now <footer>, with updated hours) ----
-        const Location = () => {
-            return (
-                <footer id="location" className="py-16 sm:py-24 px-4 sm:px-8 bg-bone-dark/40 border-t border-forest/5">
-                    <div className="max-w-3xl mx-auto text-center">
-                        <Reveal variant="stamp" as="div" className="inline-block mx-auto mb-4">
-                            <span className="seal-mark seal-mark-sm">〒</span>
-                        </Reveal>
-                        <Reveal variant="rise" stagger={0.12} as="div">
-                            <h2 className="script-head text-4xl sm:text-6xl text-forest">Find Us</h2>
-                            <p className="serif-head text-lg sm:text-xl text-forest-light/80 mt-1">Al Madani Tower (2nd Floor), Mirboxtula, Sylhet.</p>
-                            <p className="sans-body text-xs sm:text-sm text-forest-light/70 mt-3">
-                                Open daily · 12:30 PM – 11:00 PM (Fri from 2:00 PM)<br />
-                                <a href={`tel:+${RESERVATION_PHONE}`} className="underline-draw">01841965676</a>
-                                {CONTACT_EMAIL && <> · <a href={`mailto:${CONTACT_EMAIL}`} className="underline-draw">{CONTACT_EMAIL}</a></>}
-                            </p>
-                            <a href={WHATSAPP_RESERVE_URL} target="_blank" rel="noopener noreferrer" className="magnetic-btn mt-6 inline-flex">Reserve on WhatsApp</a>
-                            <div className="flex justify-center flex-wrap gap-4 sm:gap-6 mt-6 sm:mt-8">
-                                <a href="https://www.facebook.com/share/192xaTJHwX/" target="_blank" rel="noopener noreferrer" className="underline-draw text-xs sm:text-sm text-forest-light/80 transition-colors tap-target">Facebook</a>
-                                <a href="https://www.instagram.com/yokosobd?igsh=MTQ4bHp4Mm1sbjNwYg==" target="_blank" rel="noopener noreferrer" className="underline-draw text-xs sm:text-sm text-forest-light/80 transition-colors tap-target">Instagram</a>
-                                {DELIVERY_URL && <a href={DELIVERY_URL} target="_blank" rel="noopener noreferrer" className="underline-draw text-xs sm:text-sm text-forest-light/80 transition-colors tap-target">Delivery</a>}
-                            </div>
-                            <p className="text-[10px] sm:text-xs text-forest-light/50 mt-8 sm:mt-10">© {new Date().getFullYear()} Yokoso · Sylhet</p>
-                        </Reveal>
-                    </div>
-                </footer>
-            );
-        };
+        // ---- Reservation ----
+        const Reservation = () => (
+            <section className="skew-target py-16 sm:py-28 px-4 sm:px-8 bg-forest text-bone relative overflow-hidden">
+                <div className="botanical-bg absolute inset-0 opacity-10 pointer-events-none" />
+                <div className="relative max-w-2xl mx-auto text-center">
+                    <Reveal variant="stamp" as="div" className="inline-block mb-6">
+                        <span className="seal-mark seal-mark-lg" style={{ borderColor: '#F7F2E8', color: '#F7F2E8' }}>席</span>
+                    </Reveal>
+                    <Reveal variant="rise" stagger={0.12} as="div">
+                        <h2 className="script-head text-5xl sm:text-7xl">Reserve Your Table</h2>
+                        <p className="sans-body text-sm sm:text-base text-bone/70 mt-4 max-w-md mx-auto">
+                            Open daily · 12:30 PM – 11:00 PM (Fri from 2:00 PM)
+                        </p>
+                        <a
+                            href={WHATSAPP_RESERVE_URL}
+                            target="_blank" rel="noopener noreferrer"
+                            className="magnetic-btn mt-8 inline-flex"
+                            style={{ background: '#D43A2F' }}
+                        >
+                            Reserve on WhatsApp
+                        </a>
+                        <p className="sans-body text-xs text-bone/50 mt-6">
+                            Or call <a href={`tel:+${RESERVATION_PHONE}`} className="underline-draw">01841965676</a>
+                        </p>
+                    </Reveal>
+                </div>
+            </section>
+        );
 
         // ---- App ----
         const App = () => {
@@ -284,16 +241,15 @@
 
             return (
                 <>
-                    <a href="#menu-start" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-vermilion focus:text-bone focus:px-4 focus:py-2 focus:rounded">Skip to menu</a>
+                    <a href="menu.html" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-vermilion focus:text-bone focus:px-4 focus:py-2 focus:rounded">Skip to menu</a>
                     <SiteHeader />
                     <main id="main-content">
                         <Hero />
-                        <PinnedReveal />
                         <About />
                         <MenuCompass />
                         <LazySection className="w-full"><ChefSignatures onDishClick={setSelectedDish} /></LazySection>
                         <LazySection className="w-full"><CinematicCollections /></LazySection>
-                        <MenuWrapper onDishClick={setSelectedDish} />
+                        <Reservation />
                     </main>
                     <Location />
                     <DishDetail dish={selectedDish} isOpen={!!selectedDish} onClose={() => setSelectedDish(null)} />
