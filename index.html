@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Yokoso — Pan-Asian Restaurant in Sylhet. Japanese, Chinese, and Thai flavours, from dim sum to sushi." />
+    <meta property="og:title" content="Yokoso — Pan-Asian Kitchen" />
+    <meta property="og:description" content="Al Madani Tower (2nd Floor), Mirboxtula, Sylhet." />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#F7F2E8" />
+
+    <!-- Preload Hero Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/greatvibes/v19/RWmMoKWR9v4ksMfaWdJJBXFfVQ.woff2" />
+
+    <!-- Subsetted Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+    <!-- Babel (React JSX) -->
+    <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        bone: '#F7F2E8',
+                        'bone-dark': '#ede6d8',
+                        forest: '#16302B',
+                        'forest-light': '#2a4f47',
+                        vermilion: '#D43A2F',
+                        'vermilion-light': '#e85a4f',
+                    },
+                    fontFamily: {
+                        script: ['"Great Vibes"', 'cursive'],
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['"Inter"', 'sans-serif'],
+                    },
+                },
+            },
+        };
+    </script>
+
+    <!-- GSAP 3.13 + Bonus Plugins -->
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/CustomEase.min.js"></script>
+
+    <!-- Lenis -->
+    <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+
+    <!-- React -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+    <style>
+        /* ===== MOTION TOKENS (CSS) ===== */
+        :root {
+            --dur-xs: 150ms;
+            --dur-sm: 300ms;
+            --dur-md: 600ms;
+            --dur-lg: 900ms;
+            --dur-xl: 1400ms;
+            --ease-out: cubic-bezier(0.16, 1, 0.30, 1);
+            --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+            --ease-stamp: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --ease-ink: cubic-bezier(0.22, 0.61, 0.36, 1);
+        }
+
+        /* Reset & base */
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { background:#F7F2E8; scroll-behavior: smooth; }
+        body { background:#F7F2E8; font-family:'Inter',sans-serif; color:#16302B; overflow-x:hidden; position:relative; }
+
+        /* ===== NO-MOTION FALLBACK ===== */
+        .no-motion .word-reveal span { transform: translateY(0) !important; opacity: 1 !important; }
+        .no-motion .wipe-mask { clip-path: inset(0 0% 0 0) !important; }
+        .no-motion .botanical-svg path { stroke-dashoffset: 0 !important; }
+
+        /* ===== BOTANICAL CSS ===== */
+        .botanical-svg path, .botanical-svg circle { fill: none; stroke: #16302B; stroke-width: 1.2; stroke-linecap: round; }
+        .botanical-bg {
+            background: radial-gradient(circle at 10% 20%, rgba(22,48,43,0.06) 0%, transparent 60%),
+                        radial-gradient(circle at 90% 80%, rgba(22,48,43,0.06) 0%, transparent 60%);
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* ===== PAPER GRAIN TEXTURE ===== */
+        body::after {
+            content: '';
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            mix-blend-mode: multiply; opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+            background-size: 512px 512px;
+        }
+        #root { position:relative; z-index:1; }
+
+        /* ===== KEYBOARD NAVIGATION ===== */
+        *:focus-visible { outline: 2px solid #D43A2F; outline-offset: 3px; border-radius: 4px; }
+        a, button { cursor: pointer; }
+
+        /* Custom cursor – disabled on touch devices */
+        .cursor-dot, .cursor-ring { display:none; }
+        @media (hover:hover) and (pointer:fine) {
+            body.cursor-active { cursor:none; }
+            body.cursor-active .cursor-dot, body.cursor-active .cursor-ring { display:block; }
+            .cursor-dot, .cursor-ring {
+                position:fixed; top:0; left:0; pointer-events:none; z-index:9999;
+                border-radius:50%; transform:translate(-50%,-50%);
+                transition:width 0.2s, height 0.2s, background 0.2s;
+            }
+            .cursor-dot { width:8px; height:8px; background:#D43A2F; }
+            .cursor-ring { width:40px; height:40px; border:1.5px solid #16302B; transition:width 0.3s,height 0.3s,border-color 0.3s; }
+            .cursor-ring.hover { width:64px; height:64px; border-color:#D43A2F; background:rgba(212,58,47,0.06); }
+        }
+
+        /* scrollbar */
+        ::-webkit-scrollbar { width:4px; }
+        ::-webkit-scrollbar-track { background:#ede6d8; }
+        ::-webkit-scrollbar-thumb { background:#16302B; border-radius:4px; }
+
+        /* Typography helpers */
+        .script-head { font-family:'Great Vibes',cursive; font-weight:400; letter-spacing:0.02em; }
+        .serif-head { font-family:'Playfair Display',serif; font-weight:600; }
+        .serif-dish { font-family:'Playfair Display',serif; font-weight:500; }
+        .sans-body { font-family:'Inter',sans-serif; font-weight:300; }
+
+        /* Magnetic button */
+        .magnetic-btn {
+            display:inline-flex; align-items:center; justify-content:center;
+            padding:0.75rem 2rem; border-radius:40px;
+            background:#16302B; color:#F7F2E8;
+            font-family:'Inter',sans-serif; font-weight:400; font-size:0.95rem;
+            letter-spacing:0.04em; border:none; transition:transform 0.15s ease, background 0.3s ease;
+            cursor:pointer; position:relative; overflow:hidden; min-height:44px;
+        }
+        .magnetic-btn:active { transform:scale(0.95); }
+        .magnetic-btn-outline { background:transparent; border:1.5px solid #16302B; color:#16302B; }
+        @media (hover:hover) and (pointer:fine) {
+            .magnetic-btn::after { content:''; position:absolute; inset:0; background:rgba(255,255,255,0.04); border-radius:40px; transform:scaleX(0); transform-origin:left; transition:transform 0.4s ease; }
+            .magnetic-btn:hover::after { transform:scaleX(1); }
+            .magnetic-btn-outline::after { background:rgba(22,48,43,0.04); }
+            .magnetic-btn-outline:hover { background:rgba(22,48,43,0.04); }
+        }
+
+        /* Underline draw – disabled on mobile */
+        .underline-draw { position:relative; text-decoration:none; color:inherit; }
+        @media (hover:hover) and (pointer:fine) {
+            .underline-draw::after { content:''; position:absolute; left:0; bottom:-2px; width:0; height:1.5px; background:#D43A2F; transition:width 0.45s cubic-bezier(0.23,1,0.32,1); }
+            .underline-draw:hover::after { width:100%; }
+        }
+
+        /* Seal mark */
+        .seal-mark {
+            display:inline-block; width:56px; height:56px; border-radius:50%;
+            border:2px solid #D43A2F; color:#D43A2F; font-family:'Great Vibes',cursive;
+            font-size:20px; line-height:56px; text-align:center; letter-spacing:0.06em;
+            background:rgba(212,58,47,0.04); user-select:none; transition:transform 0.2s;
+        }
+        .seal-mark:active { transform:scale(0.95); }
+        .seal-mark-sm { width:40px; height:40px; font-size:14px; line-height:40px; }
+        .seal-mark-lg { width:80px; height:80px; font-size:28px; line-height:80px; border-width:2.5px; }
+
+        /* ===== HERO SEAL PULSE (scoped to .hero-seal) ===== */
+        @keyframes seal-pulse {
+          0%   { transform: scale(1);   opacity: 0.5; }
+          100% { transform: scale(1.4); opacity: 0; }
+        }
+        .hero-seal::after {
+          content: '';
+          position: absolute; inset: 0; border-radius: 50%;
+          border: 1.5px solid #D43A2F;
+          animation: seal-pulse 0.9s ease-out 0.7s 1 backwards;
+        }
+
+        /* Spice & signature */
+        .spice-icon { display:inline-block; color:#D43A2F; font-size:0.85rem; letter-spacing:0.04em; }
+        .star-signature { display:inline-block; color:#D43A2F; font-size:1rem; line-height:1; }
+
+        /* Word-by-word reveal (preserved for PinnedReveal) */
+        .word-reveal { display:inline-block; overflow:hidden; white-space:nowrap; }
+        .word-reveal span { display:inline-block; transform:translateY(100%); opacity:0; }
+
+        /* Horizontal Snap Scroll */
+        .snap-container { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scroll-padding: 1rem; }
+        .snap-item { scroll-snap-align: start; flex-shrink: 0; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Bottom Sheet Drag Handle */
+        .drag-handle { touch-action: none; }
+
+        /* prefers-reduced-motion */
+        @media (prefers-reduced-motion: reduce) {
+            * { animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; }
+            .cursor-dot, .cursor-ring { display:none !important; }
+            body { cursor:auto !important; }
+            .word-reveal span { transform:translateY(0) !important; opacity:1 !important; }
+            .hero-seal::after { animation: none !important; }
+        }
+
+        /* Mobile-first tap targets */
+        button, a, .tap-target { min-height: 44px; min-width: 44px; display: inline-flex; align-items: center; justify-content: center; }
+        @media (max-width: 640px) {
+            .seal-mark-lg { width:64px; height:64px; font-size:22px; line-height:64px; }
+            .magnetic-btn { padding:0.6rem 1.5rem; font-size:0.85rem; }
+        }
+
+        .lenis.lenis-smooth { scroll-behavior:auto; }
+        .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior:contain; }
+    </style>
+</head>
+<body>
+
+    <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+    <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+
+    <div id="root"></div>
+    <div id="portal-root"></div>
+
+    <script type="text/babel" data-presets="react">
+        'use strict';
+
+        // ---- GLOBAL CONSTANTS ----
+        const HAS_GSAP = typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined' && typeof SplitText !== 'undefined';
+        const HAS_LENIS = typeof Lenis !== 'undefined';
+
+        const MOTION = {
+            dur: { xs: 0.15, sm: 0.3, md: 0.6, lg: 0.9, xl: 1.4 }, // seconds
+            ease: {
+                out: 'power4.out',
+                inOut: 'power2.inOut',
+                stamp: 'back.out(1.7)',
+                ink: 'power2.out'
+            }
+        };
+
+        // ---- FALLBACK SCROLL HELPER ----
+        const scrollToEl = (el, offset = 0) => {
+            if (!el) return;
+            if (HAS_LENIS && lenis) {
+                lenis.scrollTo(el, { offset: offset, duration: 1.2 });
+            } else {
+                const top = el.getBoundingClientRect().top + window.pageYOffset + offset;
+                window.scrollTo({ top, behavior: 'smooth' });
+            }
+        };
+
+        if (!HAS_GSAP) {
+            document.documentElement.classList.add('no-motion');
+            window.gsap = { registerPlugin: () => {}, set: () => {}, fromTo: () => {}, to: () => {}, ticker: { add: () => {}, lagSmoothing: () => {} } };
+            window.ScrollTrigger = { create: () => {}, getAll: () => [], refresh: () => {}, kill: () => {} };
+        } else {
+            gsap.registerPlugin(ScrollTrigger, SplitText, CustomEase);
+        }
+
+        // ---- LENIS ----
+        let lenis = null;
+        if (HAS_LENIS) {
+            lenis = new Lenis({
+                duration:1.6, easing:(t)=>Math.min(1,1.001-Math.pow(2,-10*t)),
+                orientation:'vertical', smoothWheel:true, wheelMultiplier:1, touchMultiplier:1.2,
+            });
+            if (HAS_GSAP) {
+                lenis.on('scroll', ScrollTrigger.update);
+                gsap.ticker.add((time)=>lenis.raf(time*1000));
+                gsap.ticker.lagSmoothing(0);
+            }
+        }
+
+        // ---- CURSOR (conditional) ----
+        const isTouchDevice = window.matchMedia('(pointer: coarse)').matches;
+        const dot = document.getElementById('cursorDot');
+        const ring = document.getElementById('cursorRing');
+        if (!isTouchDevice && dot && ring && HAS_GSAP) {
+            document.body.classList.add('cursor-active');
+            document.addEventListener('mousemove', (e)=>{
+                const x=e.clientX, y=e.clientY;
+                dot.style.transform = `translate(${x-4}px, ${y-4}px)`;
+                ring.style.transform = `translate(${x-20}px, ${y-20}px)`;
+            });
+            document.addEventListener('mouseover', (e) => {
+                if (e.target.closest('a, button, .dish-card-trigger, .seal-mark, .magnetic-btn')) {
+                    ring.classList.add('hover');
+                }
+            });
+            document.addEventListener('mouseout', (e) => {
+                if (e.target.closest('a, button, .dish-card-trigger, .seal-mark, .magnetic-btn')) {
+                    ring.classList.remove('hover');
+                }
+            });
+            document.addEventListener('mouseleave', ()=>{ dot.style.opacity='0'; ring.style.opacity='0'; });
+            document.addEventListener('mouseenter', ()=>{ dot.style.opacity='1'; ring.style.opacity='1'; });
+        }
+
+        // ---- MENU DATA ----
+        const MENU = {
+            dimSum: [
+                { id:'dim-1', name:'Prawn Hargao', desc:'Steamed prawn dumplings with a touch of tapioca starch, topped with black sesame seeds.', price:485, spice:0, signature:false },
+                { id:'dim-2', name:'Hainanese Chicken Dumpling', desc:'Delicious and tender Hainanese style chicken dumplings, topped with a sprinkle of spring onion for added freshness.', price:395, spice:0, signature:false },
+                { id:'dim-3', name:'Sichuan Wanton In Red Oil', desc:'Exquisite chicken wontons elevated with a luscious prawn-infused red oil, intensifying the dish with rich flavors.', price:440, spice:2, signature:true },
+                { id:'dim-4', name:'Cheesy Chicken Dumpling', desc:'Indulge in the delightful combination of cheesy chicken dumplings, offering a savory and creamy delight.', price:415, spice:0, signature:false },
+                { id:'dim-5', name:'Soy-Sesame Beef Dumpling', desc:'Taste perfection with our beef dumplings, featuring a house special mixture that brings a savory and umami flavor.', price:480, spice:0, signature:false },
+                { id:'dim-6', name:'Naga Siu Mai', desc:'Chicken sia mai infused with a chef\'s special hago sauce, spicy and flavorful culinary experience, our special tribute to the North East.', price:430, spice:2, signature:true },
+                { id:'dim-7', name:'Chicken Prawn Siumai', desc:'Enjoy the delightful combination of chicken and prawn filling, perfectly complemented by a topping of vibrant red capsicum.', price:475, spice:0, signature:false },
+                { id:'dim-8', name:'Lemongrass Chicken Siumai', desc:'Chicken siumai with lemongrass leaves, a delightful combination of flavors.', price:395, spice:0, signature:false },
+                { id:'dim-9', name:'Chicken Basil Potsticker', desc:'Chicken and basil leaf, steamed and pan-fried to perfection for a delightful treat.', price:385, spice:2, signature:true },
+                { id:'dim-10', name:'Spicy Chicken Potsticker', desc:'Spicy chicken potsticker steamed and pan-fried to perfection.', price:395, spice:1, signature:false },
+                { id:'dim-11', name:'Beef Potsticker', desc:'Beef potstickers, steamed and pan-fried to perfection, beef potstickers are adorned with fresh spring onion.', price:475, spice:0, signature:false },
+                { id:'dim-12', name:'Vegetable Dumpling', desc:'Steamed mushroom, cabbage, cauliflower & tofu mix and minced carrot for vegetables.', price:350, spice:0, signature:false },
+                { id:'dim-13', name:'Assorted Dim Sum 3', desc:'(Prawn Hargao, Naga Siu Mai, Cheesy Chicken Dumpling, Spicy Chicken Potsticker, Hainanese Chicken Dumpling, Chicken Basil Potsticker)', price:510, spice:0, signature:false },
+                { id:'dim-14', name:'Assorted Dim Sum 2', desc:'(Dongbei Siu Mai, Hainanese Chicken Dumpling, Chicken Basil Potsticker - 2pcs each)', price:490, spice:0, signature:false },
+                { id:'dim-15', name:'Chicken XO Dumpling', desc:'Steamed chicken dumplings with XO sauce.', price:485, spice:0, signature:false },
+                { id:'dim-16', name:'Spicy Chicken & Prawn Siumai', desc:'Delightful combination of chicken and prawn filling.', price:485, spice:3, signature:false },
+                { id:'dim-17', name:'Assorted Dim Sum 1', desc:'(Prawn Hargao, Lemongrass Siu Mai, Spicy Chicken Potsticker - 2pcs each)', price:510, spice:0, signature:false }
+            ],
+            appetizers: [
+                { id:'app-1', name:'Crispy Nori Chicken Tacos', desc:'Crispy nori wrapped chicken taco, topped with savory chicken, capsicum, onion, and a creamy mild spicy mayo.', price:520, spice:2, signature:true },
+                { id:'app-2', name:'Crab & Cream Cheese Rangoons', desc:'Crispy, golden-fried wonton shells filled with a silky blend of cream cheese, crab meat, a crowd favorite!', price:890, spice:0, signature:true },
+                { id:'app-3', name:'Salt & Pepper Calamari', desc:'Deep-fried calamari topped with fried garlic and capsicums, a delicious treat.', price:560, spice:0, signature:true },
+                { id:'app-4', name:'Korean Chicken', desc:'Enjoy the crispy goodness of Korean fried wings, accompanied by a delightful dipping sauce, a perfect combination.', price:495, spice:0, signature:false },
+                { id:'app-5', name:'Chicken Cheese Wonton', desc:'Crispy deep-fried pockets enveloping a delightful combination of crab and cream cheese, flavorful delight to relish.', price:395, spice:0, signature:false },
+                { id:'app-6', name:'Prawn Tempura', desc:'Prawn tempura served on a bed of spinach leaves, a delightful combination.', price:795, spice:0, signature:false },
+                { id:'app-7', name:'Chicken Nanban', desc:'Boneless fried chicken, served with a special Nanban sauce, creating a harmonious blend of flavors.', price:495, spice:2, signature:true },
+                { id:'app-8', name:'Volcano Mussels', desc:'Mussels with torched house special sauce, tobiko.', price:795, spice:0, signature:false },
+                { id:'app-9', name:'Beef Cheung Fun', desc:'Steamed beef roll, topped with chili oil.', price:785, spice:0, signature:false },
+                { id:'app-10', name:'Dynamite Shrimp', desc:'Crispy prawn with chef\'s special spicy mayo sauce.', price:680, spice:0, signature:false },
+                { id:'app-11', name:'Salmon Avocado Cups', desc:'Crispy rice paper topped with avocado, salmon and mayo.', price:660, spice:0, signature:false }
+            ],
+            salads: [
+                { id:'sal-1', name:'Shanghai Chicken Salad', desc:'Chicken salad inspired by the vibrant flavors of Shanghai cuisine.', price:540, spice:0, signature:true },
+                { id:'sal-2', name:'Chicken Cashewnut Salad', desc:'Tangy dressing, cashew nuts, peanut powder, all tossed in a savory dressing.', price:560, spice:0, signature:false },
+                { id:'sal-3', name:'Crab Prawn Salad', desc:'Crab stick, crispy prawn, tempura flakes, capsicum, mayo.', price:695, spice:2, signature:false }
+            ],
+            noodles: [
+                { id:'nood-1', name:'Khao Soi Gai', desc:'This curry noodle soup featuring chicken egg, noodles, mushroom and a rich coconut-based broth served with crispy noodles on top.', price:680, spice:1, signature:true },
+                { id:'nood-2', name:'Spicy Sichuan Noodles', desc:'The fiery goodness of chicken, stir-fried noodles with chili sauce and other spicy ingredients, crowned with white sesame seeds.', price:495, spice:2, signature:true },
+                { id:'nood-3a', name:'Yokoso Noodles (Chicken)', desc:'Stir-fried rice noodles with chicken, prawn and octopus.', price:440, spice:0, signature:false },
+                { id:'nood-3b', name:'Yokoso Noodles (Beef)', desc:'Stir-fried rice noodles with beef, prawn and octopus.', price:525, spice:0, signature:false },
+                { id:'nood-4', name:'Pad Thai', desc:'Rice Noodles, Prawn, Octopus.', price:550, spice:0, signature:false }
+            ],
+            ramen: [
+                { id:'ram-1', name:'Fiery Chicken Ramen', desc:'Ramen with roasted chicken, shitake mushrooms, and boiled egg, featuring a truly spicy broth for a bold experience.', price:595, spice:2, signature:false },
+                { id:'ram-2', name:'Creamy Chicken Ramen', desc:'Enjoy the creamy and delicious ramen topped with shitake mushroom, tofu and boiled egg, a satisfying and delicious choice.', price:650, spice:0, signature:true },
+                { id:'ram-3', name:'Seafood Ramen', desc:'Ramen with prawn, squid, shitake mushroom, and boiled egg, featuring a truly spicy broth for a bold experience.', price:850, spice:2, signature:false }
+            ],
+            rice: [
+                { id:'rice-1', name:'Yokoso Special Fried Rice', desc:'Yokoso\'s special stir-fried rice with chicken, prawn, egg, vegetables, and green onions.', price:580, spice:0, signature:true },
+                { id:'rice-2', name:'Yokoso Special Naga Rice', desc:'The diverse flavors of fried rice with beef, chicken, prawn, squid and the fiery essence of naga chili topped with a poached egg.', price:510, spice:2, signature:true },
+                { id:'rice-3', name:'Fried Rice (Egg)', desc:'Classic fried rice with egg.', price:295, spice:0, signature:false },
+                { id:'rice-3b', name:'Fried Rice (Chicken)', desc:'Classic fried rice with chicken.', price:340, spice:0, signature:false },
+                { id:'rice-4', name:'Fried Rice (Beef)', desc:'Classic fried rice with beef.', price:460, spice:0, signature:false },
+                { id:'rice-5', name:'Fried Rice (Seafood)', desc:'Classic fried rice with seafood.', price:450, spice:0, signature:false },
+                { id:'rice-6', name:'Tom Yum Fried Rice', desc:'Zesty and aromatic tom yum rice, a delightful Thai-inspired delight.', price:450, spice:2, signature:false },
+                { id:'rice-7', name:'Hong Kong Chicken Rice Bowl', desc:'Egg fried rice, Hong Kong Chicken, Bangkok Style Vegetable.', price:595, spice:0, signature:false },
+                { id:'rice-8', name:'Seafood Rice Bowl', desc:'Tom Yum Fried Rice, Yokoso Special Chili Fish, Prawn Tempura.', price:550, spice:0, signature:false },
+                { id:'rice-9', name:'Teriyaki Chicken Rice Bowl', desc:'Egg fried rice, Teriyaki Chicken, Spicy Tofu Curry.', price:635, spice:0, signature:false },
+                { id:'rice-10', name:'Steamed Rice', desc:'Simple steamed rice.', price:150, spice:0, signature:false }
+            ],
+            chicken: [
+                { id:'chic-1', name:'Hong Kong Chicken', desc:'Deep-fried chicken legs coated with a special sweet chili sauce, offering a flavorful and satisfying dish.', price:675, spice:0, signature:false },
+                { id:'chic-2', name:'Chicken Black Pepper', desc:'Tender sliced chicken with vibrant capsicum, drizzled in rich dark soy sauce, and seasoned with black pepper for a delightful taste.', price:465, spice:0, signature:false },
+                { id:'chic-3', name:'Yokoso Crispy Chicken', desc:'Satisfying crispness of sauteed chicken, coated in a special sweet and sour sauce, offering a balance of flavors.', price:450, spice:0, signature:true },
+                { id:'chic-4', name:'Chicken Hot Sauce', desc:'Delight in the fiery heat of chicken drenched in a homemade hot sauce, infused with flavorful spices.', price:525, spice:2, signature:false },
+                { id:'chic-5', name:'Chicken Cashew Nut with XO Sauce', desc:'Tender chicken pieces, nuts, and aromatic garlic stir-fried in a special XO sauce, a delicious dish.', price:560, spice:0, signature:true },
+                { id:'chic-6', name:'Thai Basil Chicken', desc:'Chicken basil leaf curry with ginger, chili, garlic, and a special soy sauce blend, a delicious and aromatic dish.', price:495, spice:1, signature:false },
+                { id:'chic-7', name:'Chicken Red Curry', desc:'Red curry chicken with coconut milk, lime, and basil leaves, a delicate taste.', price:585, spice:2, signature:true },
+                { id:'chic-8', name:'Kung Pao Chicken', desc:'Delicious pan-fried chicken with cashew nuts and a touch of Sichuan pepper and many secret delicious, a flavorful delight.', price:495, spice:0, signature:true },
+                { id:'chic-9', name:'Yokoso Firecracker Chicken', desc:'Crispy deep-fried chicken, mushroom, pan-fried with a spicy sauce for a mouthwatering experience.', price:520, spice:1, signature:false },
+                { id:'chic-10', name:'Chicken Mapo Tofu', desc:'Sichuan dish made with soft tofu in a spicy, savory gravy mixed with minced meat, garlic, ginger, mushroom, green, and Sichuan peppercorns.', price:475, spice:2, signature:true },
+                { id:'chic-11', name:'Chongqing Chicken', desc:'Delicious dip-fried chicken mixed with sichuan pepper, dry chili.', price:480, spice:3, signature:false }
+            ],
+            beef: [
+                { id:'beef-1', name:'Yokoso Crispy Beef', desc:'Crispy sauteed beef, coated in a special sweet and sour sauce, offering a delightful balance of flavors.', price:750, spice:0, signature:true },
+                { id:'beef-2', name:'Sliced Beef With XO Sauce', desc:'Indulge in the combination of sliced beef and bathed in a special XO sauce, a Cantonese classic dish.', price:775, spice:0, signature:false },
+                { id:'beef-3', name:'Beef Bulgogi', desc:'Spicy gochujang-infused dry cured beef, pan-fried to perfection to give a delectable fusion of flavors.', price:750, spice:0, signature:false }
+            ],
+            seafood: [
+                { id:'seaf-1', name:'Singaporean Chili Crab', desc:'Crispy deep-fried crab served with a tangy red chili sauce, a deliciously spicy treat.', price:750, spice:0, signature:false },
+                { id:'seaf-2', name:'Naga Prawn', desc:'Mouthwatering delight of deep-fried prawns infused with special naga sauce, pan-fried for a mouthful numbing experience.', price:495, spice:3, signature:true },
+                { id:'seaf-3', name:'Yokoso Special Chili Fish', desc:'Delicious fusion of chili, basa fish, deep-fried for a delightful and flavorful combination.', price:475, spice:0, signature:true },
+                { id:'seaf-4', name:'Asian Chili Prawn', desc:'Prawn sauteed with garlic, onion, capsicum, and chili sauce creating a flavorful and aromatic dish.', price:595, spice:1, signature:false },
+                { id:'seaf-5', name:'Seafood Basket', desc:'Prawn, basa fish, and squid, deep-fried and pan-fried with basil leaves.', price:535, spice:0, signature:false },
+                { id:'seaf-6', name:'Thai Red Curry with Seafood', desc:'Indulge in the flavors of our Seafood Red Curry - a fragrant medley of prawn, squid and basa fish seasoned by a rich aromatic red curry paste.', price:565, spice:2, signature:true },
+                { id:'seaf-7', name:'Stir-fried Seafood', desc:'Assorted deep-fried basa fish, squid, and pan-fried with octopus for a delicious mix of flavors.', price:480, spice:2, signature:false },
+                { id:'seaf-8', name:'Korean Seafood Bounty', desc:'A hearty mixture of deep-fried crab, squid and basa fish infused with Korean style spicy sauce made with gochujang, gochugaru and garlic paste.', price:560, spice:1, signature:true }
+            ],
+            wholeFish: [
+                { id:'fish-1', name:'Steamed Sea Bass with Lemon Sauce', desc:'Tender and flavorful whole steamed sea bass, served with the house special lemon sauce, creating a refreshing and delightful dish.', price:1950, spice:0, signature:true },
+                { id:'fish-2', name:'Fried Sea Bass with Chili Sauce', desc:'Crispy whole sea bass, served with the house special sauce, offering a delectable blend of textures and flavors.', price:1950, spice:2, signature:true }
+            ],
+            vegetable: [
+                { id:'veg-1', name:'Crispy Tofu', desc:'Crispy deep-fried tofu sauteed in a house special sweet and spicy sauce, topped with sesame seeds.', price:375, spice:0, signature:true },
+                { id:'veg-2', name:'Tofu Nanban', desc:'Crispy deep-fried tofu topped with Nanban sauce, a delicious combination of textures and flavors.', price:385, spice:0, signature:false },
+                { id:'veg-3', name:'Bangkok Style Vegetable', desc:'Delight in the buttery goodness of tofu, sauteed with vegetables, oyster sauce, and fried garlic, creating a savory and satisfying dish.', price:395, spice:0, signature:false },
+                { id:'veg-4', name:'Stir-fried Morning Glory', desc:'Delightful medley of sauteed mushrooms, kangkong, cooked with various sauces and enhanced with a selection of flavorful seasonings.', price:295, spice:0, signature:true }
+            ],
+            desserts: [
+                { id:'dess-1', name:'Crispy Chips with Ice Cream', desc:'A delightful treat combining crispy chips and ice cream.', price:375, spice:0, signature:false },
+                { id:'dess-2', name:'Fried Ice Cream', desc:'A classic and satisfying fried ice cream.', price:295, spice:0, signature:false },
+                { id:'dess-3', name:'Mango Sticky Rice with Coconut Ice Cream', desc:'The perfect combination of mango sticky rice and coconut ice cream.', price:650, spice:0, signature:true }
+            ],
+            beverages: [
+                { id:'bev-1', name:'Pineapple Passion Martini', desc:'A refreshing blend of pineapple and passion fruit.', price:315, spice:0, signature:false },
+                { id:'bev-2', name:'Viva Magenta', desc:'A vibrant and zesty drink with mixed berry flavors.', price:320, spice:0, signature:false },
+                { id:'bev-3', name:'Strawberry Lime Smoothie', desc:'A sweet and tangy smoothie with strawberry and lime.', price:280, spice:0, signature:false },
+                { id:'bev-4', name:'Peach Iced Tea', desc:'Classic iced tea with a touch of peach sweetness.', price:245, spice:0, signature:false },
+                { id:'bev-5', name:'Orange Lime Relaxer', desc:'A relaxing citrus blend of orange and lime.', price:310, spice:0, signature:false },
+                { id:'bev-6', name:'Coconut Mojito', desc:'A refreshing twist on mojito with coconut.', price:290, spice:0, signature:false },
+                { id:'bev-7', name:'Kiwi Margarita', desc:'A tangy margarita with the unique flavor of kiwi.', price:290, spice:0, signature:false },
+                { id:'bev-8', name:'Lemon Mint Smoothie', desc:'A refreshing smoothie with lemon and mint.', price:255, spice:0, signature:false },
+                { id:'bev-9', name:'Virgin Mojito', desc:'A classic virgin mojito with lime and mint.', price:255, spice:0, signature:false }
+            ],
+            sushi: [
+                { id:'sushiH-1', name:'Golden Sakura', desc:'Rolled up prawn tempura, roasted nori topped with torched salmon, spicy mayo and garnished with golden tempura flakes.', hasHalfFull:true, priceHalf:650, priceFull:1280, spice:0, signature:false },
+                { id:'sushiH-2', name:'The Forbidden Crab', desc:'Sushi roll with crab meat, cheese, roasted seaweed, topped with cheese, kani & generous amount of wasabi mayo.', hasHalfFull:true, priceHalf:595, priceFull:1170, spice:0, signature:false },
+                { id:'sushiH-3', name:'Volcano Roll', desc:'Nori wrapped prawn tempura, topped with mixed cheese, salmon and crab stick sauce, garnished with sriracha hot sauce.', hasHalfFull:true, priceHalf:550, priceFull:1080, spice:0, signature:false },
+                { id:'sushiH-4', name:'Yokoso Spider Roll', desc:'Rolled up with prawn, roasted seaweed, topped with salmon, cheese, spicy mayo, garnished with tobiko.', hasHalfFull:true, priceHalf:695, priceFull:1370, spice:0, signature:false },
+                { id:'sushiH-5', name:'Smoked Salmon Roll', desc:'Torched Salmon paired with prawn tempura, rice and topped with tobiko and mayo.', hasHalfFull:true, priceHalf:685, priceFull:1350, spice:0, signature:false },
+                { id:'sushiH-6', name:'Spicy Lava Roll', desc:'Sushi roll with chicken, rice, roasted seaweed, topped with chicken, mayo and sichuan sauce, crowned with nori crisps.', hasHalfFull:true, priceHalf:520, priceFull:1020, spice:0, signature:false },
+                { id:'sushiH-7', name:'Vegetable Egg Maki', desc:'Nori-wrapped vegetable and egg roll, a delicious and healthy option for sushi lovers.', hasHalfFull:true, priceHalf:330, priceFull:595, spice:0, signature:false },
+                { id:'sushiH-8', name:'Alaska Roll', desc:'Deep-fried roll topped with sriracha sauce, crispy chips, and a torch-seared finish, creating a flavorful and crispy delight.', hasHalfFull:true, priceHalf:470, priceFull:920, spice:0, signature:false },
+                { id:'sushiH-9', name:'Crispy Prawn Roll', desc:'Rolled-up with cream cheese and deeply fried prawn, topped with mayo for a creamy and satisfying treat.', hasHalfFull:true, priceHalf:495, priceFull:970, spice:0, signature:false },
+                { id:'sushiH-10', name:'Creamy Chicken Roll', desc:'Indulge in the delectable combination of sticky rice rolled with creamy chicken, creating a flavorful treat.', hasHalfFull:true, priceHalf:450, priceFull:880, spice:0, signature:false },
+                { id:'sushiH-11', name:'Hot Night Roll', desc:'Sushi roll with prawn, rice and roasted seaweed, topped with crispy chips, and elegantly torched.', hasHalfFull:true, priceHalf:440, priceFull:860, spice:0, signature:false },
+                { id:'sushiH-12', name:'Ebi Tempura Roll', desc:'Delight in the rolled-up tempura shrimp, coated with tempura powder, creating a crispy and irresistible treat.', hasHalfFull:true, priceHalf:440, priceFull:860, spice:0, signature:false },
+                { id:'sushiH-13', name:'Crab Ebi Uramaki', desc:'Torched crab meat and prawn roll, a delightful fusion of flavors.', hasHalfFull:true, priceHalf:445, priceFull:870, spice:0, signature:false },
+                { id:'sushiH-14', name:'Tamago Nigiri', desc:'Savor the simplicity of nigiri, topped with a delicate slice of egg for a classic and flavorful experience.', hasHalfFull:true, priceHalf:280, priceFull:530, spice:0, signature:false },
+                { id:'sushi-1', name:'Sushi Moriawase', desc:'Golden Sakura, Spicy Lava Roll, The Forbidden Crab, Yokoso Spider Roll, Volcano Roll, California Cheese Roll.', hasHalfFull:false, price:1350, spice:0, signature:false },
+                { id:'sushi-2', name:'Salmon Avocado Taco', desc:'Crispy nori wrapped around a bed of rice, topped with salmon, avocado, capsicum, onion, and a creamy white mayo.', hasHalfFull:false, price:850, spice:0, signature:false },
+                { id:'sushi-3', name:'Crab Fusion Roll', desc:'Rolled up with tamago, crab stick, cream cheese, avocado topped with crab stick, white mayo and garnished with homemade caviar.', hasHalfFull:false, price:590, spice:0, signature:false },
+                { id:'sushi-4', name:'Spicy Salmon Roll', desc:'Sushi roll with crab stick, crunchy mixed with spicy sauce, topped with salmon, mayo and teriyaki sauce.', hasHalfFull:false, price:695, spice:0, signature:false },
+                { id:'sushi-5', name:'Kazari Maki Roll', desc:'Rolled up with salmon, avocado, cream cheese, tamago, crab stick, rice and roasted nori, topped with white mayo, homemade caviar.', hasHalfFull:false, price:765, spice:0, signature:false },
+                { id:'sushi-6', name:'Gunkan-Maki Roll', desc:'Nori wrapped with rice, salmon, avocado, mixed with creamy sauce topped with homemade caviar and tobiko.', hasHalfFull:false, price:1450, spice:0, signature:false },
+                { id:'sushi-7', name:'Avocado Roll', desc:'Shushi roll with avocado, prawn tempura, cream cheese, rice topped with avocado, mayo and tobiko.', hasHalfFull:false, price:745, spice:0, signature:false },
+                { id:'sushi-8', name:'Salmon Tataki', desc:'Pan grilled salmon with teriyaki sauce and sesame seeds.', hasHalfFull:false, price:1190, spice:0, signature:false },
+                { id:'sushi-9', name:'Salmon Sashimi', desc:'Fresh raw salmon, cucumber, ginger pickle, letus.', hasHalfFull:false, price:895, spice:0, signature:false },
+                { id:'sushi-10', name:'Nigiri Assortment', desc:'Prawn nigiri, salmon nigiri, crab stick nigiri – 2 pcs each.', hasHalfFull:false, price:590, spice:0, signature:false }
+            ],
+            sushiCombos: [
+                { id:'combo-1', name:'Fusion Sushi Voyage', desc:'Golden Sakura, Alaska Roll, Yokoso Spider Roll, The Forbidden Crab, Spicy Lava Roll, Crispy Prawn Roll.', price:3425, spice:0, signature:false },
+                { id:'combo-2', name:'Assorted Sushi Boat', desc:'Red Dragon Roll, Crab Ebi Uramaki, Hot Night Roll, Spicy Lava Roll, Alaska Roll, Ebi Tempura Roll.', price:2345, spice:0, signature:false }
+            ],
+            bento: [
+                { id:'bento-1', name:'Kaiseki Bento', desc:'Fried Rice, Firecracker Chicken, Vegetable Spicy Tofu Curry, Cheesy Chicken Dumpling, Tamago Nigiri.', price:925, spice:0, signature:false },
+                { id:'bento-2', name:"Shogun's Secret Bento", desc:'Fried Rice, Chicken Cashew Nut with XO Sauce, Chicken Nanban, Seafood Basket.', price:990, spice:0, signature:false }
+            ],
+            soup: [
+                { id:'soup-1', name:'Chicken Wonton Soup', desc:'Satisfy your cravings with a comforting bowl of chicken wonton soup, a harmony of flavors in a warm and soothing broth.', price:360, spice:0, signature:false },
+                { id:'soup-2', name:'Beef Noodle Soup', desc:'A hearty beef noodle soup with tender beef, thai noodles, sweet red chili and kang kong for a satisfying and flavorful meal.', price:410, spice:0, signature:false },
+                { id:'soup-3', name:'Tom Yum Soup', desc:'Spicy and sour Thai soup with aromatic herbs and prawn and squid seasonings, a flavorful delight.', price:470, spice:0, signature:true }
+            ]
+        };
+
+        // ---- COMPASS DATA (computed from MENU) ----
+        const COMPASS_CHAPTERS = [
+            {
+                seal: '点', native: '点心', name: 'Dim Sum & Small Plates',
+                desc: 'Steamed, folded, and fried — the first bites of the table.',
+                anchorId: 'dim-sum',
+                count: MENU.dimSum.length + MENU.appetizers.length + MENU.soup.length + MENU.salads.length
+            },
+            {
+                seal: '麺', native: '麺飯', name: 'Noodles, Rice & Ramen',
+                desc: 'Bowls built for comfort, from Sichuan fire to Thai curry broth.',
+                anchorId: 'noodles',
+                count: MENU.noodles.length + MENU.ramen.length + MENU.rice.length
+            },
+            {
+                seal: '炎', native: '炒め', name: 'Wok & Grill',
+                desc: 'Chicken, beef, seafood and whole fish, seared over open flame.',
+                anchorId: 'chicken',
+                count: MENU.chicken.length + MENU.beef.length + MENU.seafood.length + MENU.wholeFish.length + MENU.vegetable.length
+            },
+            {
+                seal: '鮨', native: '鮨', name: 'Sushi Bar',
+                desc: 'Rolled, pressed, and torched — our sushi counter in full.',
+                anchorId: 'sushi-half',
+                count: MENU.sushi.length + MENU.sushiCombos.length + MENU.bento.length
+            },
+            {
+                seal: '涼', native: '涼菓', name: 'Sweet & Cool',
+                desc: 'Desserts and drinks to close the meal, or simply cool down.',
+                anchorId: 'desserts',
+                count: MENU.desserts.length + MENU.beverages.length
+            }
+        ];
+
+        // ---- CONVERSION PATHS ----
+        const RESERVATION_PHONE = '8801841965676'; // WhatsApp intl format
+        const RESERVATION_MESSAGE = "Hi Yokoso, I'd like to reserve a table for ";
+        const WHATSAPP_RESERVE_URL = `https://wa.me/${RESERVATION_PHONE}?text=${encodeURIComponent(RESERVATION_MESSAGE)}`;
+        const CONTACT_EMAIL = ''; // TODO: real business email needed
+        const DELIVERY_URL = ''; // TODO: real delivery/ordering link needed
+        const HERO_VIDEO_SRC = 'https://raw.githubusercontent.com/saqibfarabi14-del/Yokoso/main/assets/yokoso-hero-ink-loop.mp4';
+
+        // ---- REACT COMPONENTS ----
+        const { useState, useEffect, useRef, useCallback, memo } = React;
+
+        // ---- Mobile/Performance Hooks ----
+        const useIsTouch = () => {
+            const [isTouch, setIsTouch] = useState(false);
+            useEffect(() => setIsTouch(window.matchMedia('(pointer: coarse)').matches), []);
+            return isTouch;
+        };
+
+        const useMobile = () => {
+            const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+            useEffect(() => {
+                const handleResize = () => setIsMobile(window.innerWidth < 768);
+                window.addEventListener('resize', handleResize);
+                return () => window.removeEventListener('resize', handleResize);
+            }, []);
+            return isMobile;
+        };
+
+        const useLazyLoad = () => {
+            const ref = useRef(null);
+            const [isVisible, setIsVisible] = useState(false);
+            useEffect(() => {
+                if (!ref.current || isVisible) return;
+                const observer = new IntersectionObserver(([entry]) => {
+                    if (entry.isIntersecting) {
+                        setIsVisible(true);
+                        observer.disconnect();
+                    }
+                }, { rootMargin: '200px' });
+                observer.observe(ref.current);
+                return () => observer.disconnect();
+            }, [isVisible]);
+            return { ref, isVisible };
+        };
+
+        // ---- useScrollSkew Hook ----
+        const useScrollSkew = () => {
+            useEffect(() => {
+                if (!HAS_GSAP) return;
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || window.innerWidth < 768) return;
+
+                const proxy = { skew: 0 };
+                const clamp = gsap.utils.clamp(-6, 6);
+                const els = document.querySelectorAll('.skew-target');
+                if (!els.length) return;
+
+                const st = ScrollTrigger.create({
+                    onUpdate: (self) => {
+                        const skew = clamp(self.getVelocity() / -400);
+                        if (Math.abs(skew) > Math.abs(proxy.skew)) {
+                            proxy.skew = skew;
+                            gsap.to(proxy, {
+                                skew: 0, duration: 0.8, ease: 'power3', overwrite: true,
+                                onUpdate: () => {
+                                    els.forEach(el => gsap.set(el, { skewY: proxy.skew }));
+                                }
+                            });
+                        }
+                    }
+                });
+
+                return () => { if (st) st.kill(); };
+            }, []);
+        };
+
+        // ---- Reveal Primitive Component ----
+        const Reveal = ({ children, variant, delay=0, stagger=0.08, start="top 85%", once=true, as="div", className="" }) => {
+            const ref = useRef(null);
+            const isMobile = useMobile();
+
+            useEffect(() => {
+                const el = ref.current;
+                if (!el || !HAS_GSAP) return;
+
+                const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+                if (reduceMotion) {
+                    if (variant === 'rise' || variant === 'scale') {
+                        const targets = Array.from(el.children);
+                        gsap.set(targets, variant === 'rise' ? { y: 0, opacity: 1 } : { scale: 1, opacity: 1 });
+                    } else if (variant === 'mask') {
+                        const inner = el.querySelector('.reveal-inner');
+                        if (inner) gsap.set(inner, { y: 0, opacity: 1 });
+                    } else if (variant === 'stamp') {
+                        gsap.set(el, { scale: 1, rotate: 0, opacity: 1 });
+                    } else if (variant === 'ink') {
+                        gsap.set(el, { clipPath: 'inset(0 0% 0 0)' });
+                    }
+                    return;
+                }
+
+                const ctx = gsap.context(() => {
+                    const m = isMobile ? { dist: 16, mult: 0.75, stag: 0.6 } : { dist: 24, mult: 1, stag: 1 };
+                    const dur = MOTION.dur.md * m.mult;
+
+                    if (variant === 'rise') {
+                        const targets = Array.from(el.children);
+                        if (targets.length > 0) {
+                            gsap.fromTo(targets, { y: m.dist, opacity: 0 }, {
+                                y: 0, opacity: 1, duration: dur, ease: MOTION.ease.out, stagger: stagger * m.stag, delay: delay,
+                                scrollTrigger: { trigger: el, start: start, toggleActions: once ? 'play none none none' : 'play none none reverse' }
+                            });
+                        }
+                    } else if (variant === 'mask') {
+                        const inner = el.querySelector('.reveal-inner');
+                        if (inner) {
+                            gsap.fromTo(inner, { y: '110%', opacity: 0 }, {
+                                y: '0%', opacity: 1, duration: MOTION.dur.lg * m.mult, ease: MOTION.ease.out, delay: delay,
+                                scrollTrigger: { trigger: el, start: start, toggleActions: once ? 'play none none none' : 'play none none reverse' }
+                            });
+                        }
+                    } else if (variant === 'stamp') {
+                        gsap.fromTo(el, { scale: 1.6, rotate: -12, opacity: 0 }, {
+                            scale: 1, rotate: 0, opacity: 1, duration: MOTION.dur.md * m.mult, ease: MOTION.ease.stamp, delay: delay,
+                            scrollTrigger: { trigger: el, start: start, toggleActions: once ? 'play none none none' : 'play none none reverse' }
+                        });
+                    } else if (variant === 'ink') {
+                        gsap.fromTo(el, { clipPath: 'inset(0 100% 0 0)' }, {
+                            clipPath: 'inset(0 0% 0 0)', duration: MOTION.dur.lg * m.mult, ease: MOTION.ease.ink, delay: delay,
+                            scrollTrigger: { trigger: el, start: start, toggleActions: once ? 'play none none none' : 'play none none reverse' }
+                        });
+                    } else if (variant === 'scale') {
+                        const targets = Array.from(el.children);
+                        if (targets.length > 0) {
+                            gsap.fromTo(targets, { scale: 1.08, opacity: 0 }, {
+                                scale: 1, opacity: 1, duration: MOTION.dur.md * m.mult, ease: MOTION.ease.out, stagger: stagger * m.stag, delay: delay,
+                                scrollTrigger: { trigger: el, start: start, toggleActions: once ? 'play none none none' : 'play none none reverse' }
+                            });
+                        }
+                    }
+                }, el);
+
+                return () => ctx.revert();
+            }, [variant, stagger, delay, start, once, isMobile, HAS_GSAP]);
+
+            if (variant === 'mask') {
+                return React.createElement(as, { ref: ref, className: `overflow-hidden ${className}` },
+                    React.createElement('div', { className: 'reveal-inner w-full h-full' }, children)
+                );
+            }
+            if (variant === 'ink') {
+                return React.createElement(as, { ref: ref, className: className }, children);
+            }
+            return React.createElement(as, { ref: ref, className: className }, children);
+        };
+
+        const SpiceIcons = ({ level }) => {
+            if (!level || level<1) return null;
+            const chars = '🌶️'.repeat(Math.min(level,3));
+            return <span className="spice-icon" aria-label={`Spice level ${level}`}>{chars}</span>;
+        };
+        const SignatureStar = ({ active }) => active ? <span className="star-signature" aria-label="Chef's signature">★</span> : null;
+
+        const DishCard = memo(({ dish, onClick = null }) => {
+            return (
+                <button onClick={() => { if (onClick) onClick(dish); }} className="dish-card-trigger w-full text-left border-b border-forest/5 last:border-0 py-3 sm:py-5 tap-target flex flex-col gap-1 active:bg-forest/5 transition-colors">
+                    <div className="flex items-baseline justify-between w-full min-w-0">
+                        <h4 className="serif-dish text-[1.05rem] sm:text-xl md:text-2xl text-forest font-medium leading-[1.1] truncate min-w-0 flex-shrink">
+                            {dish.name}
+                        </h4>
+                        <div className="flex-1 border-b border-dotted border-forest/20 mx-2 h-[1px] min-w-[6px]"></div>
+                        <span
+                            className="dish-price sans-body text-[10px] sm:text-[11px] uppercase tracking-widest font-semibold text-forest/80 whitespace-nowrap flex-shrink-0"
+                            data-price={dish.hasHalfFull ? '' : dish.price}
+                        >
+                            {dish.hasHalfFull ? `${dish.priceHalf} / ${dish.priceFull}` : dish.price} BDT
+                        </span>
+                    </div>
+                    <div className="flex flex-wrap gap-x-2 gap-y-0.5 items-center">
+                        {dish.signature && <SignatureStar active={true} />}
+                        <SpiceIcons level={dish.spice} />
+                    </div>
+                    <p className="sans-body text-xs text-forest-light/70 mt-0.5 line-clamp-2">{dish.desc}</p>
+                </button>
+            );
+        });
+
+        const DishDetail = ({ dish, isOpen, onClose }) => {
+            const isTouch = useIsTouch();
+            const sheetRef = useRef(null);
+            const dragStartY = useRef(0);
+            const currentY = useRef(0);
+            const isDragging = useRef(false);
+
+            const handleTouchStart = (e) => {
+                if (!isTouch || !sheetRef.current) return;
+                dragStartY.current = e.touches[0].clientY;
+                isDragging.current = true;
+                sheetRef.current.style.transition = 'none';
+            };
+            const handleTouchMove = (e) => {
+                if (!isDragging.current || !sheetRef.current) return;
+                const deltaY = e.touches[0].clientY - dragStartY.current;
+                if (deltaY > 0) {
+                    currentY.current = deltaY;
+                    sheetRef.current.style.transform = `translateY(${deltaY}px)`;
+                }
+            };
+            const handleTouchEnd = () => {
+                if (!isDragging.current || !sheetRef.current) return;
+                isDragging.current = false;
+                sheetRef.current.style.transition = 'transform 0.3s cubic-bezier(0.23,1,0.32,1)';
+                if (currentY.current > 100) onClose();
+                else sheetRef.current.style.transform = 'translateY(0px)';
+                currentY.current = 0;
+            };
+            const resetSheet = () => { if (sheetRef.current) sheetRef.current.style.transform = 'translateY(0px)'; };
+
+            if (!dish) return null;
+            return ReactDOM.createPortal(
+                <div
+                    className={`fixed inset-0 z-50 flex items-end sm:items-center justify-center transition-opacity duration-300 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+                    onTouchStart={isTouch ? handleTouchStart : undefined}
+                    onTouchMove={isTouch ? handleTouchMove : undefined}
+                    onTouchEnd={isTouch ? handleTouchEnd : undefined}
+                >
+                    <div className="absolute inset-0 bg-forest/40 backdrop-blur-sm transition-opacity duration-300" onClick={onClose} />
+                    <div ref={sheetRef} className={`relative w-full sm:max-w-2xl sm:w-full bg-bone rounded-t-2xl sm:rounded-2xl shadow-2xl transform transition-transform duration-300 ${isOpen ? 'translate-y-0' : 'translate-y-full sm:translate-y-8 sm:scale-95'}`} style={{ maxHeight: '90vh', display: 'flex', flexDirection: 'column' }} onTransitionEnd={resetSheet}>
+                        {isTouch && (<div className="drag-handle w-10 h-1 bg-forest/20 rounded-full mx-auto mt-2 mb-1 flex-shrink-0"></div>)}
+                        <div className="p-5 sm:p-8 overflow-y-auto flex-1">
+                            <div className="flex justify-between items-start gap-4">
+                                <h3 className="script-head text-4xl sm:text-5xl text-forest">{dish.name}</h3>
+                                <button onClick={onClose} className="tap-target w-10 h-10 rounded-full bg-forest/10 hover:bg-forest/20 active:bg-forest/30 transition-colors flex items-center justify-center text-forest/80 text-lg" aria-label="Close">✕</button>
+                            </div>
+                            <div className="flex gap-3 mt-2">{dish.signature && <SignatureStar active={true} />}<SpiceIcons level={dish.spice} /></div>
+                            <p className="sans-body text-base sm:text-lg text-forest-light/80 mt-4 leading-relaxed">{dish.desc}</p>
+                            <div className="mt-6 pt-4 border-t border-forest/10 flex justify-between items-center">
+                                <span className="sans-body text-sm uppercase tracking-widest text-forest-light/60">Price</span>
+                                <span className="serif-head text-2xl text-forest">{dish.hasHalfFull ? `${dish.priceHalf} / ${dish.priceFull}` : dish.price} BDT</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>,
+                document.body
+            );
+        };
+
+        // ---- ChefSignatures ----
+        const ChefSignatures = ({ onDishClick }) => {
+            const ref = useRef(null);
+            const signatureDishes = Object.values(MENU).flat().filter(dish => dish.signature === true);
+
+            if (signatureDishes.length === 0) return null;
+            return (
+                <section ref={ref} className="skew-target py-12 sm:py-24 px-2 sm:px-6 max-w-7xl mx-auto overflow-hidden">
+                    <div className="text-center mb-8 sm:mb-16">
+                        <Reveal variant="stamp" as="div" className="inline-block mx-auto mb-4">
+                            <span className="seal-mark seal-mark-sm">星</span>
+                        </Reveal>
+                        <h2 className="script-head text-5xl sm:text-7xl md:text-8xl text-forest">Chef's Signatures</h2>
+                        <p className="sans-body text-sm text-forest-light/70 mt-4">The dishes that define us — marked with the vermilion seal</p>
+                    </div>
+                    <div className="relative">
+                        <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-bone to-transparent pointer-events-none z-10 hidden sm:block"></div>
+                        <Reveal variant="rise" stagger={0.08} as="div" className="snap-container hide-scrollbar flex overflow-x-auto gap-4 sm:gap-6 px-3 sm:px-8 pb-4 pt-2 touch-pan-x">
+                            {signatureDishes.map((dish) => (
+                                <div key={dish.id} className="snap-item signature-card min-w-[280px] sm:min-w-[340px] md:min-w-[380px] flex-shrink-0 border border-forest/10 bg-bone/30 p-5 sm:p-8 flex flex-col gap-3" onClick={() => onDishClick && onDishClick(dish)}>
+                                    <div className="flex justify-between items-start gap-2">
+                                        <h4 className="serif-dish text-xl sm:text-2xl text-forest font-medium leading-tight">{dish.name}</h4>
+                                        <div className="w-8 h-8 rounded-full bg-vermilion flex items-center justify-center text-bone text-xs font-bold shrink-0 shadow-sm">★</div>
+                                    </div>
+                                    <p className="sans-body text-sm sm:text-base text-forest-light/70 leading-relaxed flex-1 line-clamp-3">{dish.desc}</p>
+                                    <div className="flex justify-between items-center pt-4 border-t border-forest/10">
+                                        <div className="flex gap-2"><SpiceIcons level={dish.spice} /></div>
+                                        <span className="sans-body text-[10px] sm:text-xs uppercase tracking-widest font-medium text-forest/80 whitespace-nowrap">{dish.hasHalfFull ? `${dish.priceHalf} / ${dish.priceFull}` : dish.price} BDT</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </Reveal>
+                        <p className="sans-body text-xs text-forest-light/50 text-right mt-3 pr-2 sm:hidden">Swipe →</p>
+                    </div>
+                </section>
+            );
+        };
+
+        // ---- CinematicCollections ----
+        const CinematicCollections = () => {
+            const ref = useRef(null);
+            const collections = [...MENU.sushiCombos.map(item => ({ ...item, category: 'Sushi Set' })), ...MENU.bento.map(item => ({ ...item, category: 'Bento' }))];
+
+            return (
+                <section ref={ref} className="skew-target py-12 sm:py-24 px-3 sm:px-6 max-w-7xl mx-auto">
+                    <div className="text-center mb-8 sm:mb-16">
+                        <Reveal variant="stamp" as="div" className="inline-block mx-auto mb-4">
+                            <span className="seal-mark seal-mark-sm">集</span>
+                        </Reveal>
+                        <h2 className="script-head text-5xl sm:text-7xl md:text-8xl text-forest">Curated Collections</h2>
+                        <p className="sans-body text-sm text-forest-light/70 mt-4">Our grandest sets — meticulously crafted</p>
+                        <div className="h-px bg-forest/5 max-w-xs mx-auto mt-6" />
+                    </div>
+                    <Reveal variant="scale" stagger={0.15} as="div" className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+                        {collections.map((item) => {
+                            const itemList = item.desc.split(',').map(s => s.trim().replace(/\.$/, ''));
+                            return (
+                                <div key={item.id} className="collection-card border border-forest/10 bg-bone/30 p-5 sm:p-8 flex flex-col gap-4">
+                                    <div className="flex justify-between items-start gap-2">
+                                        <div className="min-w-0">
+                                            <span className="sans-body text-[10px] sm:text-xs uppercase tracking-widest text-forest-light/60 font-medium block">{item.category}</span>
+                                            <h3 className="script-head text-3xl sm:text-4xl text-forest mt-0.5 leading-tight truncate">{item.name}</h3>
+                                        </div>
+                                        <span className="sans-body text-xs sm:text-sm uppercase tracking-widest font-semibold text-forest/80 whitespace-nowrap shrink-0">{item.price} BDT</span>
+                                    </div>
+                                    <div className="mt-1 mb-3 flex-grow">
+                                        <p className="sans-body text-xs sm:text-sm text-forest-light/70 mb-2 font-medium">Includes:</p>
+                                        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1">
+                                            {itemList.map((subItem, idx) => (
+                                                <li key={idx} className="sans-body text-sm text-forest/90 flex items-start gap-2 truncate"><span className="text-vermilion text-[10px] mt-1 shrink-0">✦</span> <span className="truncate">{subItem}</span></li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                    <div className="mt-auto pt-4 border-t border-forest/10 flex justify-end"><span className="seal-mark seal-mark-sm text-xs opacity-50">薦</span></div>
+                                </div>
+                            );
+                        })}
+                    </Reveal>
+                </section>
+            );
+        };
+
+        // ---- MenuSection (using ScrollTrigger.batch) ----
+        const MenuSection = ({ title, items, id, onDishClick }) => {
+            const sectionRef = useRef(null);
+
+            useEffect(() => {
+                if (!HAS_GSAP) return;
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+                const el = sectionRef.current;
+                if (!el) return;
+
+                const isMobileNow = window.innerWidth < 768;
+                const dist = isMobileNow ? 12 : 16;
+                const dur = isMobileNow ? 0.4 : 0.5;
+                const stag = isMobileNow ? 0.04 : 0.06;
+
+                const ctx = gsap.context(() => {
+                    const rows = gsap.utils.toArray('.dish-card-trigger', el);
+                    ScrollTrigger.batch(rows, {
+                        start: 'top 92%',
+                        once: true,
+                        onEnter: (batch) => {
+                            gsap.fromTo(batch,
+                                { y: dist, opacity: 0 },
+                                { y: 0, opacity: 1, duration: dur, stagger: stag, ease: 'power2.out', overwrite: true }
+                            );
+                            batch.forEach(row => {
+                                const priceEl = row.querySelector('.dish-price');
+                                if (!priceEl) return;
+                                const target = parseFloat(priceEl.dataset.price);
+                                if (isNaN(target)) return;
+                                const obj = { val: 0 };
+                                gsap.to(obj, {
+                                    val: target, duration: 0.6, ease: 'power1.out',
+                                    onUpdate: () => { priceEl.textContent = Math.round(obj.val) + ' BDT'; }
+                                });
+                            });
+                        }
+                    });
+                }, el);
+
+                return () => ctx.revert();
+            }, []);
+
+            return (
+                <section ref={sectionRef} id={id} className="py-8 sm:py-16 overflow-hidden scroll-mt-20">
+                    <Reveal variant="rise" stagger={0.06} as="div" className="text-center mb-8 sm:mb-12">
+                        <h3 className="script-head text-4xl sm:text-6xl md:text-7xl text-forest">{title}</h3>
+                    </Reveal>
+                    <div className="w-full">
+                        <div className="space-y-0">
+                            {items.map(dish => <DishCard key={dish.id} dish={dish} onClick={onDishClick} />)}
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        // ---- MenuWrapper ----
+        const MenuWrapper = ({ onDishClick }) => {
+            const ref = useRef(null);
+
+            return (
+                <section ref={ref} id="menu-start" className="skew-target scroll-mt-20 py-6 sm:py-10 px-3 sm:px-8 max-w-5xl mx-auto relative">
+                    <div className="text-center mb-6 sm:mb-12">
+                        <Reveal variant="stamp" as="div" className="inline-block mx-auto">
+                            <span className="seal-mark seal-mark-sm">味</span>
+                        </Reveal>
+                        <Reveal variant="rise" as="div" className="mt-2">
+                            <h2 className="menu-title script-head text-5xl sm:text-7xl md:text-8xl text-forest">The Menu</h2>
+                            <p className="menu-title sans-body text-xs sm:text-sm text-forest-light/60 mt-2">Pan-Asian flavours, crafted with intention</p>
+                        </Reveal>
+                    </div>
+
+                    <Reveal variant="rise" as="div" className="menu-divider h-px bg-forest/5 w-full my-6 sm:my-10" />
+
+                    <div className="sticky top-16 z-20 bg-bone/95 backdrop-blur-md py-3 border-b border-forest/5 w-full">
+                        <div className="snap-container hide-scrollbar flex overflow-x-auto gap-2 px-4 sm:px-8 touch-pan-x">
+                            {['dim-sum','appetizers','salads','noodles','ramen','rice','soup','chicken','beef','seafood','whole-fish','vegetable','desserts','sushi-half','sushi-single','sushi-combos','bento','beverages'].map(id => (
+                                <button key={id} onClick={() => { const el = document.getElementById(id); if (el) scrollToEl(el, -80); }} className="snap-item tap-target flex-shrink-0 px-4 py-2 rounded-full border border-forest/10 text-xs sm:text-sm text-forest/80 font-medium transition-colors hover:bg-forest/5 active:bg-forest/10 whitespace-nowrap min-h-[40px]">{id.replace(/-/g,' ').replace(/\b\w/g, l => l.toUpperCase())}</button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="pt-4">
+                        {['dimSum','appetizers','salads','noodles','ramen','rice','soup','chicken','beef','seafood','wholeFish','vegetable','desserts'].map(key => {
+                            const title = key.replace(/([A-Z])/g, ' $1').replace(/\b\w/g, c => c.toUpperCase()).trim();
+                            const items = MENU[key];
+                            return (
+                                <div key={key}>
+                                    <MenuSection title={title} items={items} id={key.replace(/([A-Z])/g, '-$1').toLowerCase()} onDishClick={onDishClick} />
+                                    <div className="h-px bg-forest/5 w-full my-6 sm:my-12" />
+                                </div>
+                            );
+                        })}
+                        <MenuSection title="Sushi (Half / Full)" items={MENU.sushi.filter(item => item.hasHalfFull)} id="sushi-half" onDishClick={onDishClick} />
+                        <div className="h-px bg-forest/5 w-full my-6 sm:my-12" />
+                        <MenuSection title="Sushi (Single Price)" items={MENU.sushi.filter(item => !item.hasHalfFull)} id="sushi-single" onDishClick={onDishClick} />
+                        <div className="h-px bg-forest/5 w-full my-6 sm:my-12" />
+                        <MenuSection title="Sushi Combos" items={MENU.sushiCombos} id="sushi-combos" onDishClick={onDishClick} />
+                        <div className="h-px bg-forest/5 w-full my-6 sm:my-12" />
+                        <MenuSection title="Bento" items={MENU.bento} id="bento" onDishClick={onDishClick} />
+                        <div className="h-px bg-forest/5 w-full my-6 sm:my-12" />
+                        <MenuSection title="Zero-Proof Bar" items={MENU.beverages} id="beverages" onDishClick={onDishClick} />
+                    </div>
+                </section>
+            );
+        };
+
+        // ---- MenuCompass ----
+        const MenuCompass = () => {
+            const sectionRef = useRef(null);
+            const trackRef = useRef(null);
+            const isMobile = useMobile();
+
+            useEffect(() => {
+                if (!HAS_GSAP) return;
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+                if (isMobile) return;
+
+                const ctx = gsap.context(() => {
+                    const panels = gsap.utils.toArray('.compass-panel', trackRef.current);
+                    gsap.to(panels, {
+                        xPercent: -100 * (panels.length - 1),
+                        ease: 'none',
+                        scrollTrigger: {
+                            trigger: sectionRef.current,
+                            pin: true,
+                            scrub: 1,
+                            snap: { snapTo: 1 / (panels.length - 1), duration: 0.4, ease: 'power1.inOut' },
+                            end: () => '+=' + (sectionRef.current.offsetWidth * (panels.length - 1)),
+                            invalidateOnRefresh: true
+                        }
+                    });
+                }, sectionRef);
+                return () => ctx.revert();
+            }, [isMobile]);
+
+            const reduceMotion = !HAS_GSAP || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+            const PanelContent = ({ chapter, idx }) => (
+                <div className={`compass-panel ${isMobile ? 'snap-item w-screen' : 'w-screen'} flex-shrink-0 h-screen flex items-center justify-center px-6 sm:px-12 ${idx % 2 === 1 ? 'bg-bone-dark/30' : ''}`}>
+                    <div className="text-center max-w-lg mx-auto">
+                        <div className="mb-6">
+                            <span className="seal-mark seal-mark-lg">{chapter.seal}</span>
+                        </div>
+                        <div>
+                            <p className="script-head text-3xl sm:text-4xl text-forest-light/60">{chapter.native}</p>
+                            <h3 className="serif-head text-3xl sm:text-5xl text-forest mt-2">{chapter.name}</h3>
+                            <p className="sans-body text-sm sm:text-base text-forest-light/70 mt-4 max-w-md mx-auto">{chapter.desc}</p>
+                            <p className="sans-body text-xs uppercase tracking-widest text-forest-light/50 mt-3">{chapter.count} dishes</p>
+                            <button
+                                className="magnetic-btn magnetic-btn-outline mt-6 text-sm"
+                                onClick={() => scrollToEl(document.getElementById(chapter.anchorId), -80)}
+                            >
+                                View Chapter
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            if (reduceMotion) {
+                return (
+                    <section className="w-full">
+                        {COMPASS_CHAPTERS.map((chapter, idx) => (
+                            <div key={chapter.name} className={`w-full py-16 px-6 flex items-center justify-center ${idx % 2 === 1 ? 'bg-bone-dark/30' : ''}`}>
+                                <div className="text-center max-w-lg mx-auto">
+                                    <span className="seal-mark seal-mark-lg inline-block mb-4">{chapter.seal}</span>
+                                    <p className="script-head text-3xl text-forest-light/60">{chapter.native}</p>
+                                    <h3 className="serif-head text-3xl sm:text-4xl text-forest mt-2">{chapter.name}</h3>
+                                    <p className="sans-body text-sm text-forest-light/70 mt-3 max-w-md mx-auto">{chapter.desc}</p>
+                                    <p className="sans-body text-xs uppercase tracking-widest text-forest-light/50 mt-2">{chapter.count} dishes</p>
+                                    <button className="magnetic-btn magnetic-btn-outline mt-4 text-sm" onClick={() => scrollToEl(document.getElementById(chapter.anchorId), -80)}>View Chapter</button>
+                                </div>
+                            </div>
+                        ))}
+                    </section>
+                );
+            }
+
+            if (isMobile) {
+                return (
+                    <section className="w-full py-8 overflow-hidden">
+                        <div className="snap-container hide-scrollbar flex overflow-x-auto touch-pan-x">
+                            {COMPASS_CHAPTERS.map((chapter, idx) => (
+                                <PanelContent key={chapter.name} chapter={chapter} idx={idx} />
+                            ))}
+                        </div>
+                        <div className="flex justify-center gap-2 mt-4" aria-hidden="true">
+                            {COMPASS_CHAPTERS.map((_, i) => (
+                                <span key={i} className="w-1.5 h-1.5 rounded-full bg-forest/20" />
+                            ))}
+                        </div>
+                    </section>
+                );
+            }
+
+            return (
+                <section ref={sectionRef} className="relative w-full h-screen overflow-hidden">
+                    <div ref={trackRef} className="flex h-full" style={{ width: `${COMPASS_CHAPTERS.length * 100}vw` }}>
+                        {COMPASS_CHAPTERS.map((chapter, idx) => (
+                            <PanelContent key={chapter.name} chapter={chapter} idx={idx} />
+                        ))}
+                    </div>
+                </section>
+            );
+        };
+
+        // ---- SiteHeader + MobileDrawer ----
+        const SiteHeader = () => {
+            const [scrolled, setScrolled] = useState(false);
+            const [drawerOpen, setDrawerOpen] = useState(false);
+
+            useEffect(() => {
+                const handleScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.7);
+                handleScroll();
+                window.addEventListener('scroll', handleScroll, { passive: true });
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []);
+
+            const scrollToTop = () => {
+                const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+            };
+
+            const navItems = [
+                { label: 'Menu', id: 'menu-start' },
+                { label: 'Our Story', id: 'about' },
+                { label: 'Visit', id: 'location' },
+            ];
+
+            return (
+                <header className={`fixed top-0 left-0 right-0 z-40 transition-colors duration-300 ${scrolled ? 'bg-bone/95 backdrop-blur-md border-b border-forest/5 py-3' : 'bg-transparent py-5'}`}>
+                    <nav className="max-w-6xl mx-auto px-4 sm:px-8 flex items-center justify-between">
+                        <button onClick={scrollToTop} className="flex items-center gap-2 tap-target" aria-label="Yokoso — scroll to top">
+                            <span className="seal-mark seal-mark-sm">歓</span>
+                            <span className="script-head text-xl text-forest hidden sm:inline">Yokoso</span>
+                        </button>
+
+                        <div className="hidden md:flex items-center gap-8">
+                            {navItems.map(item => (
+                                <button key={item.id} onClick={() => scrollToEl(document.getElementById(item.id), -80)} className="underline-draw sans-body text-sm text-forest/80">
+                                    {item.label}
+                                </button>
+                            ))}
+                            <a href={WHATSAPP_RESERVE_URL} target="_blank" rel="noopener noreferrer" className="magnetic-btn text-sm">Reserve</a>
+                        </div>
+
+                        <button onClick={() => setDrawerOpen(true)} className="md:hidden tap-target w-10 h-10 flex flex-col items-center justify-center gap-1.5" aria-label="Open menu" aria-expanded={drawerOpen}>
+                            <span className="block w-6 h-0.5 bg-forest" />
+                            <span className="block w-6 h-0.5 bg-forest" />
+                        </button>
+                    </nav>
+
+                    <MobileDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} navItems={navItems} />
+                </header>
+            );
+        };
+
+        const MobileDrawer = ({ isOpen, onClose, navItems }) => {
+            useEffect(() => {
+                document.body.style.overflow = isOpen ? 'hidden' : '';
+                return () => { document.body.style.overflow = ''; };
+            }, [isOpen]);
+
+            useEffect(() => {
+                if (!isOpen) return;
+                const handleKey = (e) => { if (e.key === 'Escape') onClose(); };
+                window.addEventListener('keydown', handleKey);
+                return () => window.removeEventListener('keydown', handleKey);
+            }, [isOpen, onClose]);
+
+            const handleLinkClick = (id) => {
+                onClose();
+                setTimeout(() => scrollToEl(document.getElementById(id), -80), 300);
+            };
+
+            return ReactDOM.createPortal(
+                <div
+                    className={`fixed inset-0 z-50 flex transition-opacity duration-300 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+                    role="dialog" aria-modal="true" aria-label="Navigation menu"
+                >
+                    <div className="absolute inset-0 bg-forest/40 backdrop-blur-sm" onClick={onClose} />
+                    <div className={`relative ml-auto w-4/5 max-w-xs h-full bg-bone shadow-2xl flex flex-col p-6 transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+                        <button onClick={onClose} className="self-end tap-target w-10 h-10 flex items-center justify-center text-forest/80 text-lg" aria-label="Close menu">✕</button>
+                        <nav className="flex flex-col gap-6 mt-8">
+                            {navItems.map(item => (
+                                <button key={item.id} onClick={() => handleLinkClick(item.id)} className="script-head text-3xl text-forest text-left">
+                                    {item.label}
+                                </button>
+                            ))}
+                            <a href={WHATSAPP_RESERVE_URL} target="_blank" rel="noopener noreferrer" className="magnetic-btn text-center mt-4">Reserve a Table</a>
+                        </nav>
+                    </div>
+                </div>,
+                document.body
+            );
+        };
+
+        // ---- Hero ----
+        const Hero = () => {
+            const heroRef = useRef(null);
+            const sealRef = useRef(null);
+            const textRef = useRef(null);
+            const svgRef = useRef(null);
+            const wordmarkRef = useRef(null);
+            const buttonsRowRef = useRef(null);
+            const underlineRef = useRef(null);
+
+            // Botanical stroke-draw effect
+            useEffect(() => {
+                if (!HAS_GSAP) return;
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                    const paths = svgRef.current.querySelectorAll('.botanical-path');
+                    paths.forEach(path => { path.style.strokeDashoffset = 0; });
+                    return;
+                }
+                const ctx = gsap.context(() => {
+                    const paths = svgRef.current.querySelectorAll('.botanical-path');
+                    const totalLengths = [];
+                    paths.forEach(path => { const length = path.getTotalLength(); path.style.strokeDasharray = length; path.style.strokeDashoffset = length; totalLengths.push(length); });
+                    ScrollTrigger.create({ trigger: document.body, start: 'top top', end: 'bottom bottom', onUpdate: self => { const progress = self.progress; paths.forEach((path, i) => { path.style.strokeDashoffset = totalLengths[i] * (1 - progress); }); } });
+                }, heroRef);
+                return () => ctx.revert();
+            }, []);
+
+            // Kinetic wordmark and underline
+            useEffect(() => {
+                if (!HAS_GSAP) return;
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+                let split;
+                const ctx = gsap.context(() => {
+                    const isMobile = window.innerWidth < 768;
+                    const mult = isMobile ? 0.75 : 1;
+
+                    try {
+                        split = SplitText.create(wordmarkRef.current, { type: 'chars', mask: 'chars' });
+                        gsap.fromTo(split.chars,
+                            { yPercent: 110, opacity: 0 },
+                            { yPercent: 0, opacity: 1, duration: MOTION.dur.xl * mult, stagger: 0.06, ease: MOTION.ease.out, delay: 0.3 }
+                        );
+                    } catch (e) {
+                        gsap.fromTo(wordmarkRef.current, { y: 24, opacity: 0 },
+                            { y: 0, opacity: 1, duration: MOTION.dur.md * mult, ease: MOTION.ease.out, delay: 0.3 }
+                        );
+                    }
+
+                    const path = underlineRef.current?.querySelector('path');
+                    if (path) {
+                        const len = path.getTotalLength();
+                        gsap.set(path, { strokeDasharray: len, strokeDashoffset: len });
+                        gsap.to(path, { strokeDashoffset: 0, duration: MOTION.dur.xl * mult, ease: MOTION.ease.ink, delay: 0.9 });
+                    }
+                }, heroRef);
+                return () => { ctx.revert(); if (split) split.revert(); };
+            }, []);
+
+            // Scroll-linked parallax exit
+            useEffect(() => {
+                if (!HAS_GSAP) return;
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+                const ctx = gsap.context(() => {
+                    const tl = gsap.timeline({
+                        scrollTrigger: { trigger: heroRef.current, start: 'top top', end: 'bottom top', scrub: 1 }
+                    });
+                    tl.to(textRef.current,      { yPercent: -30, opacity: 0 }, 0)
+                      .to(sealRef.current,      { yPercent: -60, scale: 0.8 }, 0)
+                      .to(svgRef.current,       { yPercent: -15 }, 0)
+                      .to(buttonsRowRef.current,{ opacity: 0 }, 0);
+                }, heroRef);
+                return () => ctx.revert();
+            }, []);
+
+            // Ambient video layer
+            const showVideo = HERO_VIDEO_SRC && !window.matchMedia('(prefers-reduced-motion: reduce)').matches && !(navigator.connection && navigator.connection.saveData);
+
+            return (
+                <section ref={heroRef} className="relative min-h-screen flex items-center justify-center px-4 sm:px-8 overflow-hidden">
+                    {showVideo && (
+                        <video
+                            className="absolute inset-0 w-full h-full object-cover opacity-[0.18] pointer-events-none"
+                            src={HERO_VIDEO_SRC} autoPlay muted loop playsInline preload="none" aria-hidden="true"
+                        />
+                    )}
+                    <svg ref={svgRef} className="botanical-svg absolute inset-0 w-full h-full pointer-events-none opacity-25" viewBox="0 0 1000 800" preserveAspectRatio="xMidYMid meet">
+                        <path className="botanical-path" d="M200,100 C300,50 400,150 350,250 C300,350 400,450 450,350 C500,250 600,300 550,400 C500,500 600,600 650,500" />
+                        <path className="botanical-path" d="M700,150 C800,200 750,300 650,350 C550,400 600,500 700,450 C800,400 850,500 800,550" />
+                        <path className="botanical-path" d="M100,400 C150,350 250,450 200,550 C150,650 300,700 350,600" />
+                        <circle className="botanical-path" cx="400" cy="200" r="40" />
+                        <circle className="botanical-path" cx="700" cy="500" r="30" />
+                    </svg>
+                    <div className="relative z-10 text-center max-w-3xl mx-auto">
+                        <div ref={sealRef} className="flex justify-center mb-6 sm:mb-10">
+                            <Reveal variant="stamp" as="div" className="inline-block">
+                                <div className="seal-mark seal-mark-lg hero-seal relative">歓</div>
+                            </Reveal>
+                        </div>
+                        <div ref={textRef}>
+                            <h1 ref={wordmarkRef} className="script-head text-[clamp(2.8rem,16vw,7rem)] text-forest leading-[1.1] hero-line">Yokoso</h1>
+                            <svg ref={underlineRef} className="mx-auto mt-2 sm:mt-3 block" width="180" height="14" viewBox="0 0 180 14" style={{ maxWidth: '40%' }} aria-hidden="true">
+                                <path d="M4,8 Q45,2 90,7 T176,6" fill="none" stroke="#D43A2F" strokeWidth="2.5" strokeLinecap="round" />
+                            </svg>
+                            <Reveal variant="rise" stagger={0.12} delay={1.1} as="div" className="mt-1 sm:mt-2">
+                                <p className="serif-head text-[clamp(1rem,3vw,2rem)] text-forest-light/80 hero-line tracking-wide">Pan-Asian Kitchen</p>
+                                <p className="sans-body text-xs sm:text-base text-forest-light/70 mt-3 max-w-[280px] sm:max-w-md mx-auto hero-line">Al Madani Tower (2nd Floor), Mirboxtula, Sylhet.</p>
+                            </Reveal>
+                        </div>
+                        <div ref={buttonsRowRef} className="mt-6 sm:mt-10 hero-line flex flex-wrap justify-center gap-3 sm:gap-4">
+                            <Reveal variant="rise" stagger={0.12} delay={1.4} as="div" className="flex flex-wrap justify-center gap-3 sm:gap-4">
+                                <a href={WHATSAPP_RESERVE_URL} target="_blank" rel="noopener noreferrer" className="magnetic-btn text-sm sm:text-base">Reserve a Table</a>
+                                <button className="magnetic-btn magnetic-btn-outline text-sm sm:text-base" onClick={() => scrollToEl(document.getElementById('menu-start'), -80)}>Explore Menu</button>
+                            </Reveal>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        // ---- PinnedReveal (unpinned) ----
+        const PinnedReveal = () => {
+            const ref = useRef(null);
+            const words = ['Every', 'dish', 'tells', 'a', 'story.'];
+            const isMobile = useMobile();
+
+            useEffect(() => {
+                if (!HAS_GSAP) return;
+                const el = ref.current;
+                if (!el) return;
+                const spans = el.querySelectorAll('.word-reveal span');
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || isMobile) {
+                    gsap.set(spans, { y: '0%', opacity: 1 });
+                    return;
+                }
+                const tl = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: el,
+                        start: 'top 75%',
+                        toggleActions: 'play none none none'
+                    }
+                });
+                tl.fromTo(spans, { y: '100%', opacity:0 }, { y:'0%', opacity:1, duration:0.8, stagger:0.15, ease:'power2.out' });
+            }, [isMobile]);
+
+            return (
+                <section ref={ref} className="h-screen flex items-center justify-center bg-bone-dark/20 relative overflow-hidden">
+                    <div className="botanical-bg absolute inset-0 opacity-20 pointer-events-none" />
+                    <div className="text-center px-4">
+                        <div className="text-3xl sm:text-5xl md:text-7xl serif-head text-forest leading-tight">
+                            {words.map((word, i) => (<span key={i} className="word-reveal inline-block mx-1"><span>{word}</span></span>))}
+                        </div>
+                        <p className="sans-body text-xs sm:text-base text-forest-light/70 mt-4 sm:mt-6 max-w-md mx-auto">— from our kitchen to your table</p>
+                    </div>
+                </section>
+            );
+        };
+
+        // ---- About (with id="about" and updated hours) ----
+        const About = () => {
+            return (
+                <section id="about" className="skew-target py-12 sm:py-24 px-4 sm:px-8 max-w-4xl mx-auto text-center">
+                    <Reveal variant="ink" as="div" className="w-full">
+                        <div className="relative">
+                            <div className="botanical-bg absolute inset-0 opacity-30 pointer-events-none" />
+                            <Reveal variant="rise" stagger={0.15} as="div">
+                                <p className="about-line script-head text-2xl sm:text-3xl text-forest-light/60">一皿 一皿</p>
+                                <h2 className="about-line serif-head text-2xl sm:text-4xl text-forest mt-2">Where the East meets the East</h2>
+                                <p className="about-line sans-body text-sm sm:text-lg text-forest-light/80 mt-3 leading-relaxed max-w-2xl mx-auto">At Yokoso, we honour the culinary threads that bind Asia—from the bustling streets of Tokyo to the spice gardens of Bangkok, from Seoul's fermented traditions to the tropical soul of Manila. Every dish is a conversation, every plate a journey.</p>
+                                <div className="about-line h-px bg-forest/10 w-20 mx-auto my-5" />
+                                <p className="about-line sans-body text-xs sm:text-sm text-forest-light/70">Al Madani Tower (2nd Floor), Mirboxtula, Sylhet.<br />Open daily · 12:30 PM – 11:00 PM (Fri from 2:00 PM)</p>
+                            </Reveal>
+                        </div>
+                    </Reveal>
+                </section>
+            );
+        };
+
+        // ---- Location (now <footer>, with updated hours) ----
+        const Location = () => {
+            return (
+                <footer id="location" className="py-16 sm:py-24 px-4 sm:px-8 bg-bone-dark/40 border-t border-forest/5">
+                    <div className="max-w-3xl mx-auto text-center">
+                        <Reveal variant="stamp" as="div" className="inline-block mx-auto mb-4">
+                            <span className="seal-mark seal-mark-sm">〒</span>
+                        </Reveal>
+                        <Reveal variant="rise" stagger={0.12} as="div">
+                            <h2 className="script-head text-4xl sm:text-6xl text-forest">Find Us</h2>
+                            <p className="serif-head text-lg sm:text-xl text-forest-light/80 mt-1">Al Madani Tower (2nd Floor), Mirboxtula, Sylhet.</p>
+                            <p className="sans-body text-xs sm:text-sm text-forest-light/70 mt-3">
+                                Open daily · 12:30 PM – 11:00 PM (Fri from 2:00 PM)<br />
+                                <a href={`tel:+${RESERVATION_PHONE}`} className="underline-draw">01841965676</a>
+                                {CONTACT_EMAIL && <> · <a href={`mailto:${CONTACT_EMAIL}`} className="underline-draw">{CONTACT_EMAIL}</a></>}
+                            </p>
+                            <a href={WHATSAPP_RESERVE_URL} target="_blank" rel="noopener noreferrer" className="magnetic-btn mt-6 inline-flex">Reserve on WhatsApp</a>
+                            <div className="flex justify-center flex-wrap gap-4 sm:gap-6 mt-6 sm:mt-8">
+                                <a href="https://www.facebook.com/share/192xaTJHwX/" target="_blank" rel="noopener noreferrer" className="underline-draw text-xs sm:text-sm text-forest-light/80 transition-colors tap-target">Facebook</a>
+                                <a href="https://www.instagram.com/yokosobd?igsh=MTQ4bHp4Mm1sbjNwYg==" target="_blank" rel="noopener noreferrer" className="underline-draw text-xs sm:text-sm text-forest-light/80 transition-colors tap-target">Instagram</a>
+                                {DELIVERY_URL && <a href={DELIVERY_URL} target="_blank" rel="noopener noreferrer" className="underline-draw text-xs sm:text-sm text-forest-light/80 transition-colors tap-target">Delivery</a>}
+                            </div>
+                            <p className="text-[10px] sm:text-xs text-forest-light/50 mt-8 sm:mt-10">© {new Date().getFullYear()} Yokoso · Sylhet</p>
+                        </Reveal>
+                    </div>
+                </footer>
+            );
+        };
+
+        // ---- LazyLoad Wrapper ----
+        const LazySection = ({ children, className }) => {
+            const { ref, isVisible } = useLazyLoad();
+            return <div ref={ref} className={className}>{isVisible ? children : <div className="h-screen w-full"></div>}</div>;
+        };
+
+        // ---- App ----
+        const App = () => {
+            const [selectedDish, setSelectedDish] = useState(null);
+            useScrollSkew();
+
+            const handleResize = useCallback(() => {
+                ScrollTrigger.refresh();
+            }, []);
+
+            useEffect(() => {
+                setTimeout(() => ScrollTrigger.refresh(), 400);
+                window.addEventListener('resize', handleResize);
+                return () => window.removeEventListener('resize', handleResize);
+            }, [handleResize]);
+
+            return (
+                <>
+                    <a href="#menu-start" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-vermilion focus:text-bone focus:px-4 focus:py-2 focus:rounded">Skip to menu</a>
+                    <SiteHeader />
+                    <main id="main-content">
+                        <Hero />
+                        <PinnedReveal />
+                        <About />
+                        <MenuCompass />
+                        <LazySection className="w-full"><ChefSignatures onDishClick={setSelectedDish} /></LazySection>
+                        <LazySection className="w-full"><CinematicCollections /></LazySection>
+                        <MenuWrapper onDishClick={setSelectedDish} />
+                    </main>
+                    <Location />
+                    <DishDetail dish={selectedDish} isOpen={!!selectedDish} onClose={() => setSelectedDish(null)} />
+                </>
+            );
+        };
+
+        // ---- RENDER ----
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+
+        requestAnimationFrame(() => setTimeout(() => ScrollTrigger.refresh(), 200));
+        window.addEventListener('load', () => setTimeout(() => ScrollTrigger.refresh(), 400));
+    </script>
+</body>
+</html>
