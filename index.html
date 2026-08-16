@@ -657,7 +657,7 @@
 
         const DishCard = memo(({ dish, onClick = null }) => {
             return (
-                <button onClick={() => { if (onClick) onClick(dish); }} className="dish-card-trigger w-full text-left border-b border-forest/5 last:border-0 py-3 sm:py-5 tap-target flex flex-col gap-1 active:bg-forest/5 transition-colors">
+                <button onClick={() => { if (onClick) onClick(dish); }} className="dish-card-trigger w-full text-left border-b border-forest/5 last:border-0 py-2.5 sm:py-3 tap-target flex flex-col gap-1 active:bg-forest/5 transition-colors">
                     <div className="flex items-baseline justify-between w-full min-w-0">
                         <h4 className="serif-dish text-[1.05rem] sm:text-xl md:text-2xl text-forest font-medium leading-[1.1] truncate min-w-0 flex-shrink">
                             {dish.name}
@@ -865,9 +865,9 @@
             }, []);
 
             return (
-                <section ref={sectionRef} id={id} className="py-8 sm:py-16 overflow-hidden scroll-mt-20">
-                    <Reveal variant="rise" stagger={0.06} as="div" className="text-center mb-8 sm:mb-12">
-                        <h3 className="script-head text-4xl sm:text-6xl md:text-7xl text-forest">{title}</h3>
+                <section ref={sectionRef} id={id} className="py-5 sm:py-8 overflow-hidden scroll-mt-20">
+                    <Reveal variant="rise" stagger={0.06} as="div" className="text-center mb-5 sm:mb-8">
+                        <h3 className="script-head text-2xl sm:text-4xl md:text-5xl text-forest">{title}</h3>
                     </Reveal>
                     <div className="w-full">
                         <div className="space-y-0">
@@ -911,18 +911,18 @@
                             return (
                                 <div key={key}>
                                     <MenuSection title={title} items={items} id={key.replace(/([A-Z])/g, '-$1').toLowerCase()} onDishClick={onDishClick} />
-                                    <div className="h-px bg-forest/5 w-full my-6 sm:my-12" />
+                                    <div className="h-px bg-forest/5 w-full my-3 sm:my-6" />
                                 </div>
                             );
                         })}
                         <MenuSection title="Sushi (Half / Full)" items={MENU.sushi.filter(item => item.hasHalfFull)} id="sushi-half" onDishClick={onDishClick} />
-                        <div className="h-px bg-forest/5 w-full my-6 sm:my-12" />
+                        <div className="h-px bg-forest/5 w-full my-3 sm:my-6" />
                         <MenuSection title="Sushi (Single Price)" items={MENU.sushi.filter(item => !item.hasHalfFull)} id="sushi-single" onDishClick={onDishClick} />
-                        <div className="h-px bg-forest/5 w-full my-6 sm:my-12" />
+                        <div className="h-px bg-forest/5 w-full my-3 sm:my-6" />
                         <MenuSection title="Sushi Combos" items={MENU.sushiCombos} id="sushi-combos" onDishClick={onDishClick} />
-                        <div className="h-px bg-forest/5 w-full my-6 sm:my-12" />
+                        <div className="h-px bg-forest/5 w-full my-3 sm:my-6" />
                         <MenuSection title="Bento" items={MENU.bento} id="bento" onDishClick={onDishClick} />
-                        <div className="h-px bg-forest/5 w-full my-6 sm:my-12" />
+                        <div className="h-px bg-forest/5 w-full my-3 sm:my-6" />
                         <MenuSection title="Zero-Proof Bar" items={MENU.beverages} id="beverages" onDishClick={onDishClick} />
                     </div>
                 </section>
