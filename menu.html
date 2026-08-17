@@ -126,10 +126,6 @@
             const [selectedDish, setSelectedDish] = useState(null);
             useScrollSkew();
 
-            useEffect(() => {
-                setTimeout(() => ScrollTrigger.refresh(), 400);
-            }, []);
-
             return (
                 <>
                     <SiteHeader />
