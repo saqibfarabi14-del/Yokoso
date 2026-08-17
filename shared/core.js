@@ -103,4 +103,4 @@ const RESERVATION_MESSAGE = "Hi Yokoso, I'd like to reserve a table for ";
 const WHATSAPP_RESERVE_URL = `https://wa.me/${RESERVATION_PHONE}?text=${encodeURIComponent(RESERVATION_MESSAGE)}`;
 const CONTACT_EMAIL = '';
 const DELIVERY_URL = '';
-const HERO_VIDEO_SRC = 'https://raw.githubusercontent.com/saqibfarabi14-del/Yokoso/main/assets/yokoso-hero-ink-loop.mp4';
+const HERO_VIDEO_SRC = 'assets/yokoso-hero-ink-loop.mp4';
