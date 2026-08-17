@@ -96,7 +96,7 @@ const DishCard = memo(({ dish, onClick = null, compact = false }) => {
     return (
         <button onClick={() => { if (onClick) onClick(dish); }} className={`dish-card-trigger w-full text-left border-b border-forest/5 last:border-0 ${compact ? 'py-2 sm:py-2.5' : 'py-2.5 sm:py-3'} tap-target flex flex-col gap-0.5 active:bg-forest/5 transition-colors`}>
             <div className="flex items-baseline justify-between w-full min-w-0">
-                <h4 className={compact ? "serif-dish text-sm sm:text-base text-forest font-medium leading-[1.2] truncate min-w-0 flex-shrink" : "serif-dish text-[1.05rem] sm:text-xl md:text-2xl text-forest font-medium leading-[1.1] truncate min-w-0 flex-shrink"}>
+                <h4 className={compact ? "serif-dish text-sm sm:text-base text-forest font-medium leading-[1.2] line-clamp-2 min-w-0 flex-shrink" : "serif-dish text-[1.05rem] sm:text-xl md:text-2xl text-forest font-medium leading-[1.1] line-clamp-2 min-w-0 flex-shrink"}>
                     {dish.name}
                     {dish.signature && <span className="star-signature ml-1.5 text-xs align-top">★</span>}
                 </h4>
@@ -117,7 +117,7 @@ const DishCard = memo(({ dish, onClick = null, compact = false }) => {
             {compact && dish.spice > 0 && (
                 <SpiceIcons level={dish.spice} />
             )}
-            {!compact && <p className="sans-body text-xs text-forest-light/70 mt-0.5 line-clamp-2">{dish.desc}</p>}
+            {!compact && <p className="sans-body text-xs text-forest-light/80 mt-0.5 line-clamp-2">{dish.desc}</p>}
         </button>
     );
 });
@@ -172,7 +172,7 @@ const DishDetail = ({ dish, isOpen, onClose }) => {
                     <div className="flex gap-3 mt-2">{dish.signature && <SignatureStar active={true} />}<SpiceIcons level={dish.spice} /></div>
                     <p className="sans-body text-base sm:text-lg text-forest-light/80 mt-4 leading-relaxed">{dish.desc}</p>
                     <div className="mt-6 pt-4 border-t border-forest/10 flex justify-between items-center">
-                        <span className="sans-body text-sm uppercase tracking-widest text-forest-light/60">Price</span>
+                        <span className="sans-body text-sm uppercase tracking-widest text-forest-light/80">Price</span>
                         <span className="serif-head text-2xl text-forest">{dish.hasHalfFull ? `${dish.priceHalf} / ${dish.priceFull}` : dish.price} BDT</span>
                     </div>
                 </div>
@@ -193,7 +193,7 @@ const Location = () => {
                 <Reveal variant="rise" stagger={0.12} as="div">
                     <h2 className="script-head text-4xl sm:text-6xl text-forest">Find Us</h2>
                     <p className="serif-head text-lg sm:text-xl text-forest-light/80 mt-1">Al Madani Tower (2nd Floor), Mirboxtula, Sylhet.</p>
-                    <p className="sans-body text-xs sm:text-sm text-forest-light/70 mt-3">
+                    <p className="sans-body text-xs sm:text-sm text-forest-light/80 mt-3">
                         <a href={`tel:+${RESERVATION_PHONE}`} className="underline-draw">01841965676</a>
                         {CONTACT_EMAIL && <> · <a href={`mailto:${CONTACT_EMAIL}`} className="underline-draw">{CONTACT_EMAIL}</a></>}
                     </p>
@@ -202,7 +202,7 @@ const Location = () => {
                         <a href="https://www.instagram.com/yokosobd?igsh=MTQ4bHp4Mm1sbjNwYg==" target="_blank" rel="noopener noreferrer" className="underline-draw text-xs sm:text-sm text-forest-light/80 transition-colors tap-target">Instagram</a>
                         {DELIVERY_URL && <a href={DELIVERY_URL} target="_blank" rel="noopener noreferrer" className="underline-draw text-xs sm:text-sm text-forest-light/80 transition-colors tap-target">Delivery</a>}
                     </div>
-                    <p className="text-[10px] sm:text-xs text-forest-light/50 mt-8 sm:mt-10">© {new Date().getFullYear()} Yokoso · Sylhet</p>
+                    <p className="text-[10px] sm:text-xs text-forest-light/80 mt-8 sm:mt-10">© {new Date().getFullYear()} Yokoso · Sylhet</p>
                 </Reveal>
             </div>
         </footer>
@@ -223,7 +223,7 @@ const ChefSignatures = ({ onDishClick }) => {
                     <span className="seal-mark seal-mark-sm">星</span>
                 </Reveal>
                 <h2 className="script-head text-5xl sm:text-7xl md:text-8xl text-forest">Chef's Signatures</h2>
-                <p className="sans-body text-sm text-forest-light/70 mt-4">The dishes that define us — marked with the vermilion seal</p>
+                <p className="sans-body text-sm text-forest-light/80 mt-4">The dishes that define us — marked with the vermilion seal</p>
             </div>
             <div className="relative">
                 <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-bone to-transparent pointer-events-none z-10 hidden sm:block"></div>
@@ -234,7 +234,7 @@ const ChefSignatures = ({ onDishClick }) => {
                                 <h4 className="serif-dish text-xl sm:text-2xl text-forest font-medium leading-tight">{dish.name}</h4>
                                 <div className="w-8 h-8 rounded-full bg-vermilion flex items-center justify-center text-bone text-xs font-bold shrink-0 shadow-sm">★</div>
                             </div>
-                            <p className="sans-body text-sm sm:text-base text-forest-light/70 leading-relaxed flex-1 line-clamp-3">{dish.desc}</p>
+                            <p className="sans-body text-sm sm:text-base text-forest-light/80 leading-relaxed flex-1 line-clamp-3">{dish.desc}</p>
                             <div className="flex justify-between items-center pt-4 border-t border-forest/10">
                                 <div className="flex gap-2"><SpiceIcons level={dish.spice} /></div>
                                 <span className="sans-body text-[10px] sm:text-xs uppercase tracking-widest font-medium text-forest/80 whitespace-nowrap">{dish.hasHalfFull ? `${dish.priceHalf} / ${dish.priceFull}` : dish.price} BDT</span>
@@ -242,7 +242,7 @@ const ChefSignatures = ({ onDishClick }) => {
                         </div>
                     ))}
                 </Reveal>
-                <p className="sans-body text-xs text-forest-light/50 text-right mt-3 pr-2 sm:hidden">Swipe →</p>
+                <p className="sans-body text-xs text-forest-light/80 text-right mt-3 pr-2 sm:hidden">Swipe →</p>
             </div>
         </section>
     );
@@ -260,7 +260,7 @@ const CinematicCollections = () => {
                     <span className="seal-mark seal-mark-sm">集</span>
                 </Reveal>
                 <h2 className="script-head text-5xl sm:text-7xl md:text-8xl text-forest">Curated Collections</h2>
-                <p className="sans-body text-sm text-forest-light/70 mt-4">Our grandest sets — meticulously crafted</p>
+                <p className="sans-body text-sm text-forest-light/80 mt-4">Our grandest sets — meticulously crafted</p>
                 <div className="h-px bg-forest/5 max-w-xs mx-auto mt-6" />
             </div>
             <Reveal variant="scale" stagger={0.15} as="div" className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
@@ -270,16 +270,16 @@ const CinematicCollections = () => {
                         <div key={item.id} className="collection-card border border-forest/10 bg-bone/30 p-5 sm:p-8 flex flex-col gap-4">
                             <div className="flex justify-between items-start gap-2">
                                 <div className="min-w-0">
-                                    <span className="sans-body text-[10px] sm:text-xs uppercase tracking-widest text-forest-light/60 font-medium block">{item.category}</span>
-                                    <h3 className="script-head text-3xl sm:text-4xl text-forest mt-0.5 leading-tight truncate">{item.name}</h3>
+                                    <span className="sans-body text-[10px] sm:text-xs uppercase tracking-widest text-forest-light/80 font-medium block">{item.category}</span>
+                                    <h3 className="script-head text-3xl sm:text-4xl text-forest mt-0.5 leading-tight line-clamp-2">{item.name}</h3>
                                 </div>
                                 <span className="sans-body text-xs sm:text-sm uppercase tracking-widest font-semibold text-forest/80 whitespace-nowrap shrink-0">{item.price} BDT</span>
                             </div>
                             <div className="mt-1 mb-3 flex-grow">
-                                <p className="sans-body text-xs sm:text-sm text-forest-light/70 mb-2 font-medium">Includes:</p>
+                                <p className="sans-body text-xs sm:text-sm text-forest-light/80 mb-2 font-medium">Includes:</p>
                                 <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1">
                                     {itemList.map((subItem, idx) => (
-                                        <li key={idx} className="sans-body text-sm text-forest/90 flex items-start gap-2 truncate"><span className="text-vermilion text-[10px] mt-1 shrink-0">✦</span> <span className="truncate">{subItem}</span></li>
+                                        <li key={idx} className="sans-body text-sm text-forest/90 flex items-start gap-2"><span className="text-vermilion text-[10px] mt-1 shrink-0">✦</span> <span className="break-words">{subItem}</span></li>
                                     ))}
                                 </ul>
                             </div>
@@ -330,10 +330,10 @@ const MenuCompass = () => {
                     <span className="seal-mark seal-mark-lg">{chapter.seal}</span>
                 </div>
                 <div>
-                    <p className="script-head text-3xl sm:text-4xl text-forest-light/60">{chapter.native}</p>
+                    <p className="script-head text-3xl sm:text-4xl text-forest-light/70">{chapter.native}</p>
                     <h3 className="serif-head text-3xl sm:text-5xl text-forest mt-2">{chapter.name}</h3>
-                    <p className="sans-body text-sm sm:text-base text-forest-light/70 mt-4 max-w-md mx-auto">{chapter.desc}</p>
-                    <p className="sans-body text-xs uppercase tracking-widest text-forest-light/50 mt-3">{chapter.count} dishes</p>
+                    <p className="sans-body text-sm sm:text-base text-forest-light/80 mt-4 max-w-md mx-auto">{chapter.desc}</p>
+                    <p className="sans-body text-xs uppercase tracking-widest text-forest-light/80 mt-3">{chapter.count} dishes</p>
                     <a
                         href={`menu.html#${chapter.anchorId}`}
                         className="magnetic-btn magnetic-btn-outline mt-6 text-sm"
@@ -352,10 +352,10 @@ const MenuCompass = () => {
                     <div key={chapter.name} className={`w-full py-16 px-6 flex items-center justify-center ${idx % 2 === 1 ? 'bg-bone-dark/30' : ''}`}>
                         <div className="text-center max-w-lg mx-auto">
                             <span className="seal-mark seal-mark-lg inline-block mb-4">{chapter.seal}</span>
-                            <p className="script-head text-3xl text-forest-light/60">{chapter.native}</p>
+                            <p className="script-head text-3xl text-forest-light/70">{chapter.native}</p>
                             <h3 className="serif-head text-3xl sm:text-4xl text-forest mt-2">{chapter.name}</h3>
-                            <p className="sans-body text-sm text-forest-light/70 mt-3 max-w-md mx-auto">{chapter.desc}</p>
-                            <p className="sans-body text-xs uppercase tracking-widest text-forest-light/50 mt-2">{chapter.count} dishes</p>
+                            <p className="sans-body text-sm text-forest-light/80 mt-3 max-w-md mx-auto">{chapter.desc}</p>
+                            <p className="sans-body text-xs uppercase tracking-widest text-forest-light/80 mt-2">{chapter.count} dishes</p>
                             <a href={`menu.html#${chapter.anchorId}`} className="magnetic-btn magnetic-btn-outline mt-4 text-sm">View Chapter</a>
                         </div>
                     </div>
