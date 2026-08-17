@@ -145,7 +145,8 @@ a, button { cursor: pointer; }
 }
 
 /* Mobile-first tap targets */
-button, a, .tap-target { min-height: 44px; min-width: 44px; display: inline-flex; align-items: center; justify-content: center; }
+.tap-target { min-height: 44px; min-width: 44px; display: inline-flex; align-items: center; justify-content: center; }
+button.tap-target, a.tap-target { display: inline-flex; }
 @media (max-width: 640px) {
     .seal-mark-lg { width:64px; height:64px; font-size:22px; line-height:64px; }
     .magnetic-btn { padding:0.6rem 1.5rem; font-size:0.85rem; }
