@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://saqibfarabi14-del.github.io/Yokoso/sitemap.xml
