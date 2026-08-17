@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Yokoso — Full Menu. Pan-Asian dishes from dim sum to sushi, Sylhet." />
+    <meta property="og:title" content="Yokoso — Menu" />
+    <meta property="og:description" content="Al Madani Tower (2nd Floor), Mirboxtula, Sylhet." />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#F7F2E8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/greatvibes/v19/RWmMoKWR9v4ksMfaWdJJBXFfVQ.woff2" />
+    <link rel="icon" type="image/png" sizes="32x32" href="https://raw.githubusercontent.com/saqibfarabi14-del/Yokoso/main/assets/yokoso-mark-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="https://raw.githubusercontent.com/saqibfarabi14-del/Yokoso/main/assets/yokoso-mark-16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="https://raw.githubusercontent.com/saqibfarabi14-del/Yokoso/main/assets/yokoso-mark-180.png" />
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="shared/tailwind-config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/CustomEase.min.js"></script>
+    <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <link rel="stylesheet" href="shared/styles.css" />
+</head>
+<body>
+    <div id="root"></div>
+    <div id="portal-root"></div>
+    <script src="shared/core.js"></script>
+    <script src="shared/menu-data.js"></script>
+    <script src="shared/hooks.js"></script>
+    <script type="text/babel" data-presets="react" src="shared/components.js"></script>
+    <script type="text/babel" data-presets="react">
+        'use strict';
+
+        const MenuIntro = () => (
+            <section className="pt-28 pb-8 sm:pt-32 sm:pb-12 px-4 sm:px-8 max-w-3xl mx-auto text-center">
+                <Reveal variant="stamp" as="div" className="inline-block mb-4">
+                    <span className="seal-mark seal-mark-lg">味</span>
+                </Reveal>
+                <Reveal variant="rise" as="div">
+                    <h1 className="script-head text-5xl sm:text-7xl text-forest">The Menu</h1>
+                    <p className="sans-body text-sm text-forest-light/60 mt-3">Pan-Asian flavours, crafted with intention</p>
+                </Reveal>
+            </section>
+        );
+
+        const ChapterNav = () => (
+            <div className="sticky top-16 z-20 bg-bone/95 backdrop-blur-md py-3 border-b border-forest/5 w-full">
+                <div className="snap-container hide-scrollbar flex overflow-x-auto justify-center gap-2 px-4 sm:px-8 touch-pan-x">
+                    {COMPASS_CHAPTERS.map(chapter => (
+                        <a
+                            key={chapter.anchorId}
+                            href={`#${chapter.anchorId}`}
+                            className="snap-item tap-target flex-shrink-0 px-4 py-2 rounded-full border border-forest/10 text-xs sm:text-sm text-forest/80 font-medium transition-colors hover:bg-forest/5 active:bg-forest/10 whitespace-nowrap min-h-[40px] flex items-center gap-1.5"
+                        >
+                            <span className="text-vermilion">{chapter.seal}</span> {chapter.name}
+                        </a>
+                    ))}
+                </div>
+            </div>
+        );
+
+        const MenuChapter = ({ chapter, categories, onDishClick }) => (
+            <section id={chapter.anchorId} className="scroll-mt-20 py-10 sm:py-16 px-4 sm:px-8 max-w-3xl mx-auto">
+                <div className="text-center mb-8 sm:mb-12">
+                    <Reveal variant="stamp" as="div" className="inline-block mb-3">
+                        <span className="seal-mark seal-mark-sm">{chapter.seal}</span>
+                    </Reveal>
+                    <Reveal variant="rise" as="div">
+                        <p className="script-head text-xl sm:text-2xl text-forest-light/50">{chapter.native}</p>
+                        <h2 className="serif-head text-3xl sm:text-5xl text-forest mt-1">{chapter.name}</h2>
+                        <p className="sans-body text-xs sm:text-sm text-forest-light/60 mt-2 max-w-md mx-auto">{chapter.desc}</p>
+                    </Reveal>
+                </div>
+                {categories.map(cat => (
+                    <div key={cat.id} className="mb-8 sm:mb-10 last:mb-0">
+                        <h3 className="serif-head text-lg sm:text-xl text-forest/70 mb-2 sm:mb-3 uppercase tracking-wide text-sm">{cat.title}</h3>
+                        <div>
+                            {cat.items.map(dish => (
+                                <DishCard key={dish.id} dish={dish} onClick={onDishClick} compact={true} />
+                            ))}
+                        </div>
+                    </div>
+                ))}
+            </section>
+        );
+
+        const MENU_STRUCTURE = [
+            { chapter: COMPASS_CHAPTERS[0], categories: [
+                { id: 'dim-sum', title: 'Dim Sum', items: MENU.dimSum },
+                { id: 'appetizers', title: 'Appetizers', items: MENU.appetizers },
+                { id: 'soup', title: 'Soup', items: MENU.soup },
+                { id: 'salads', title: 'Salads', items: MENU.salads },
+            ]},
+            { chapter: COMPASS_CHAPTERS[1], categories: [
+                { id: 'noodles', title: 'Noodles', items: MENU.noodles },
+                { id: 'ramen', title: 'Ramen', items: MENU.ramen },
+                { id: 'rice', title: 'Rice', items: MENU.rice },
+            ]},
+            { chapter: COMPASS_CHAPTERS[2], categories: [
+                { id: 'chicken', title: 'Chicken', items: MENU.chicken },
+                { id: 'beef', title: 'Beef', items: MENU.beef },
+                { id: 'seafood', title: 'Seafood', items: MENU.seafood },
+                { id: 'whole-fish', title: 'Whole Fish', items: MENU.wholeFish },
+                { id: 'vegetable', title: 'Vegetable', items: MENU.vegetable },
+            ]},
+            { chapter: COMPASS_CHAPTERS[3], categories: [
+                { id: 'sushi-half', title: 'Sushi (Half / Full)', items: MENU.sushi.filter(i => i.hasHalfFull) },
+                { id: 'sushi-single', title: 'Sushi (Single Price)', items: MENU.sushi.filter(i => !i.hasHalfFull) },
+                { id: 'sushi-combos', title: 'Sushi Combos', items: MENU.sushiCombos },
+                { id: 'bento', title: 'Bento', items: MENU.bento },
+            ]},
+            { chapter: COMPASS_CHAPTERS[4], categories: [
+                { id: 'desserts', title: 'Desserts', items: MENU.desserts },
+                { id: 'beverages', title: 'Zero-Proof Bar', items: MENU.beverages },
+            ]},
+        ];
+
+        const App = () => {
+            const [selectedDish, setSelectedDish] = useState(null);
+            useScrollSkew();
+
+            useEffect(() => {
+                setTimeout(() => ScrollTrigger.refresh(), 400);
+            }, []);
+
+            return (
+                <>
+                    <SiteHeader />
+                    <main id="main-content">
+                        <MenuIntro />
+                        <ChapterNav />
+                        {MENU_STRUCTURE.map(({ chapter, categories }) => (
+                            <MenuChapter key={chapter.anchorId} chapter={chapter} categories={categories} onDishClick={setSelectedDish} />
+                        ))}
+                    </main>
+                    <Location />
+                    <DishDetail dish={selectedDish} isOpen={!!selectedDish} onClose={() => setSelectedDish(null)} />
+                </>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+
+        requestAnimationFrame(() => setTimeout(() => ScrollTrigger.refresh(), 200));
+        window.addEventListener('load', () => setTimeout(() => ScrollTrigger.refresh(), 400));
+    </script>
+</body>
+</html>
