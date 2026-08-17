@@ -129,6 +129,23 @@ const DishDetail = ({ dish, isOpen, onClose }) => {
     const currentY = useRef(0);
     const isDragging = useRef(false);
 
+    useEffect(() => {
+        if (!isOpen) return;
+        const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+    }, [isOpen, onClose]);
+
+    useEffect(() => {
+        if (!isOpen) return;
+        const prev = document.activeElement;
+        document.body.style.overflow = 'hidden';
+        return () => {
+            document.body.style.overflow = '';
+            if (prev && prev.focus) prev.focus();
+        };
+    }, [isOpen]);
+
     const handleTouchStart = (e) => {
         if (!isTouch || !sheetRef.current) return;
         dragStartY.current = e.touches[0].clientY;
@@ -157,6 +174,7 @@ const DishDetail = ({ dish, isOpen, onClose }) => {
     return ReactDOM.createPortal(
         <div
             className={`fixed inset-0 z-50 flex items-end sm:items-center justify-center transition-opacity duration-300 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+            role="dialog" aria-modal="true" aria-label={dish.name}
             onTouchStart={isTouch ? handleTouchStart : undefined}
             onTouchMove={isTouch ? handleTouchMove : undefined}
             onTouchEnd={isTouch ? handleTouchEnd : undefined}
@@ -229,7 +247,7 @@ const ChefSignatures = ({ onDishClick }) => {
                 <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-bone to-transparent pointer-events-none z-10 hidden sm:block"></div>
                 <Reveal variant="rise" stagger={0.08} as="div" className="snap-container hide-scrollbar flex overflow-x-auto gap-4 sm:gap-6 px-3 sm:px-8 pb-4 pt-2 touch-pan-x">
                     {signatureDishes.map((dish) => (
-                        <div key={dish.id} className="snap-item signature-card min-w-[280px] sm:min-w-[340px] md:min-w-[380px] flex-shrink-0 border border-forest/10 bg-bone/30 p-5 sm:p-8 flex flex-col gap-3" onClick={() => onDishClick && onDishClick(dish)}>
+                        <div key={dish.id} role="button" tabIndex={0} aria-label={`${dish.name} — view details`} className="snap-item signature-card min-w-[280px] sm:min-w-[340px] md:min-w-[380px] flex-shrink-0 border border-forest/10 bg-bone/30 p-5 sm:p-8 flex flex-col gap-3 cursor-pointer" onClick={() => onDishClick && onDishClick(dish)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onDishClick && onDishClick(dish); } }}>
                             <div className="flex justify-between items-start gap-2">
                                 <h4 className="serif-dish text-xl sm:text-2xl text-forest font-medium leading-tight">{dish.name}</h4>
                                 <div className="w-8 h-8 rounded-full bg-vermilion flex items-center justify-center text-bone text-xs font-bold shrink-0 shadow-sm">★</div>
@@ -293,6 +311,28 @@ const CinematicCollections = () => {
 };
 
 // ---- MenuCompass ----
+const CompassPanel = ({ chapter, idx, isMobile }) => (
+        <div className={`compass-panel ${isMobile ? 'snap-item w-screen' : 'w-screen'} flex-shrink-0 h-screen flex items-center justify-center px-6 sm:px-12 ${idx % 2 === 1 ? 'bg-bone-dark/30' : ''}`}>
+            <div className="text-center max-w-lg mx-auto">
+                <div className="mb-6">
+                    <span className="seal-mark seal-mark-lg">{chapter.seal}</span>
+                </div>
+                <div>
+                    <p className="script-head text-3xl sm:text-4xl text-forest-light/70">{chapter.native}</p>
+                    <h3 className="serif-head text-3xl sm:text-5xl text-forest mt-2">{chapter.name}</h3>
+                    <p className="sans-body text-sm sm:text-base text-forest-light/80 mt-4 max-w-md mx-auto">{chapter.desc}</p>
+                    <p className="sans-body text-xs uppercase tracking-widest text-forest-light/80 mt-3">{chapter.count} dishes</p>
+                    <a
+                        href={`menu.html#${chapter.anchorId}`}
+                        className="magnetic-btn magnetic-btn-outline mt-6 text-sm"
+                    >
+                        View Chapter
+                    </a>
+                </div>
+            </div>
+        </div>
+);
+
 const MenuCompass = () => {
     const sectionRef = useRef(null);
     const trackRef = useRef(null);
@@ -323,27 +363,6 @@ const MenuCompass = () => {
 
     const reduceMotion = !HAS_GSAP || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    const PanelContent = ({ chapter, idx }) => (
-        <div className={`compass-panel ${isMobile ? 'snap-item w-screen' : 'w-screen'} flex-shrink-0 h-screen flex items-center justify-center px-6 sm:px-12 ${idx % 2 === 1 ? 'bg-bone-dark/30' : ''}`}>
-            <div className="text-center max-w-lg mx-auto">
-                <div className="mb-6">
-                    <span className="seal-mark seal-mark-lg">{chapter.seal}</span>
-                </div>
-                <div>
-                    <p className="script-head text-3xl sm:text-4xl text-forest-light/70">{chapter.native}</p>
-                    <h3 className="serif-head text-3xl sm:text-5xl text-forest mt-2">{chapter.name}</h3>
-                    <p className="sans-body text-sm sm:text-base text-forest-light/80 mt-4 max-w-md mx-auto">{chapter.desc}</p>
-                    <p className="sans-body text-xs uppercase tracking-widest text-forest-light/80 mt-3">{chapter.count} dishes</p>
-                    <a
-                        href={`menu.html#${chapter.anchorId}`}
-                        className="magnetic-btn magnetic-btn-outline mt-6 text-sm"
-                    >
-                        View Chapter
-                    </a>
-                </div>
-            </div>
-        </div>
-    );
 
     if (reduceMotion) {
         return (
@@ -369,7 +388,7 @@ const MenuCompass = () => {
             <section className="w-full py-8 overflow-hidden">
                 <div className="snap-container hide-scrollbar flex overflow-x-auto" style={{ touchAction: 'pan-x pan-y' }}>
                     {COMPASS_CHAPTERS.map((chapter, idx) => (
-                        <PanelContent key={chapter.name} chapter={chapter} idx={idx} />
+                        <CompassPanel key={chapter.anchorId} chapter={chapter} idx={idx} isMobile={isMobile} />
                     ))}
                 </div>
                 <div className="flex justify-center gap-2 mt-4" aria-hidden="true">
@@ -385,7 +404,7 @@ const MenuCompass = () => {
         <section ref={sectionRef} className="relative w-full h-screen overflow-hidden">
             <div ref={trackRef} className="flex h-full" style={{ width: `${COMPASS_CHAPTERS.length * 100}vw` }}>
                 {COMPASS_CHAPTERS.map((chapter, idx) => (
-                    <PanelContent key={chapter.name} chapter={chapter} idx={idx} />
+                    <CompassPanel key={chapter.anchorId} chapter={chapter} idx={idx} isMobile={isMobile} />
                 ))}
             </div>
         </section>
@@ -398,7 +417,9 @@ const SiteHeader = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
 
     useEffect(() => {
-        const handleScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.7);
+        const hasHero = !!document.querySelector('.hero-line');
+        const threshold = hasHero ? window.innerHeight * 0.7 : 24;
+        const handleScroll = () => setScrolled(window.scrollY > threshold);
         handleScroll();
         window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
