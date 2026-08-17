@@ -92,26 +92,32 @@ const SpiceIcons = ({ level }) => {
 };
 const SignatureStar = ({ active }) => active ? <span className="star-signature" aria-label="Chef's signature">★</span> : null;
 
-const DishCard = memo(({ dish, onClick = null }) => {
+const DishCard = memo(({ dish, onClick = null, compact = false }) => {
     return (
-        <button onClick={() => { if (onClick) onClick(dish); }} className="dish-card-trigger w-full text-left border-b border-forest/5 last:border-0 py-2.5 sm:py-3 tap-target flex flex-col gap-1 active:bg-forest/5 transition-colors">
+        <button onClick={() => { if (onClick) onClick(dish); }} className={`dish-card-trigger w-full text-left border-b border-forest/5 last:border-0 ${compact ? 'py-2 sm:py-2.5' : 'py-2.5 sm:py-3'} tap-target flex flex-col gap-0.5 active:bg-forest/5 transition-colors`}>
             <div className="flex items-baseline justify-between w-full min-w-0">
-                <h4 className="serif-dish text-[1.05rem] sm:text-xl md:text-2xl text-forest font-medium leading-[1.1] truncate min-w-0 flex-shrink">
+                <h4 className={compact ? "serif-dish text-sm sm:text-base text-forest font-medium leading-[1.2] truncate min-w-0 flex-shrink" : "serif-dish text-[1.05rem] sm:text-xl md:text-2xl text-forest font-medium leading-[1.1] truncate min-w-0 flex-shrink"}>
                     {dish.name}
+                    {dish.signature && <span className="star-signature ml-1.5 text-xs align-top">★</span>}
                 </h4>
                 <div className="flex-1 border-b border-dotted border-forest/20 mx-2 h-[1px] min-w-[6px]"></div>
                 <span
-                    className="dish-price sans-body text-[10px] sm:text-[11px] uppercase tracking-widest font-semibold text-forest/80 whitespace-nowrap flex-shrink-0"
+                    className={compact ? "dish-price sans-body text-[10px] uppercase tracking-widest font-semibold text-forest/80 whitespace-nowrap flex-shrink-0" : "dish-price sans-body text-[10px] sm:text-[11px] uppercase tracking-widest font-semibold text-forest/80 whitespace-nowrap flex-shrink-0"}
                     data-price={dish.hasHalfFull ? '' : dish.price}
                 >
                     {dish.hasHalfFull ? `${dish.priceHalf} / ${dish.priceFull}` : dish.price} BDT
                 </span>
             </div>
-            <div className="flex flex-wrap gap-x-2 gap-y-0.5 items-center">
-                {dish.signature && <SignatureStar active={true} />}
+            {!compact && (
+                <div className="flex flex-wrap gap-x-2 gap-y-0.5 items-center">
+                    {dish.signature && <SignatureStar active={true} />}
+                    <SpiceIcons level={dish.spice} />
+                </div>
+            )}
+            {compact && dish.spice > 0 && (
                 <SpiceIcons level={dish.spice} />
-            </div>
-            <p className="sans-body text-xs text-forest-light/70 mt-0.5 line-clamp-2">{dish.desc}</p>
+            )}
+            {!compact && <p className="sans-body text-xs text-forest-light/70 mt-0.5 line-clamp-2">{dish.desc}</p>}
         </button>
     );
 });
@@ -408,12 +414,12 @@ const MenuCompass = () => {
                     <h3 className="serif-head text-3xl sm:text-5xl text-forest mt-2">{chapter.name}</h3>
                     <p className="sans-body text-sm sm:text-base text-forest-light/70 mt-4 max-w-md mx-auto">{chapter.desc}</p>
                     <p className="sans-body text-xs uppercase tracking-widest text-forest-light/50 mt-3">{chapter.count} dishes</p>
-                    <button
+                    <a
+                        href={`menu.html#${chapter.anchorId}`}
                         className="magnetic-btn magnetic-btn-outline mt-6 text-sm"
-                        onClick={() => scrollToEl(document.getElementById(chapter.anchorId), -80)}
                     >
                         View Chapter
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
@@ -430,7 +436,7 @@ const MenuCompass = () => {
                             <h3 className="serif-head text-3xl sm:text-4xl text-forest mt-2">{chapter.name}</h3>
                             <p className="sans-body text-sm text-forest-light/70 mt-3 max-w-md mx-auto">{chapter.desc}</p>
                             <p className="sans-body text-xs uppercase tracking-widest text-forest-light/50 mt-2">{chapter.count} dishes</p>
-                            <button className="magnetic-btn magnetic-btn-outline mt-4 text-sm" onClick={() => scrollToEl(document.getElementById(chapter.anchorId), -80)}>View Chapter</button>
+                            <a href={`menu.html#${chapter.anchorId}`} className="magnetic-btn magnetic-btn-outline mt-4 text-sm">View Chapter</a>
                         </div>
                     </div>
                 ))}
@@ -484,7 +490,7 @@ const SiteHeader = () => {
     };
 
     const navItems = [
-        { label: 'Menu', id: 'menu-start' },
+        { label: 'Menu', href: 'menu.html' },
         { label: 'Our Story', id: 'about' },
         { label: 'Visit', id: 'location' },
     ];
@@ -492,16 +498,22 @@ const SiteHeader = () => {
     return (
         <header className={`fixed top-0 left-0 right-0 z-40 transition-colors duration-300 ${scrolled ? 'bg-bone/95 backdrop-blur-md border-b border-forest/5 py-3' : 'bg-transparent py-5'}`}>
             <nav className="max-w-6xl mx-auto px-4 sm:px-8 flex items-center justify-between">
-                <button onClick={scrollToTop} className="flex items-center gap-2 tap-target" aria-label="Yokoso — scroll to top">
+                <a href="index.html" className="flex items-center gap-2 tap-target" aria-label="Yokoso — home">
                     <img src="https://raw.githubusercontent.com/saqibfarabi14-del/Yokoso/main/assets/yokoso-mark-180.png" alt="" width="40" height="40" className="w-10 h-10" />
                     <span className="script-head text-xl text-forest hidden sm:inline">Yokoso</span>
-                </button>
+                </a>
 
                 <div className="hidden md:flex items-center gap-8">
                     {navItems.map(item => (
-                        <button key={item.id} onClick={() => scrollToEl(document.getElementById(item.id), -80)} className="underline-draw sans-body text-sm text-forest/80">
-                            {item.label}
-                        </button>
+                        item.href ? (
+                            <a key={item.label} href={item.href} className="underline-draw sans-body text-sm text-forest/80">
+                                {item.label}
+                            </a>
+                        ) : (
+                            <button key={item.id} onClick={() => scrollToEl(document.getElementById(item.id), -80)} className="underline-draw sans-body text-sm text-forest/80">
+                                {item.label}
+                            </button>
+                        )
                     ))}
                     <a href={WHATSAPP_RESERVE_URL} target="_blank" rel="noopener noreferrer" className="magnetic-btn text-sm">Reserve</a>
                 </div>
@@ -545,9 +557,15 @@ const MobileDrawer = ({ isOpen, onClose, navItems }) => {
                 <button onClick={onClose} className="self-end tap-target w-10 h-10 flex items-center justify-center text-forest/80 text-lg" aria-label="Close menu">✕</button>
                 <nav className="flex flex-col gap-6 mt-8">
                     {navItems.map(item => (
-                        <button key={item.id} onClick={() => handleLinkClick(item.id)} className="script-head text-3xl text-forest text-left">
-                            {item.label}
-                        </button>
+                        item.href ? (
+                            <a key={item.label} href={item.href} className="script-head text-3xl text-forest text-left">
+                                {item.label}
+                            </a>
+                        ) : (
+                            <button key={item.id} onClick={() => handleLinkClick(item.id)} className="script-head text-3xl text-forest text-left">
+                                {item.label}
+                            </button>
+                        )
                     ))}
                     <a href={WHATSAPP_RESERVE_URL} target="_blank" rel="noopener noreferrer" className="magnetic-btn text-center mt-4">Reserve a Table</a>
                 </nav>
