@@ -292,114 +292,6 @@ const CinematicCollections = () => {
     );
 };
 
-// ---- MenuSection (using ScrollTrigger.batch) ----
-const MenuSection = ({ title, items, id, onDishClick }) => {
-    const sectionRef = useRef(null);
-
-    useEffect(() => {
-        if (!HAS_GSAP) return;
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-        const el = sectionRef.current;
-        if (!el) return;
-
-        const isMobileNow = window.innerWidth < 768;
-        const dist = isMobileNow ? 12 : 16;
-        const dur = isMobileNow ? 0.4 : 0.5;
-        const stag = isMobileNow ? 0.04 : 0.06;
-
-        const ctx = gsap.context(() => {
-            const rows = gsap.utils.toArray('.dish-card-trigger', el);
-            ScrollTrigger.batch(rows, {
-                start: 'top 92%',
-                once: true,
-                onEnter: (batch) => {
-                    gsap.fromTo(batch,
-                        { y: dist, opacity: 0 },
-                        { y: 0, opacity: 1, duration: dur, stagger: stag, ease: 'power2.out', overwrite: true }
-                    );
-                    batch.forEach(row => {
-                        const priceEl = row.querySelector('.dish-price');
-                        if (!priceEl) return;
-                        const target = parseFloat(priceEl.dataset.price);
-                        if (isNaN(target)) return;
-                        const obj = { val: 0 };
-                        gsap.to(obj, {
-                            val: target, duration: 0.6, ease: 'power1.out',
-                            onUpdate: () => { priceEl.textContent = Math.round(obj.val) + ' BDT'; }
-                        });
-                    });
-                }
-            });
-        }, el);
-
-        return () => ctx.revert();
-    }, []);
-
-    return (
-        <section ref={sectionRef} id={id} className="py-5 sm:py-8 overflow-hidden scroll-mt-20">
-            <Reveal variant="rise" stagger={0.06} as="div" className="text-center mb-5 sm:mb-8">
-                <h3 className="script-head text-2xl sm:text-4xl md:text-5xl text-forest">{title}</h3>
-            </Reveal>
-            <div className="w-full">
-                <div className="space-y-0">
-                    {items.map(dish => <DishCard key={dish.id} dish={dish} onClick={onDishClick} />)}
-                </div>
-            </div>
-        </section>
-    );
-};
-
-// ---- MenuWrapper ----
-const MenuWrapper = ({ onDishClick }) => {
-    const ref = useRef(null);
-
-    return (
-        <section ref={ref} id="menu-start" className="skew-target scroll-mt-20 py-6 sm:py-10 px-3 sm:px-8 max-w-5xl mx-auto relative">
-            <div className="text-center mb-6 sm:mb-12">
-                <Reveal variant="stamp" as="div" className="inline-block mx-auto">
-                    <span className="seal-mark seal-mark-sm">味</span>
-                </Reveal>
-                <Reveal variant="rise" as="div" className="mt-2">
-                    <h2 className="menu-title script-head text-5xl sm:text-7xl md:text-8xl text-forest">The Menu</h2>
-                    <p className="menu-title sans-body text-xs sm:text-sm text-forest-light/60 mt-2">Pan-Asian flavours, crafted with intention</p>
-                </Reveal>
-            </div>
-
-            <Reveal variant="rise" as="div" className="menu-divider h-px bg-forest/5 w-full my-6 sm:my-10" />
-
-            <div className="sticky top-16 z-20 bg-bone/95 backdrop-blur-md py-3 border-b border-forest/5 w-full">
-                <div className="snap-container hide-scrollbar flex overflow-x-auto gap-2 px-4 sm:px-8 touch-pan-x">
-                    {['dim-sum','appetizers','salads','noodles','ramen','rice','soup','chicken','beef','seafood','whole-fish','vegetable','desserts','sushi-half','sushi-single','sushi-combos','bento','beverages'].map(id => (
-                        <button key={id} onClick={() => { const el = document.getElementById(id); if (el) scrollToEl(el, -80); }} className="snap-item tap-target flex-shrink-0 px-4 py-2 rounded-full border border-forest/10 text-xs sm:text-sm text-forest/80 font-medium transition-colors hover:bg-forest/5 active:bg-forest/10 whitespace-nowrap min-h-[40px]">{id.replace(/-/g,' ').replace(/\b\w/g, l => l.toUpperCase())}</button>
-                    ))}
-                </div>
-            </div>
-
-            <div className="pt-4">
-                {['dimSum','appetizers','salads','noodles','ramen','rice','soup','chicken','beef','seafood','wholeFish','vegetable','desserts'].map(key => {
-                    const title = key.replace(/([A-Z])/g, ' $1').replace(/\b\w/g, c => c.toUpperCase()).trim();
-                    const items = MENU[key];
-                    return (
-                        <div key={key}>
-                            <MenuSection title={title} items={items} id={key.replace(/([A-Z])/g, '-$1').toLowerCase()} onDishClick={onDishClick} />
-                            <div className="h-px bg-forest/5 w-full my-3 sm:my-6" />
-                        </div>
-                    );
-                })}
-                <MenuSection title="Sushi (Half / Full)" items={MENU.sushi.filter(item => item.hasHalfFull)} id="sushi-half" onDishClick={onDishClick} />
-                <div className="h-px bg-forest/5 w-full my-3 sm:my-6" />
-                <MenuSection title="Sushi (Single Price)" items={MENU.sushi.filter(item => !item.hasHalfFull)} id="sushi-single" onDishClick={onDishClick} />
-                <div className="h-px bg-forest/5 w-full my-3 sm:my-6" />
-                <MenuSection title="Sushi Combos" items={MENU.sushiCombos} id="sushi-combos" onDishClick={onDishClick} />
-                <div className="h-px bg-forest/5 w-full my-3 sm:my-6" />
-                <MenuSection title="Bento" items={MENU.bento} id="bento" onDishClick={onDishClick} />
-                <div className="h-px bg-forest/5 w-full my-3 sm:my-6" />
-                <MenuSection title="Zero-Proof Bar" items={MENU.beverages} id="beverages" onDishClick={onDishClick} />
-            </div>
-        </section>
-    );
-};
-
 // ---- MenuCompass ----
 const MenuCompass = () => {
     const sectionRef = useRef(null);
@@ -475,7 +367,7 @@ const MenuCompass = () => {
     if (isMobile) {
         return (
             <section className="w-full py-8 overflow-hidden">
-                <div className="snap-container hide-scrollbar flex overflow-x-auto touch-pan-x">
+                <div className="snap-container hide-scrollbar flex overflow-x-auto" style={{ touchAction: 'pan-x pan-y' }}>
                     {COMPASS_CHAPTERS.map((chapter, idx) => (
                         <PanelContent key={chapter.name} chapter={chapter} idx={idx} />
                     ))}
