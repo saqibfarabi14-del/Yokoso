@@ -201,7 +201,7 @@ const DishDetail = ({ dish, isOpen, onClose }) => {
 };
 
 // ---- Location (shared footer, used by both index.html and menu.html) ----
-const Location = () => {
+const Location = ({ showReservationCTA = true }) => {
     return (
         <footer id="location" className="py-16 sm:py-24 px-4 sm:px-8 bg-bone-dark/40 border-t border-forest/5">
             <div className="max-w-3xl mx-auto text-center">
@@ -211,10 +211,18 @@ const Location = () => {
                 <Reveal variant="rise" stagger={0.12} as="div">
                     <h2 className="script-head text-4xl sm:text-6xl text-forest">Find Us</h2>
                     <p className="serif-head text-lg sm:text-xl text-forest-light/80 mt-1">Al Madani Tower (2nd Floor), Mirboxtula, Sylhet.</p>
+                    {showReservationCTA && (
+                        <p className="sans-body text-xs sm:text-sm text-forest-light/80 mt-3">
+                            Open daily · 12:30 PM – 11:00 PM (Fri from 2:00 PM)
+                        </p>
+                    )}
                     <p className="sans-body text-xs sm:text-sm text-forest-light/80 mt-3">
                         <a href={`tel:+${RESERVATION_PHONE}`} className="underline-draw">01841965676</a>
                         {CONTACT_EMAIL && <> · <a href={`mailto:${CONTACT_EMAIL}`} className="underline-draw">{CONTACT_EMAIL}</a></>}
                     </p>
+                    {showReservationCTA && (
+                        <a href={WHATSAPP_RESERVE_URL} target="_blank" rel="noopener noreferrer" className="magnetic-btn mt-6 inline-flex">Reserve on WhatsApp</a>
+                    )}
                     <div className="flex justify-center flex-wrap gap-4 sm:gap-6 mt-6 sm:mt-8">
                         <a href="https://www.facebook.com/share/192xaTJHwX/" target="_blank" rel="noopener noreferrer" className="underline-draw text-xs sm:text-sm text-forest-light/80 transition-colors tap-target">Facebook</a>
                         <a href="https://www.instagram.com/yokosobd?igsh=MTQ4bHp4Mm1sbjNwYg==" target="_blank" rel="noopener noreferrer" className="underline-draw text-xs sm:text-sm text-forest-light/80 transition-colors tap-target">Instagram</a>
