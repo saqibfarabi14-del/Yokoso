@@ -39,7 +39,7 @@
 
 /* Reset & base */
 * { margin:0; padding:0; box-sizing:border-box; }
-html { background:#F7F2E8; scroll-behavior: smooth; }
+html { background:#F7F2E8; scroll-behavior: smooth; overflow-x: clip; }
 body {
     background:#F7F2E8; font-family:'Inter',sans-serif; color:#16302B;
     overflow-x:hidden; position:relative;
@@ -175,4 +175,12 @@ button.tap-target, a.tap-target { display: inline-flex; }
 .reveal-inner, [class*="script-head"], [class*="serif-head"] {
     -webkit-backface-visibility:hidden;
     backface-visibility:hidden;
+}
+
+/* Editorial drop cap — first paragraph of a story chapter only */
+.story-drop > p:first-of-type::first-letter {
+    font-family:'Bodoni Moda',serif;
+    float:left; font-size:3.4em; line-height:0.82;
+    padding-right:0.09em; margin-top:0.06em;
+    color:#D43A2F;
 }
