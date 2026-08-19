@@ -74,8 +74,6 @@
     <!-- Preload Hero Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" />
-    <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/greatvibes/v21/RWmMoKWR9v4ksMfaWd_JN9XFiaQ.woff2" />
     <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/greatvibes/v21/RWmMoKWR9v4ksMfaWd_JN9XLiaQ6DQ.woff2" />
 
     <!-- Favicons -->
@@ -84,7 +82,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="assets/yokoso-mark-180.png" />
 
     <!-- Subsetted Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..500&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&family=Noto+Serif+JP:wght@400;500;600&display=swap" rel="stylesheet" />
 
     <!-- Babel (React JSX) -->
     <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
@@ -129,26 +127,10 @@
             const heroRef = useRef(null);
             const sealRef = useRef(null);
             const textRef = useRef(null);
-            const svgRef = useRef(null);
             const wordmarkRef = useRef(null);
             const buttonsRowRef = useRef(null);
             const underlineRef = useRef(null);
 
-            useEffect(() => {
-                if (!HAS_GSAP) return;
-                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                    const paths = svgRef.current.querySelectorAll('.botanical-path');
-                    paths.forEach(path => { path.style.strokeDashoffset = 0; });
-                    return;
-                }
-                const ctx = gsap.context(() => {
-                    const paths = svgRef.current.querySelectorAll('.botanical-path');
-                    const totalLengths = [];
-                    paths.forEach(path => { const length = path.getTotalLength(); path.style.strokeDasharray = length; path.style.strokeDashoffset = length; totalLengths.push(length); });
-                    ScrollTrigger.create({ trigger: document.body, start: 'top top', end: 'bottom bottom', onUpdate: self => { const progress = self.progress; paths.forEach((path, i) => { path.style.strokeDashoffset = totalLengths[i] * (1 - progress); }); } });
-                }, heroRef);
-                return () => ctx.revert();
-            }, []);
 
             useEffect(() => {
                 if (!HAS_GSAP) return;
@@ -187,7 +169,6 @@
                     });
                     tl.to(textRef.current,      { yPercent: -30, opacity: 0 }, 0)
                       .to(sealRef.current,      { yPercent: -60, scale: 0.8 }, 0)
-                      .to(svgRef.current,       { yPercent: -15 }, 0)
                       .to(buttonsRowRef.current,{ opacity: 0 }, 0);
                 }, heroRef);
                 return () => ctx.revert();
@@ -203,13 +184,6 @@
                             src={HERO_VIDEO_SRC} autoPlay muted loop playsInline preload="none" aria-hidden="true"
                         />
                     )}
-                    <svg ref={svgRef} className="botanical-svg absolute inset-0 w-full h-full pointer-events-none opacity-25" viewBox="0 0 1000 800" preserveAspectRatio="xMidYMid meet">
-                        <path className="botanical-path" d="M200,100 C300,50 400,150 350,250 C300,350 400,450 450,350 C500,250 600,300 550,400 C500,500 600,600 650,500" />
-                        <path className="botanical-path" d="M700,150 C800,200 750,300 650,350 C550,400 600,500 700,450 C800,400 850,500 800,550" />
-                        <path className="botanical-path" d="M100,400 C150,350 250,450 200,550 C150,650 300,700 350,600" />
-                        <circle className="botanical-path" cx="400" cy="200" r="40" />
-                        <circle className="botanical-path" cx="700" cy="500" r="30" />
-                    </svg>
                     <div className="relative z-10 text-center max-w-3xl mx-auto">
                         <div ref={sealRef} className="flex justify-center mb-6 sm:mb-10">
                             <Reveal variant="stamp" as="div" className="inline-block">
@@ -217,7 +191,7 @@
                             </Reveal>
                         </div>
                         <div ref={textRef}>
-                            <h1 ref={wordmarkRef} className="script-head text-[clamp(2.8rem,16vw,7rem)] text-forest leading-[1.1] hero-line">Yōkoso</h1>
+                            <h1 ref={wordmarkRef} className="script-head text-[clamp(2.2rem,11vw,5.5rem)] text-forest hero-line" style={{ letterSpacing: '0.12em', textIndent: '0.12em' }}>YŌKOSO</h1>
                             <svg ref={underlineRef} className="mx-auto mt-2 sm:mt-3 block" width="180" height="14" viewBox="0 0 180 14" style={{ maxWidth: '40%' }} aria-hidden="true">
                                 <path d="M4,8 Q45,2 90,7 T176,6" fill="none" stroke="#D43A2F" strokeWidth="2.5" strokeLinecap="round" />
                             </svg>
@@ -240,10 +214,9 @@
         // ---- About (with id="about" and updated hours + tagline) ----
         const About = () => {
             return (
-                <section id="about" className="skew-target py-12 sm:py-24 px-4 sm:px-8 max-w-4xl mx-auto text-center">
+                <section id="about" className="py-12 sm:py-24 px-4 sm:px-8 max-w-4xl mx-auto text-center">
                     <Reveal variant="ink" as="div" className="w-full">
                         <div className="relative">
-                            <div className="botanical-bg absolute inset-0 opacity-30 pointer-events-none" />
                             <Reveal variant="rise" stagger={0.15} as="div">
                                 <p className="about-line script-head text-2xl sm:text-3xl text-forest-light/70">一皿 一皿</p>
                                 <p className="about-line serif-head text-xl sm:text-2xl text-forest-light/80 mt-2 italic">Every dish tells a story — from our kitchen to your table.</p>
@@ -260,8 +233,7 @@
 
         // ---- Reservation ----
         const Reservation = () => (
-            <section className="skew-target py-16 sm:py-28 px-4 sm:px-8 bg-forest text-bone relative overflow-hidden">
-                <div className="botanical-bg absolute inset-0 opacity-10 pointer-events-none" />
+            <section className="py-16 sm:py-28 px-4 sm:px-8 bg-forest text-bone relative overflow-hidden">
                 <div className="relative max-w-2xl mx-auto text-center">
                     <Reveal variant="stamp" as="div" className="inline-block mb-6">
                         <span className="seal-mark seal-mark-lg" style={{ borderColor: '#F7F2E8', color: '#F7F2E8' }}>席</span>
@@ -290,7 +262,6 @@
         // ---- App ----
         const App = () => {
             const [selectedDish, setSelectedDish] = useState(null);
-            useScrollSkew();
 
             const handleResize = useCallback(() => {
                 ScrollTrigger.refresh();
