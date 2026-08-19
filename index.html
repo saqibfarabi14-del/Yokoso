@@ -313,7 +313,7 @@
                         <LazySection className="w-full"><CinematicCollections /></LazySection>
                         <Reservation />
                     </main>
-                    <Location />
+                    <Location showReservationCTA={false} />
                     <DishDetail dish={selectedDish} isOpen={!!selectedDish} onClose={() => setSelectedDish(null)} />
                 </>
             );
