@@ -206,11 +206,15 @@ const DishDetail = ({ dish, isOpen, onClose }) => {
             onTouchEnd={isTouch ? handleTouchEnd : undefined}
         >
             <div className="absolute inset-0 bg-forest/40 backdrop-blur-sm transition-opacity duration-300" onClick={onClose} />
-            <div ref={sheetRef} className={`relative w-full sm:max-w-2xl sm:w-full bg-bone rounded-t-2xl sm:rounded-2xl shadow-2xl transform transition-transform duration-300 ${isOpen ? 'translate-y-0' : 'translate-y-full sm:translate-y-8 sm:scale-95'}`} style={{ maxHeight: '90vh', display: 'flex', flexDirection: 'column' }} onTransitionEnd={resetSheet}>
+            <div ref={sheetRef} className={`relative w-full sm:max-w-xl sm:w-full bg-bone rounded-t-2xl sm:rounded-none shadow-2xl transform transition-all duration-[420ms] ${isOpen ? 'translate-y-0 sm:scale-100 opacity-100' : 'translate-y-full sm:translate-y-0 sm:scale-[0.96] opacity-0 sm:opacity-0'}`} style={{ maxHeight: '90vh', display: 'flex', flexDirection: 'column', transitionTimingFunction: 'cubic-bezier(0.16,1,0.3,1)', boxShadow: '0 40px 80px -20px rgba(14,26,23,0.45)' }} onTransitionEnd={resetSheet}>
+                <div className="h-[3px] w-full bg-vermilion shrink-0" />
                 {isTouch && (<div className="drag-handle w-10 h-1 bg-forest/20 rounded-full mx-auto mt-2 mb-1 flex-shrink-0"></div>)}
                 <div className="p-5 sm:p-8 overflow-y-auto flex-1">
                     <div className="flex justify-between items-start gap-4">
-                        <h3 className="script-head text-4xl sm:text-5xl text-forest">{dish.name}</h3>
+                        <div>
+                            <p className="sans-body text-[10px] uppercase tracking-[0.22em] text-forest-light/50 mb-2">Yokoso</p>
+                            <h3 className="script-head text-3xl sm:text-4xl text-forest leading-[1.1]">{dish.name}</h3>
+                        </div>
                         <button onClick={onClose} className="tap-target w-10 h-10 rounded-full bg-forest/10 hover:bg-forest/20 active:bg-forest/30 transition-colors flex items-center justify-center text-forest/80 text-lg" aria-label="Close">✕</button>
                     </div>
                     <div className="flex gap-3 mt-2">{dish.signature && <SignatureStar active={true} />}<SpiceIcons level={dish.spice} /></div>
@@ -468,7 +472,7 @@ const SiteHeader = () => {
 
     const navItems = [
         { label: 'Menu', href: 'menu.html' },
-        { label: 'Our Story', id: 'about' },
+        { label: 'Our Story', href: 'story.html' },
         { label: 'Visit', id: 'location' },
     ];
 
@@ -556,6 +560,112 @@ const MobileDrawer = ({ isOpen, onClose, navItems }) => {
 const LazySection = ({ children, className }) => {
     const { ref, isVisible } = useLazyLoad();
     return <div ref={ref} className={className}>{isVisible ? children : <div className="h-screen w-full"></div>}</div>;
+};
+
+// ---- ReservationFlow: quiet multi-step booking ----
+const ReservationFlow = () => {
+    const [step, setStep] = useState(0);
+    const [party, setParty] = useState(null);
+    const [day, setDay] = useState(null);
+    const [time, setTime] = useState(null);
+
+    const DAYS = (() => {
+        const out = [];
+        const d = new Date();
+        for (let i = 0; i < 14; i++) out.push(new Date(d.getFullYear(), d.getMonth(), d.getDate() + i));
+        return out;
+    })();
+
+    // Friday (day 5) opens 14:00; every other day 12:30. Last seating 22:00.
+    const timesFor = (date) => {
+        if (!date) return [];
+        const fri = date.getDay() === 5;
+        const slots = [];
+        let h = fri ? 14 : 12, m = fri ? 0 : 30;
+        while (h < 22 || (h === 22 && m === 0)) {
+            slots.push(String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0'));
+            m += 30; if (m >= 60) { m = 0; h += 1; }
+        }
+        return slots;
+    };
+
+    const fmtDay = (d) => d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+
+    const waHref = () => {
+        const msg =
+            "Hi Yokoso, I'd like to reserve a table.\n\n" +
+            "Party: " + party + " " + (party === 1 ? 'guest' : 'guests') + "\n" +
+            "Date: " + (day ? fmtDay(day) : '') + "\n" +
+            "Time: " + (time || '') + "\n\n" +
+            "Please confirm availability. Thank you.";
+        return 'https://wa.me/' + RESERVATION_PHONE + '?text=' + encodeURIComponent(msg);
+    };
+
+    const Pill = ({ active, children, onClick }) => (
+        <button
+            onClick={onClick}
+            className={`sans-body text-sm px-4 py-2.5 rounded-full border transition-colors min-h-[44px] ${
+                active ? 'border-vermilion bg-vermilion text-bone' : 'border-bone/25 text-bone/75 hover:border-bone/50'
+            }`}
+        >{children}</button>
+    );
+
+    const stepLabel = ['How many?', 'Which day?', 'What time?'][step] || '';
+
+    return (
+        <div className="max-w-xl mx-auto">
+            <p className="sans-body text-[10px] uppercase tracking-[0.28em] text-bone/45 mb-5">
+                {step < 3 ? 'Step ' + (step + 1) + ' of 3 · ' + stepLabel : 'Ready'}
+            </p>
+
+            {step === 0 && (
+                <div className="flex flex-wrap justify-center gap-2.5">
+                    {[1,2,3,4,5,6,7,8].map(n => (
+                        <Pill key={n} active={party === n} onClick={() => { setParty(n); setStep(1); }}>
+                            {n === 8 ? '8+' : n}
+                        </Pill>
+                    ))}
+                </div>
+            )}
+
+            {step === 1 && (
+                <div className="flex flex-wrap justify-center gap-2.5 max-h-[168px] overflow-y-auto">
+                    {DAYS.map((d, i) => (
+                        <Pill key={i} active={day && day.getTime() === d.getTime()} onClick={() => { setDay(d); setTime(null); setStep(2); }}>
+                            {i === 0 ? 'Today' : i === 1 ? 'Tomorrow' : fmtDay(d)}
+                        </Pill>
+                    ))}
+                </div>
+            )}
+
+            {step === 2 && (
+                <div className="flex flex-wrap justify-center gap-2.5 max-h-[168px] overflow-y-auto">
+                    {timesFor(day).map(t => (
+                        <Pill key={t} active={time === t} onClick={() => { setTime(t); setStep(3); }}>{t}</Pill>
+                    ))}
+                </div>
+            )}
+
+            {step === 3 && (
+                <div className="text-center">
+                    <p className="serif-dish text-lg sm:text-xl text-bone/90 mb-6">
+                        {party} {party === 1 ? 'guest' : 'guests'} · {day ? fmtDay(day) : ''} · {time}
+                    </p>
+                    <a href={waHref()} target="_blank" rel="noopener noreferrer"
+                       className="magnetic-btn inline-flex" style={{ background: '#D43A2F' }}>
+                        Confirm on WhatsApp
+                    </a>
+                </div>
+            )}
+
+            {step > 0 && (
+                <button
+                    onClick={() => setStep(s => Math.max(0, s - 1))}
+                    className="sans-body text-[11px] uppercase tracking-[0.2em] text-bone/40 hover:text-bone/70 mt-7 transition-colors"
+                >← Back</button>
+            )}
+        </div>
+    );
 };
 
 // ---- Plate: full-bleed dark photographic moment ----
