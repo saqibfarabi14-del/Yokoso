@@ -92,18 +92,38 @@
             </div>
         );
 
-        const MenuChapter = ({ chapter, categories, onDishClick }) => (
+        const MenuChapter = ({ chapter, categories, onDishClick, photo }) => (
             <section id={chapter.anchorId} className="scroll-mt-20 py-10 sm:py-16 px-4 sm:px-8 max-w-3xl mx-auto">
-                <div className="text-center mb-8 sm:mb-12">
-                    <Reveal variant="stamp" as="div" className="inline-block mb-3">
-                        <span className="seal-mark seal-mark-sm">{chapter.seal}</span>
-                    </Reveal>
-                    <Reveal variant="rise" as="div">
-                        <p className="jp-mark text-lg sm:text-xl text-forest-light/80">{chapter.native}</p>
-                        <h2 className="serif-head text-3xl sm:text-5xl text-forest mt-1">{chapter.name}</h2>
-                        <p className="sans-body text-xs sm:text-sm text-forest-light/80 mt-2 max-w-md mx-auto">{chapter.desc}</p>
-                    </Reveal>
-                </div>
+                {photo ? (
+                    <div className="relative -mx-4 sm:-mx-8 mb-10 sm:mb-14 overflow-hidden bg-ink">
+                        <div className="absolute inset-0">
+                            <img src={photo} alt="" aria-hidden="true" loading="lazy" decoding="async"
+                                 className="w-full h-full object-cover" style={{ opacity: 0.5 }} />
+                            <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(14,26,23,0.80) 0%, rgba(14,26,23,0.45) 50%, rgba(14,26,23,0.88) 100%)' }} />
+                        </div>
+                        <div className="relative z-10 text-center py-16 sm:py-24 px-6">
+                            <Reveal variant="stamp" as="div" className="inline-block mb-3">
+                                <span className="seal-mark seal-mark-sm" style={{ borderColor: 'rgba(247,242,232,0.55)', color: '#F7F2E8', background: 'rgba(247,242,232,0.04)' }}>{chapter.seal}</span>
+                            </Reveal>
+                            <Reveal variant="rise" as="div">
+                                <p className="jp-mark text-lg sm:text-xl text-bone/60">{chapter.native}</p>
+                                <h2 className="script-head text-4xl sm:text-6xl text-bone mt-1">{chapter.name}</h2>
+                                <p className="sans-body text-xs sm:text-sm text-bone/60 mt-3 max-w-md mx-auto">{chapter.desc}</p>
+                            </Reveal>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="text-center mb-8 sm:mb-12">
+                        <Reveal variant="stamp" as="div" className="inline-block mb-3">
+                            <span className="seal-mark seal-mark-sm">{chapter.seal}</span>
+                        </Reveal>
+                        <Reveal variant="rise" as="div">
+                            <p className="jp-mark text-lg sm:text-xl text-forest-light/80">{chapter.native}</p>
+                            <h2 className="serif-head text-3xl sm:text-5xl text-forest mt-1">{chapter.name}</h2>
+                            <p className="sans-body text-xs sm:text-sm text-forest-light/80 mt-2 max-w-md mx-auto">{chapter.desc}</p>
+                        </Reveal>
+                    </div>
+                )}
                 {categories.map(cat => (
                     <div key={cat.id} className="mb-8 sm:mb-10 last:mb-0">
                         <h3 className="serif-head text-lg sm:text-xl text-forest/70 mb-2 sm:mb-3 uppercase tracking-wide text-sm">{cat.title}</h3>
@@ -148,6 +168,16 @@
             ]},
         ];
 
+        const ASSET_BASE = 'https://raw.githubusercontent.com/saqibfarabi14-del/Yokoso/main/assets/';
+        const CHAPTER_PHOTOS = {
+            'dim-sum':    ASSET_BASE + 'yokoso-dimsum.jpg',
+            'noodles':    ASSET_BASE + 'yokoso-ramen.jpg',
+            'chicken':    ASSET_BASE + 'yokoso-wok.jpg',
+            'sushi-half': ASSET_BASE + 'yokoso-sushi.jpg',
+            // 'desserts' intentionally has no photo — Sweet & Cool stays
+            // purely typographic, giving the sequence a quiet ending
+        };
+
         const App = () => {
             const [selectedDish, setSelectedDish] = useState(null);
 
@@ -164,7 +194,13 @@
                             </p>
                         </div>
                         {MENU_STRUCTURE.map(({ chapter, categories }) => (
-                            <MenuChapter key={chapter.anchorId} chapter={chapter} categories={categories} onDishClick={setSelectedDish} />
+                            <MenuChapter
+                                key={chapter.anchorId}
+                                chapter={chapter}
+                                categories={categories}
+                                onDishClick={setSelectedDish}
+                                photo={CHAPTER_PHOTOS[chapter.anchorId]}
+                            />
                         ))}
                     </main>
                     <Location />
