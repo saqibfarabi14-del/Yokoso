@@ -126,6 +126,9 @@ const DishCard = memo(({ dish, onClick = null, compact = false }) => {
                     {dish.name}
                     {dish.signature && <span className="ml-2 inline-flex align-middle"><SignatureStar active={true} /></span>}
                 </h4>
+                {compact && dish.spice > 0 && (
+                    <span className="ml-2 shrink-0 inline-flex"><SpiceIcons level={dish.spice} /></span>
+                )}
                 <div className="flex-1 border-b border-dotted border-forest/20 mx-2 h-[1px] min-w-[6px]"></div>
                 <span
                     className={compact ? "dish-price sans-body text-[10px] uppercase tracking-widest font-semibold text-forest/80 whitespace-nowrap flex-shrink-0" : "dish-price sans-body text-[10px] sm:text-[11px] uppercase tracking-widest font-semibold text-forest/80 whitespace-nowrap flex-shrink-0"}
@@ -139,9 +142,6 @@ const DishCard = memo(({ dish, onClick = null, compact = false }) => {
                     {dish.signature && <SignatureStar active={true} />}
                     <SpiceIcons level={dish.spice} />
                 </div>
-            )}
-            {compact && dish.spice > 0 && (
-                <SpiceIcons level={dish.spice} />
             )}
             {!compact && <p className="sans-body text-xs text-forest-light/80 mt-0.5 line-clamp-2">{dish.desc}</p>}
         </button>
@@ -274,7 +274,7 @@ const ChefSignatures = ({ onDishClick }) => {
                 <Reveal variant="stamp" as="div" className="inline-block mx-auto mb-4">
                     <span className="seal-mark seal-mark-sm">星</span>
                 </Reveal>
-                <h2 className="script-head text-5xl sm:text-7xl md:text-8xl text-forest">Chef's Signatures</h2>
+                <h2 className="script-head text-3xl sm:text-5xl md:text-6xl text-forest">Chef's Signatures</h2>
                 <p className="sans-body text-sm text-forest-light/80 mt-4">The dishes that define us — marked with the vermilion seal</p>
             </div>
             <div className="relative">
@@ -313,7 +313,7 @@ const CinematicCollections = () => {
                 <Reveal variant="stamp" as="div" className="inline-block mx-auto mb-4">
                     <span className="seal-mark seal-mark-sm">集</span>
                 </Reveal>
-                <h2 className="script-head text-5xl sm:text-7xl md:text-8xl text-forest">Curated Collections</h2>
+                <h2 className="script-head text-3xl sm:text-5xl md:text-6xl text-forest">Curated Collections</h2>
                 <p className="sans-body text-sm text-forest-light/80 mt-4">Our grandest sets — meticulously crafted</p>
                 <div className="h-px bg-forest/5 max-w-xs mx-auto mt-6" />
             </div>
@@ -593,9 +593,9 @@ const Plate = ({ src, seal, kicker, line, align = 'center', height = 'tall' }) =
                     loading="lazy"
                     decoding="async"
                     className="w-full h-full object-cover will-change-transform"
-                    style={{ opacity: 0.55 }}
+                    style={{ opacity: 0.38 }}
                 />
-                <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(14,26,23,0.72) 0%, rgba(14,26,23,0.40) 45%, rgba(14,26,23,0.85) 100%)' }} />
+                <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(14,26,23,0.82) 0%, rgba(14,26,23,0.62) 45%, rgba(14,26,23,0.92) 100%)' }} />
             </div>
 
             <div className={`relative z-10 max-w-2xl px-6 sm:px-10 ${align === 'left' ? 'text-left mr-auto ml-6 sm:ml-16' : 'text-center'}`}>
