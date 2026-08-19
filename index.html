@@ -129,6 +129,7 @@
             const textRef = useRef(null);
             const wordmarkRef = useRef(null);
             const buttonsRowRef = useRef(null);
+            const videoRef = useRef(null);
             const underlineRef = useRef(null);
 
 
@@ -170,6 +171,9 @@
                     tl.to(textRef.current,      { yPercent: -30, opacity: 0 }, 0)
                       .to(sealRef.current,      { yPercent: -60, scale: 0.8 }, 0)
                       .to(buttonsRowRef.current,{ opacity: 0 }, 0);
+                    if (videoRef.current) {
+                        tl.to(videoRef.current, { scale: 1.18, opacity: 0.05 }, 0);
+                    }
                 }, heroRef);
                 return () => ctx.revert();
             }, []);
@@ -180,6 +184,7 @@
                 <section ref={heroRef} className="relative min-h-screen flex items-center justify-center px-4 sm:px-8 overflow-hidden">
                     {showVideo && (
                         <video
+                            ref={videoRef}
                             className="absolute inset-0 w-full h-full object-cover opacity-[0.18] pointer-events-none"
                             src={HERO_VIDEO_SRC} autoPlay muted loop playsInline preload="none" aria-hidden="true"
                         />
@@ -259,6 +264,60 @@
             </section>
         );
 
+        // ---- Threshold: first-visit entry sequence ----
+        const Threshold = () => {
+            const [done, setDone] = useState(() => {
+                try { return sessionStorage.getItem('yokoso-entered') === '1'; }
+                catch (e) { return false; }
+            });
+            const rootRef = useRef(null);
+            const ringRef = useRef(null);
+
+            useEffect(() => {
+                if (done) return;
+
+                const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                const finish = () => {
+                    try { sessionStorage.setItem('yokoso-entered', '1'); } catch (e) {}
+                    setDone(true);
+                    document.body.style.overflow = '';
+                };
+
+                document.body.style.overflow = 'hidden';
+
+                if (reduce || !HAS_GSAP) { finish(); return; }
+
+                const ctx = gsap.context(() => {
+                    const path = ringRef.current;
+                    if (!path) { finish(); return; }
+                    const len = path.getTotalLength();
+                    gsap.set(path, { strokeDasharray: len, strokeDashoffset: len });
+
+                    const tl = gsap.timeline({ onComplete: finish });
+                    tl.to(path, { strokeDashoffset: 0, duration: 0.75, ease: 'power2.inOut' })
+                      .from('.threshold-seal-char', { opacity: 0, scale: 0.8, duration: 0.35, ease: 'back.out(1.7)' }, '-=0.15')
+                      .to('.threshold-seal', { opacity: 0, scale: 1.15, duration: 0.4, ease: 'power2.in' }, '+=0.25')
+                      .to(rootRef.current, { opacity: 0, duration: 0.45, ease: 'power2.inOut' }, '-=0.25');
+                }, rootRef);
+
+                const bail = setTimeout(finish, 3000);
+                return () => { clearTimeout(bail); ctx.revert(); document.body.style.overflow = ''; };
+            }, [done]);
+
+            if (done) return null;
+
+            return (
+                <div ref={rootRef} className="fixed inset-0 z-[100] bg-bone flex items-center justify-center" aria-hidden="true">
+                    <div className="threshold-seal relative w-[92px] h-[92px] flex items-center justify-center">
+                        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 92 92" fill="none">
+                            <circle ref={ringRef} cx="46" cy="46" r="44" stroke="#D43A2F" strokeWidth="2.5" strokeLinecap="round" fill="none" />
+                        </svg>
+                        <span className="threshold-seal-char jp-mark text-[30px]" style={{ color: '#D43A2F' }}>歓</span>
+                    </div>
+                </div>
+            );
+        };
+
         // ---- App ----
         const App = () => {
             const [selectedDish, setSelectedDish] = useState(null);
@@ -274,6 +333,7 @@
 
             return (
                 <>
+                    <Threshold />
                     <a href="menu.html" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-vermilion focus:text-bone focus:px-4 focus:py-2 focus:rounded">Skip to menu</a>
                     <SiteHeader />
                     <main id="main-content">
