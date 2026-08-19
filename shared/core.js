@@ -49,12 +49,12 @@ if (!HAS_GSAP) {
 let lenis = null;
 if (HAS_LENIS) {
     lenis = new Lenis({
-        duration: 1.6,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        duration: 2.1,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -11 * t)),
         orientation: 'vertical',
         smoothWheel: true,
-        wheelMultiplier: 1,
-        touchMultiplier: 1.2,
+        wheelMultiplier: 0.85,
+        touchMultiplier: 1.1,
     });
     if (HAS_GSAP) {
         lenis.on('scroll', ScrollTrigger.update);
