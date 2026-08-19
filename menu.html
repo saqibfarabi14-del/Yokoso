@@ -37,13 +37,11 @@
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" />
-    <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/greatvibes/v21/RWmMoKWR9v4ksMfaWd_JN9XFiaQ.woff2" />
     <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/greatvibes/v21/RWmMoKWR9v4ksMfaWd_JN9XLiaQ6DQ.woff2" />
     <link rel="icon" type="image/png" sizes="32x32" href="assets/yokoso-mark-32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="assets/yokoso-mark-16.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="assets/yokoso-mark-180.png" />
-    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..500&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&family=Noto+Serif+JP:wght@400;500;600&display=swap" rel="stylesheet" />
     <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="shared/tailwind-config.js"></script>
@@ -101,7 +99,7 @@
                         <span className="seal-mark seal-mark-sm">{chapter.seal}</span>
                     </Reveal>
                     <Reveal variant="rise" as="div">
-                        <p className="script-head text-xl sm:text-2xl text-forest-light/80">{chapter.native}</p>
+                        <p className="jp-mark text-lg sm:text-xl text-forest-light/80">{chapter.native}</p>
                         <h2 className="serif-head text-3xl sm:text-5xl text-forest mt-1">{chapter.name}</h2>
                         <p className="sans-body text-xs sm:text-sm text-forest-light/80 mt-2 max-w-md mx-auto">{chapter.desc}</p>
                     </Reveal>
@@ -152,7 +150,6 @@
 
         const App = () => {
             const [selectedDish, setSelectedDish] = useState(null);
-            useScrollSkew();
 
             return (
                 <>
@@ -160,6 +157,12 @@
                     <main id="main-content">
                         <MenuIntro />
                         <ChapterNav />
+                        <div className="max-w-3xl mx-auto px-4 sm:px-8 pt-6 pb-2">
+                            <p className="sans-body text-[10px] uppercase tracking-[0.18em] text-forest-light/45 flex items-center justify-center gap-5">
+                                <span className="inline-flex items-center gap-1.5"><SignatureStar active={true} /> Chef's signature</span>
+                                <span className="inline-flex items-center gap-1.5"><SpiceIcons level={3} /> Heat</span>
+                            </p>
+                        </div>
                         {MENU_STRUCTURE.map(({ chapter, categories }) => (
                             <MenuChapter key={chapter.anchorId} chapter={chapter} categories={categories} onDishClick={setSelectedDish} />
                         ))}
