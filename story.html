@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Yōkoso — Full Menu. Pan-Asian dishes from dim sum to sushi, Sylhet." />
+    <meta property="og:title" content="Yōkoso — Our Story" />
+    <meta property="og:description" content="Al Madani Tower (2nd Floor), Mirboxtula, Sylhet." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://saqibfarabi14-del.github.io/Yokoso/story.html" />
+    <meta property="og:site_name" content="Yōkoso" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content="https://saqibfarabi14-del.github.io/Yokoso/assets/yokoso-og.jpg" />
+    <meta property="og:image:secure_url" content="https://saqibfarabi14-del.github.io/Yokoso/assets/yokoso-og.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Yōkoso — our story" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://saqibfarabi14-del.github.io/Yokoso/assets/yokoso-og.jpg" />
+    <meta name="theme-color" content="#F7F2E8" />
+    <link rel="canonical" href="https://saqibfarabi14-del.github.io/Yokoso/story.html" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/greatvibes/v21/RWmMoKWR9v4ksMfaWd_JN9XLiaQ6DQ.woff2" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/yokoso-mark-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/yokoso-mark-16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/yokoso-mark-180.png" />
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..500&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&family=Noto+Serif+JP:wght@400;500;600&display=swap" rel="stylesheet" />
+    <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="shared/tailwind-config.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/CustomEase.min.js"></script>
+    <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <link rel="stylesheet" href="shared/styles.css" />
+</head>
+<body>
+
+    <div id="root"></div>
+    <div id="portal-root"></div>
+
+    <!-- Shared Libraries -->
+    <script src="shared/core.js"></script>
+    <script src="shared/menu-data.js"></script>
+    <script src="shared/hooks.js"></script>
+    <script type="text/babel" data-presets="react" src="shared/components.js"></script>
+
+    <!-- Page-Specific Inline Script -->
+    <script type="text/babel" data-presets="react">
+        'use strict';
+
+        const ASSET_BASE = 'https://raw.githubusercontent.com/saqibfarabi14-del/Yokoso/main/assets/';
+
+        const StoryIntro = () => (
+            <section className="pt-32 pb-14 sm:pt-40 sm:pb-20 px-6 max-w-2xl mx-auto text-center">
+                <Reveal variant="stamp" as="div" className="inline-block mb-8">
+                    <span className="seal-mark seal-mark-lg jp-mark">物</span>
+                </Reveal>
+                <Reveal variant="rise" as="div">
+                    <p className="jp-mark text-base text-forest-light/50 tracking-[0.3em]">物語</p>
+                    <h1 className="script-head text-5xl sm:text-7xl text-forest mt-3">Our Story</h1>
+                </Reveal>
+            </section>
+        );
+
+        const Chapter = ({ kicker, title, children, drop }) => (
+            <section className="px-6 max-w-2xl mx-auto py-10 sm:py-14">
+                <Reveal variant="rise" stagger={0.1} as="div">
+                    {kicker && <p className="sans-body text-[10px] uppercase tracking-[0.28em] text-forest-light/45 mb-3">{kicker}</p>}
+                    <h2 className="script-head text-3xl sm:text-4xl text-forest mb-5">{title}</h2>
+                    <div className={`serif-dish text-base sm:text-lg text-forest-light/85 leading-[1.75] space-y-5 ${drop ? 'story-drop' : ''}`}>
+                        {children}
+                    </div>
+                </Reveal>
+            </section>
+        );
+
+        const App = () => {
+            useEffect(() => {
+                try { sessionStorage.setItem('yokoso-entered', '1'); } catch (e) {}
+                setTimeout(() => ScrollTrigger.refresh(), 400);
+            }, []);
+
+            return (
+                <>
+                    <SiteHeader />
+                    <main id="main-content">
+                        <StoryIntro />
+
+                        <Chapter kicker="Beginning" title="Why Sylhet" drop>
+                            <p>PLACEHOLDER — replace with the real answer. Why open a
+                            Pan-Asian restaurant here, in this city, rather than Dhaka?
+                            What did Sylhet not have?</p>
+                        </Chapter>
+
+                        <Plate
+                            src={ASSET_BASE + 'yokoso-ramen.jpg'}
+                            seal="炎"
+                            kicker="The Kitchen"
+                            line="Four kitchens, one pass."
+                            height="short"
+                        />
+
+                        <Chapter kicker="The Table" title="Why Pan-Asian">
+                            <p>PLACEHOLDER — why not one cuisine done narrowly? What is
+                            the argument for holding Japan, China and Thailand on the
+                            same menu, and what would be lost by choosing one?</p>
+                        </Chapter>
+
+                        <Chapter kicker="The Kitchen" title="The people behind it">
+                            <p>PLACEHOLDER — who runs this kitchen, where did they train,
+                            and what is the one dish this restaurant would refuse to
+                            take off the menu?</p>
+                        </Chapter>
+
+                        <Plate
+                            src={ASSET_BASE + 'yokoso-dimsum.jpg'}
+                            seal="歓"
+                            kicker="Yōkoso"
+                            line="Welcome — it is the first word we say."
+                            height="short"
+                        />
+
+                        <Chapter kicker="Finally" title="What Yōkoso means">
+                            <p>PLACEHOLDER — 歓迎 / ようこそ means welcome. Say what that
+                            actually commits the restaurant to, in your own words.</p>
+                        </Chapter>
+                    </main>
+                    <Location />
+                </>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+
+        requestAnimationFrame(() => setTimeout(() => ScrollTrigger.refresh(), 200));
+        window.addEventListener('load', () => setTimeout(() => ScrollTrigger.refresh(), 400));
+    </script>
+</body>
+</html>
