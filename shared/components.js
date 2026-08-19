@@ -86,11 +86,26 @@ const Reveal = ({ children, variant, delay=0, stagger=0.08, start="top 85%", onc
 };
 
 const SpiceIcons = ({ level }) => {
-    if (!level || level<1) return null;
-    const chars = '🌶️'.repeat(Math.min(level,3));
-    return <span className="spice-icon" aria-label={`Spice level ${level}`}>{chars}</span>;
+    if (!level || level < 1) return null;
+    const n = Math.min(level, 3);
+    return (
+        <span className="spice-icon inline-flex items-center gap-[3px]" aria-label={`Spice level ${n} of 3`} role="img">
+            {Array.from({ length: n }).map((_, i) => (
+                <svg key={i} width="7" height="10" viewBox="0 0 7 10" aria-hidden="true" focusable="false">
+                    <path d="M3.5 0.4 C3.5 0.4 0.4 4.6 0.4 6.6 a3.1 3.1 0 0 0 6.2 0 C6.6 4.6 3.5 0.4 3.5 0.4 Z" fill="#D43A2F" />
+                </svg>
+            ))}
+        </span>
+    );
 };
-const SignatureStar = ({ active }) => active ? <span className="star-signature" aria-label="Chef's signature">★</span> : null;
+
+const SignatureStar = ({ active }) => active ? (
+    <span className="star-signature inline-flex items-center" aria-label="Chef's signature" role="img">
+        <svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true" focusable="false">
+            <path d="M4 0 L8 4 L4 8 L0 4 Z" fill="#D43A2F" />
+        </svg>
+    </span>
+) : null;
 
 const DishCard = memo(({ dish, onClick = null, compact = false }) => {
     return (
@@ -98,7 +113,7 @@ const DishCard = memo(({ dish, onClick = null, compact = false }) => {
             <div className="flex items-baseline justify-between w-full min-w-0">
                 <h4 className={compact ? "serif-dish text-sm sm:text-base text-forest font-medium leading-[1.2] line-clamp-2 min-w-0 flex-shrink" : "serif-dish text-[1.05rem] sm:text-xl md:text-2xl text-forest font-medium leading-[1.1] line-clamp-2 min-w-0 flex-shrink"}>
                     {dish.name}
-                    {dish.signature && <span className="star-signature ml-1.5 text-xs align-top">★</span>}
+                    {dish.signature && <span className="ml-2 inline-flex align-middle"><SignatureStar active={true} /></span>}
                 </h4>
                 <div className="flex-1 border-b border-dotted border-forest/20 mx-2 h-[1px] min-w-[6px]"></div>
                 <span
@@ -243,7 +258,7 @@ const ChefSignatures = ({ onDishClick }) => {
 
     if (signatureDishes.length === 0) return null;
     return (
-        <section ref={ref} className="skew-target py-12 sm:py-24 px-2 sm:px-6 max-w-7xl mx-auto overflow-hidden">
+        <section ref={ref} className="py-12 sm:py-24 px-2 sm:px-6 max-w-7xl mx-auto overflow-hidden">
             <div className="text-center mb-8 sm:mb-16">
                 <Reveal variant="stamp" as="div" className="inline-block mx-auto mb-4">
                     <span className="seal-mark seal-mark-sm">星</span>
@@ -258,7 +273,9 @@ const ChefSignatures = ({ onDishClick }) => {
                         <div key={dish.id} role="button" tabIndex={0} aria-label={`${dish.name} — view details`} className="snap-item signature-card min-w-[280px] sm:min-w-[340px] md:min-w-[380px] flex-shrink-0 border border-forest/10 bg-bone/30 p-5 sm:p-8 flex flex-col gap-3 cursor-pointer" onClick={() => onDishClick && onDishClick(dish)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onDishClick && onDishClick(dish); } }}>
                             <div className="flex justify-between items-start gap-2">
                                 <h4 className="serif-dish text-xl sm:text-2xl text-forest font-medium leading-tight">{dish.name}</h4>
-                                <div className="w-8 h-8 rounded-full bg-vermilion flex items-center justify-center text-bone text-xs font-bold shrink-0 shadow-sm">★</div>
+                                <div className="w-8 h-8 rounded-full bg-vermilion flex items-center justify-center shrink-0 shadow-sm" aria-hidden="true">
+                                    <svg width="9" height="9" viewBox="0 0 8 8" focusable="false"><path d="M4 0 L8 4 L4 8 L0 4 Z" fill="#F7F2E8" /></svg>
+                                </div>
                             </div>
                             <p className="sans-body text-sm sm:text-base text-forest-light/80 leading-relaxed flex-1 line-clamp-3">{dish.desc}</p>
                             <div className="flex justify-between items-center pt-4 border-t border-forest/10">
@@ -280,7 +297,7 @@ const CinematicCollections = () => {
     const collections = [...MENU.sushiCombos.map(item => ({ ...item, category: 'Sushi Set' })), ...MENU.bento.map(item => ({ ...item, category: 'Bento' }))];
 
     return (
-        <section ref={ref} className="skew-target py-12 sm:py-24 px-3 sm:px-6 max-w-7xl mx-auto">
+        <section ref={ref} className="py-12 sm:py-24 px-3 sm:px-6 max-w-7xl mx-auto">
             <div className="text-center mb-8 sm:mb-16">
                 <Reveal variant="stamp" as="div" className="inline-block mx-auto mb-4">
                     <span className="seal-mark seal-mark-sm">集</span>
@@ -326,7 +343,7 @@ const CompassPanel = ({ chapter, idx, isMobile }) => (
                     <span className="seal-mark seal-mark-lg">{chapter.seal}</span>
                 </div>
                 <div>
-                    <p className="script-head text-3xl sm:text-4xl text-forest-light/70">{chapter.native}</p>
+                    <p className="jp-mark text-2xl sm:text-3xl text-forest-light/70">{chapter.native}</p>
                     <h3 className="serif-head text-3xl sm:text-5xl text-forest mt-2">{chapter.name}</h3>
                     <p className="sans-body text-sm sm:text-base text-forest-light/80 mt-4 max-w-md mx-auto">{chapter.desc}</p>
                     <p className="sans-body text-xs uppercase tracking-widest text-forest-light/80 mt-3">{chapter.count} dishes</p>
@@ -379,7 +396,7 @@ const MenuCompass = () => {
                     <div key={chapter.name} className={`w-full py-16 px-6 flex items-center justify-center ${idx % 2 === 1 ? 'bg-bone-dark/30' : ''}`}>
                         <div className="text-center max-w-lg mx-auto">
                             <span className="seal-mark seal-mark-lg inline-block mb-4">{chapter.seal}</span>
-                            <p className="script-head text-3xl text-forest-light/70">{chapter.native}</p>
+                            <p className="jp-mark text-2xl text-forest-light/70">{chapter.native}</p>
                             <h3 className="serif-head text-3xl sm:text-4xl text-forest mt-2">{chapter.name}</h3>
                             <p className="sans-body text-sm text-forest-light/80 mt-3 max-w-md mx-auto">{chapter.desc}</p>
                             <p className="sans-body text-xs uppercase tracking-widest text-forest-light/80 mt-2">{chapter.count} dishes</p>
@@ -449,7 +466,7 @@ const SiteHeader = () => {
             <nav className="max-w-6xl mx-auto px-4 sm:px-8 flex items-center justify-between">
                 <a href="index.html" className="flex items-center gap-2 tap-target" aria-label="Yōkoso — home">
                     <img src="assets/yokoso-mark-180.png" alt="" width="40" height="40" className="w-10 h-10" />
-                    <span className="script-head text-xl text-forest hidden sm:inline">Yōkoso</span>
+                    <span className="script-head text-base text-forest hidden sm:inline tracking-[0.18em]">YŌKOSO</span>
                 </a>
 
                 <div className="hidden md:flex items-center gap-8">
