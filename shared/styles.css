@@ -141,3 +141,12 @@ button.tap-target, a.tap-target { display: inline-flex; }
 
 .lenis.lenis-smooth { scroll-behavior:auto; }
 .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior:contain; }
+
+/* Dark plate sections */
+.bg-ink { background-color:#0E1A17; }
+
+/* Prevent blur-animation flicker on iOS */
+.reveal-inner, [class*="script-head"], [class*="serif-head"] {
+    -webkit-backface-visibility:hidden;
+    backface-visibility:hidden;
+}
