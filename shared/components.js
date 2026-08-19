@@ -473,7 +473,7 @@ const SiteHeader = () => {
     ];
 
     return (
-        <header className={`fixed top-0 left-0 right-0 z-40 transition-colors duration-300 ${scrolled ? 'bg-bone/95 backdrop-blur-md border-b border-forest/5 py-3' : 'bg-transparent py-5'}`}>
+        <header className={`site-header-vt fixed top-0 left-0 right-0 z-40 transition-colors duration-300 ${scrolled ? 'bg-bone/95 backdrop-blur-md border-b border-forest/5 py-3' : 'bg-transparent py-5'}`}>
             <nav className="max-w-6xl mx-auto px-4 sm:px-8 flex items-center justify-between">
                 <a href="index.html" className="flex items-center gap-2 tap-target" aria-label="Yōkoso — home">
                     <img src="assets/yokoso-mark-180.png" alt="" width="40" height="40" className="w-10 h-10" />
