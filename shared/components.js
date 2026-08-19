@@ -18,12 +18,14 @@ const Reveal = ({ children, variant, delay=0, stagger=0.08, start="top 85%", onc
         if (reduceMotion) {
             if (variant === 'rise' || variant === 'scale') {
                 const targets = Array.from(el.children);
-                gsap.set(targets, variant === 'rise' ? { y: 0, opacity: 1 } : { scale: 1, opacity: 1 });
+                gsap.set(targets, variant === 'rise'
+                            ? { y: 0, opacity: 1, filter: 'blur(0px)' }
+                            : { scale: 1, opacity: 1, filter: 'blur(0px)' });
             } else if (variant === 'mask') {
                 const inner = el.querySelector('.reveal-inner');
                 if (inner) gsap.set(inner, { y: 0, opacity: 1 });
             } else if (variant === 'stamp') {
-                gsap.set(el, { scale: 1, rotate: 0, opacity: 1 });
+                gsap.set(el, { scale: 1, rotate: 0, opacity: 1, filter: 'blur(0px)' });
             } else if (variant === 'ink') {
                 gsap.set(el, { clipPath: 'inset(0 0% 0 0)' });
             }
@@ -37,10 +39,15 @@ const Reveal = ({ children, variant, delay=0, stagger=0.08, start="top 85%", onc
             if (variant === 'rise') {
                 const targets = Array.from(el.children);
                 if (targets.length > 0) {
-                    gsap.fromTo(targets, { y: m.dist, opacity: 0 }, {
-                        y: 0, opacity: 1, duration: dur, ease: MOTION.ease.out, stagger: stagger * m.stag, delay: delay,
-                        scrollTrigger: { trigger: el, start: start, toggleActions: once ? 'play none none none' : 'play none none reverse' }
-                    });
+                    gsap.fromTo(targets,
+                        { y: m.dist * 0.5, opacity: 0, filter: 'blur(6px)' },
+                        {
+                            y: 0, opacity: 1, filter: 'blur(0px)',
+                            duration: dur * 1.25, ease: MOTION.ease.out,
+                            stagger: stagger * m.stag, delay: delay,
+                            scrollTrigger: { trigger: el, start: start, toggleActions: once ? 'play none none none' : 'play none none reverse' }
+                        }
+                    );
                 }
             } else if (variant === 'mask') {
                 const inner = el.querySelector('.reveal-inner');
@@ -51,10 +58,14 @@ const Reveal = ({ children, variant, delay=0, stagger=0.08, start="top 85%", onc
                     });
                 }
             } else if (variant === 'stamp') {
-                gsap.fromTo(el, { scale: 1.6, rotate: -12, opacity: 0 }, {
-                    scale: 1, rotate: 0, opacity: 1, duration: MOTION.dur.md * m.mult, ease: MOTION.ease.stamp, delay: delay,
-                    scrollTrigger: { trigger: el, start: start, toggleActions: once ? 'play none none none' : 'play none none reverse' }
-                });
+                gsap.fromTo(el,
+                    { scale: 1.35, rotate: -8, opacity: 0, filter: 'blur(4px)' },
+                    {
+                        scale: 1, rotate: 0, opacity: 1, filter: 'blur(0px)',
+                        duration: MOTION.dur.md * m.mult, ease: MOTION.ease.stamp, delay: delay,
+                        scrollTrigger: { trigger: el, start: start, toggleActions: once ? 'play none none none' : 'play none none reverse' }
+                    }
+                );
             } else if (variant === 'ink') {
                 gsap.fromTo(el, { clipPath: 'inset(0 100% 0 0)' }, {
                     clipPath: 'inset(0 0% 0 0)', duration: MOTION.dur.lg * m.mult, ease: MOTION.ease.ink, delay: delay,
@@ -545,4 +556,59 @@ const MobileDrawer = ({ isOpen, onClose, navItems }) => {
 const LazySection = ({ children, className }) => {
     const { ref, isVisible } = useLazyLoad();
     return <div ref={ref} className={className}>{isVisible ? children : <div className="h-screen w-full"></div>}</div>;
+};
+
+// ---- Plate: full-bleed dark photographic moment ----
+const Plate = ({ src, seal, kicker, line, align = 'center', height = 'tall' }) => {
+    const ref = useRef(null);
+    const imgRef = useRef(null);
+
+    useEffect(() => {
+        if (!HAS_GSAP) return;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        const el = ref.current, img = imgRef.current;
+        if (!el || !img) return;
+        const ctx = gsap.context(() => {
+            gsap.fromTo(img,
+                { scale: 1.12, yPercent: -4 },
+                {
+                    scale: 1, yPercent: 4, ease: 'none',
+                    scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: 1.2 }
+                }
+            );
+        }, el);
+        return () => ctx.revert();
+    }, []);
+
+    const h = height === 'tall' ? 'min-h-[78vh]' : 'min-h-[52vh]';
+
+    return (
+        <section ref={ref} className={`relative w-full ${h} overflow-hidden bg-ink flex items-center justify-center`}>
+            <div className="absolute inset-0 overflow-hidden">
+                <img
+                    ref={imgRef}
+                    src={src}
+                    alt=""
+                    aria-hidden="true"
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover will-change-transform"
+                    style={{ opacity: 0.55 }}
+                />
+                <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(14,26,23,0.72) 0%, rgba(14,26,23,0.40) 45%, rgba(14,26,23,0.85) 100%)' }} />
+            </div>
+
+            <div className={`relative z-10 max-w-2xl px-6 sm:px-10 ${align === 'left' ? 'text-left mr-auto ml-6 sm:ml-16' : 'text-center'}`}>
+                {seal && (
+                    <Reveal variant="stamp" as="div" className="inline-block mb-5">
+                        <span className="seal-mark seal-mark-sm" style={{ borderColor: 'rgba(247,242,232,0.55)', color: '#F7F2E8', background: 'rgba(247,242,232,0.04)' }}>{seal}</span>
+                    </Reveal>
+                )}
+                <Reveal variant="rise" stagger={0.12} as="div">
+                    {kicker && <p className="sans-body text-[10px] uppercase tracking-[0.28em] text-bone/50 mb-3">{kicker}</p>}
+                    {line && <p className="script-head text-3xl sm:text-5xl text-bone leading-[1.15]">{line}</p>}
+                </Reveal>
+            </div>
+        </section>
+    );
 };
