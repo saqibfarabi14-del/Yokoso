@@ -181,6 +181,12 @@
         const App = () => {
             const [selectedDish, setSelectedDish] = useState(null);
 
+            // Landing here first counts as having entered the site — prevents the
+            // homepage threshold firing later in the same session on internal nav.
+            useEffect(() => {
+                try { sessionStorage.setItem('yokoso-entered', '1'); } catch (e) {}
+            }, []);
+
             return (
                 <>
                     <SiteHeader />
