@@ -149,6 +149,9 @@
             const secRef = useRef(null);
             const imgRef = useRef(null);
 
+            const showAmbient = !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+                && !(navigator.connection && navigator.connection.saveData);
+
             useEffect(() => {
                 if (!HAS_GSAP) return;
                 if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -164,6 +167,13 @@
             return (
                 <section ref={secRef} className="relative flex items-end overflow-hidden" style={{ minHeight: '92svh' }}>
                     <div className="absolute inset-0 overflow-hidden">
+                        {showAmbient && (
+                            <video
+                                className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+                                style={{ opacity: 0.5, mixBlendMode: 'screen' }}
+                                src={ASSETS + 'yokoso-ink-bloom.mp4'}
+                                autoPlay muted loop playsInline preload="none" aria-hidden="true" />
+                        )}
                         <img ref={imgRef} src={ASSETS + 'yokoso-sushi.jpg'} alt="" aria-hidden="true"
                              loading="lazy" decoding="async"
                              className="w-full h-full object-cover" style={{ opacity: 0.42 }} />
@@ -236,9 +246,24 @@
         };
 
         /* ===== §4 RESERVE ===== */
-        const ReserveSection = () => (
-            <section id="reserve" className="u-section anchor-offset">
-                <div className="u-read text-center">
+        const ReserveSection = () => {
+            const showAmbient = !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+                && !(navigator.connection && navigator.connection.saveData);
+
+            return (
+            <section id="reserve" className="u-section anchor-offset relative overflow-hidden">
+                {showAmbient && (
+                    <video
+                        className="absolute pointer-events-none"
+                        style={{
+                            opacity: 0.16, mixBlendMode: 'screen',
+                            left: '50%', bottom: 0, transform: 'translateX(-50%)',
+                            width: 'min(60vw, 640px)', height: '100%', objectFit: 'cover', objectPosition: 'bottom'
+                        }}
+                        src={ASSETS + 'yokoso-steam.mp4'}
+                        autoPlay muted loop playsInline preload="none" aria-hidden="true" />
+                )}
+                <div className="u-read relative text-center">
                     <Seal size="l" light>席</Seal>
                     <Reveal stagger={0.08}>
                         <h2 className="t-xl c-bone" style={{ marginTop: 'var(--s3)' }}>Reserve</h2>
@@ -254,7 +279,8 @@
                     </p>
                 </div>
             </section>
-        );
+            );
+        };
 
         /* ===== APP ===== */
         const App = () => {
