@@ -22,7 +22,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..600&family=Spectral:wght@300;400;500&family=Inter:wght@300;400;500&family=Noto+Serif+JP:wght@400;500&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..600;1,6..96,400..500&family=Spectral:wght@300;400;500&family=Inter:wght@300;400;500&family=Noto+Serif+JP:wght@400;500&display=swap" rel="stylesheet" />
 
     <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -124,10 +124,11 @@
                          style={{ background: 'radial-gradient(120% 90% at 50% 40%, transparent 0%, var(--ink) 78%)' }} />
 
                     <div ref={contentRef} className="u-page relative text-center flex flex-col items-center">
-                        <Seal size="l">歓</Seal>
+                        <Seal size="l" className="hero-seal-ring">歓</Seal>
                         <SplitLine text="YŌKOSO" className="t-hero c-bone" delay={0.3} />
                         <Reveal className="flex flex-col items-center" delay={1.1} stagger={0.1}>
                             <p className="t-label c-32" style={{ marginTop: 'var(--s3)' }}>Pan-Asian · Sylhet</p>
+                            <p className="t-body c-60" style={{ marginTop: 'var(--s2)', fontStyle: 'italic', maxWidth: '32ch' }}>Japanese, Chinese and Thai — served in five chapters.</p>
                         </Reveal>
                         <Reveal className="flex flex-wrap items-center justify-center" delay={1.35} stagger={0.08}>
                             <span style={{ display: 'inline-flex', gap: 'var(--s2)', marginTop: 'var(--s5)', flexWrap: 'wrap', justifyContent: 'center' }}>
@@ -184,8 +185,8 @@
                     <div className="u-page relative" style={{ paddingBottom: 'var(--s9)' }}>
                         <Reveal stagger={0.09}>
                             <p className="t-label c-32" style={{ marginBottom: 'var(--s4)' }}>The Room</p>
-                            <p className="t-xl c-bone">A dark room.</p>
-                            <p className="t-xl c-bone">An open counter.</p>
+                            <p className="t-xl c-bone" style={{ fontStyle: 'italic' }}>A dark room.</p>
+                            <p className="t-xl c-bone" style={{ fontStyle: 'italic' }}>An open counter.</p>
                             <p className="t-xl c-bone">One hundred and twenty-one dishes.</p>
                         </Reveal>
                         <Reveal delay={0.25}>
@@ -297,8 +298,10 @@
                     <SiteHeader />
                     <main id="main-content">
                         <Hero />
+                        <div className="section-fade" aria-hidden="true" />
                         <TheRoom />
                         <TheTable onDishClick={setSelected} />
+                        <div className="section-fade" aria-hidden="true" />
                         <ReserveSection />
                     </main>
                     <Footer />
