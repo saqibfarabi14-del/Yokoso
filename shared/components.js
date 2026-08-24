@@ -1,159 +1,243 @@
 'use strict';
 
-'use strict';
-
+/* hooks.js already declares useState / useEffect / useRef at top level.
+   Redeclaring them here is a parse-time SyntaxError that blanks the page. */
 const { useCallback, memo } = React;
 
-// ---- Reveal Primitive Component ----
-const Reveal = ({ children, variant, delay=0, stagger=0.08, start="top 85%", once=true, as="div", className="" }) => {
+const prefersReduced = () =>
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ============================================================
+   Reveal — the site's single motion idea.
+   Each direct child is wrapped in a mask and rides up into place.
+   ============================================================ */
+const Reveal = ({ children, as = 'div', delay = 0, stagger = 0.06, className = '', start = 'top 85%' }) => {
     const ref = useRef(null);
-    const isMobile = useMobile();
 
     useEffect(() => {
         const el = ref.current;
         if (!el || !HAS_GSAP) return;
 
-        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const inners = el.querySelectorAll('.reveal-line > *');
+        if (!inners.length) return;
 
-        if (reduceMotion) {
-            if (variant === 'rise' || variant === 'scale') {
-                const targets = Array.from(el.children);
-                gsap.set(targets, variant === 'rise'
-                            ? { y: 0, opacity: 1, filter: 'blur(0px)' }
-                            : { scale: 1, opacity: 1, filter: 'blur(0px)' });
-            } else if (variant === 'mask') {
-                const inner = el.querySelector('.reveal-inner');
-                if (inner) gsap.set(inner, { y: 0, opacity: 1 });
-            } else if (variant === 'stamp') {
-                gsap.set(el, { scale: 1, rotate: 0, opacity: 1, filter: 'blur(0px)' });
-            } else if (variant === 'ink') {
-                gsap.set(el, { clipPath: 'inset(0 0% 0 0)' });
-            }
+        if (prefersReduced()) {
+            gsap.set(inners, { y: '0%' });
             return;
         }
 
         const ctx = gsap.context(() => {
-            const m = isMobile ? { dist: 16, mult: 0.75, stag: 0.6 } : { dist: 24, mult: 1, stag: 1 };
-            const dur = MOTION.dur.md * m.mult;
-
-            if (variant === 'rise') {
-                const targets = Array.from(el.children);
-                if (targets.length > 0) {
-                    gsap.fromTo(targets,
-                        { y: m.dist * 0.5, opacity: 0, filter: 'blur(6px)' },
-                        {
-                            y: 0, opacity: 1, filter: 'blur(0px)',
-                            duration: dur * 1.25, ease: MOTION.ease.out,
-                            stagger: stagger * m.stag, delay: delay,
-                            scrollTrigger: { trigger: el, start: start, toggleActions: once ? 'play none none none' : 'play none none reverse' }
-                        }
-                    );
+            gsap.fromTo(inners,
+                { yPercent: 110 },
+                {
+                    yPercent: 0,
+                    duration: 0.9,
+                    ease: 'power4.out',
+                    stagger: stagger,
+                    delay: delay,
+                    scrollTrigger: { trigger: el, start: start, once: true }
                 }
-            } else if (variant === 'mask') {
-                const inner = el.querySelector('.reveal-inner');
-                if (inner) {
-                    gsap.fromTo(inner, { y: '110%', opacity: 0 }, {
-                        y: '0%', opacity: 1, duration: MOTION.dur.lg * m.mult, ease: MOTION.ease.out, delay: delay,
-                        scrollTrigger: { trigger: el, start: start, toggleActions: once ? 'play none none none' : 'play none none reverse' }
-                    });
-                }
-            } else if (variant === 'stamp') {
-                gsap.fromTo(el,
-                    { scale: 1.35, rotate: -8, opacity: 0, filter: 'blur(4px)' },
-                    {
-                        scale: 1, rotate: 0, opacity: 1, filter: 'blur(0px)',
-                        duration: MOTION.dur.md * m.mult, ease: MOTION.ease.stamp, delay: delay,
-                        scrollTrigger: { trigger: el, start: start, toggleActions: once ? 'play none none none' : 'play none none reverse' }
-                    }
-                );
-            } else if (variant === 'ink') {
-                gsap.fromTo(el, { clipPath: 'inset(0 100% 0 0)' }, {
-                    clipPath: 'inset(0 0% 0 0)', duration: MOTION.dur.lg * m.mult, ease: MOTION.ease.ink, delay: delay,
-                    scrollTrigger: { trigger: el, start: start, toggleActions: once ? 'play none none none' : 'play none none reverse' }
-                });
-            } else if (variant === 'scale') {
-                const targets = Array.from(el.children);
-                if (targets.length > 0) {
-                    gsap.fromTo(targets, { scale: 1.08, opacity: 0 }, {
-                        scale: 1, opacity: 1, duration: MOTION.dur.md * m.mult, ease: MOTION.ease.out, stagger: stagger * m.stag, delay: delay,
-                        scrollTrigger: { trigger: el, start: start, toggleActions: once ? 'play none none none' : 'play none none reverse' }
-                    });
-                }
-            }
+            );
         }, el);
 
         return () => ctx.revert();
-    }, [variant, stagger, delay, start, once, isMobile, HAS_GSAP]);
+    }, [delay, stagger, start]);
 
-    if (variant === 'mask') {
-        return React.createElement(as, { ref: ref, className: `overflow-hidden ${className}` },
-            React.createElement('div', { className: 'reveal-inner w-full h-full' }, children)
-        );
-    }
-    if (variant === 'ink') {
-        return React.createElement(as, { ref: ref, className: className }, children);
-    }
-    return React.createElement(as, { ref: ref, className: className }, children);
+    const kids = React.Children.toArray(children).map((child, i) =>
+        React.createElement('span', { className: 'reveal-line', key: i },
+            React.createElement('span', null, child)
+        )
+    );
+
+    return React.createElement(as, { ref: ref, className: className }, kids);
 };
 
-const SpiceIcons = ({ level }) => {
+/* ============================================================
+   SplitLine — hero-scale text, animated per character.
+   ============================================================ */
+const SplitLine = ({ text, className = '', delay = 0.25 }) => {
+    const ref = useRef(null);
+
+    useEffect(() => {
+        const el = ref.current;
+        if (!el || !HAS_GSAP) return;
+        if (prefersReduced()) { gsap.set(el, { opacity: 1 }); return; }
+
+        let split;
+        const ctx = gsap.context(() => {
+            try {
+                split = SplitText.create(el, { type: 'chars', mask: 'chars' });
+                gsap.fromTo(split.chars,
+                    { yPercent: 115, opacity: 0 },
+                    { yPercent: 0, opacity: 1, duration: 1.4, ease: 'power4.out', stagger: 0.045, delay: delay }
+                );
+            } catch (e) {
+                gsap.fromTo(el, { y: 28, opacity: 0 },
+                    { y: 0, opacity: 1, duration: 1.1, ease: 'power4.out', delay: delay });
+            }
+        }, el);
+
+        return () => { ctx.revert(); if (split) split.revert(); };
+    }, [delay]);
+
+    return <h1 ref={ref} className={className}>{text}</h1>;
+};
+
+/* ============================================================
+   Marks
+   ============================================================ */
+const Seal = ({ children, size = 's', light = false, className = '' }) => (
+    <span className={`seal seal-${size}${light ? ' seal-light' : ''} ${className}`}>{children}</span>
+);
+
+const SpiceMark = ({ level }) => {
     if (!level || level < 1) return null;
     const n = Math.min(level, 3);
     return (
-        <span className="spice-icon inline-flex items-center gap-[3px]" aria-label={`Spice level ${n} of 3`} role="img">
+        <span className="inline-flex items-center gap-[3px]" role="img" aria-label={`Heat ${n} of 3`}>
             {Array.from({ length: n }).map((_, i) => (
                 <svg key={i} width="7" height="10" viewBox="0 0 7 10" aria-hidden="true" focusable="false">
-                    <path d="M3.5 0.4 C3.5 0.4 0.4 4.6 0.4 6.6 a3.1 3.1 0 0 0 6.2 0 C6.6 4.6 3.5 0.4 3.5 0.4 Z" fill="#D43A2F" />
+                    <path d="M3.5 0.4 C3.5 0.4 0.4 4.6 0.4 6.6 a3.1 3.1 0 0 0 6.2 0 C6.6 4.6 3.5 0.4 3.5 0.4 Z" fill="#D6402F" />
                 </svg>
             ))}
         </span>
     );
 };
 
-const SignatureStar = ({ active }) => active ? (
-    <span className="star-signature inline-flex items-center" aria-label="Chef's signature" role="img">
+const SigMark = () => (
+    <span className="inline-flex items-center" role="img" aria-label="Chef's signature">
         <svg width="8" height="8" viewBox="0 0 8 8" aria-hidden="true" focusable="false">
-            <path d="M4 0 L8 4 L4 8 L0 4 Z" fill="#D43A2F" />
+            <path d="M4 0 L8 4 L4 8 L0 4 Z" fill="#D6402F" />
         </svg>
     </span>
-) : null;
+);
 
-const DishCard = memo(({ dish, onClick = null, compact = false }) => {
-    return (
-        <button onClick={() => { if (onClick) onClick(dish); }} className={`dish-card-trigger w-full text-left border-b border-forest/5 last:border-0 ${compact ? 'py-2 sm:py-2.5' : 'py-2.5 sm:py-3'} tap-target flex flex-col gap-0.5 active:bg-forest/5 transition-colors`}>
-            <div className="flex items-baseline justify-between w-full min-w-0">
-                <h4 className={compact ? "serif-dish text-sm sm:text-base text-forest font-medium leading-[1.2] line-clamp-2 min-w-0 flex-shrink" : "serif-dish text-[1.05rem] sm:text-xl md:text-2xl text-forest font-medium leading-[1.1] line-clamp-2 min-w-0 flex-shrink"}>
-                    {dish.name}
-                    {dish.signature && <span className="ml-2 inline-flex align-middle"><SignatureStar active={true} /></span>}
-                </h4>
-                {compact && dish.spice > 0 && (
-                    <span className="ml-2 shrink-0 inline-flex"><SpiceIcons level={dish.spice} /></span>
-                )}
-                <div className="flex-1 border-b border-dotted border-forest/20 mx-2 h-[1px] min-w-[6px]"></div>
-                <span
-                    className={compact ? "dish-price sans-body text-[10px] uppercase tracking-widest font-semibold text-forest/80 whitespace-nowrap flex-shrink-0" : "dish-price sans-body text-[10px] sm:text-[11px] uppercase tracking-widest font-semibold text-forest/80 whitespace-nowrap flex-shrink-0"}
-                    data-price={dish.hasHalfFull ? '' : dish.price}
-                >
-                    {dish.hasHalfFull ? `${dish.priceHalf} / ${dish.priceFull}` : dish.price} BDT
-                </span>
+/* ============================================================
+   MobileNav
+   ============================================================ */
+const MobileNav = ({ open, onClose }) => {
+    useEffect(() => {
+        document.body.style.overflow = open ? 'hidden' : '';
+        return () => { document.body.style.overflow = ''; };
+    }, [open]);
+
+    useEffect(() => {
+        if (!open) return;
+        const onKey = (e) => { if (e.key === 'Escape') onClose(); };
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+    }, [open, onClose]);
+
+    return ReactDOM.createPortal(
+        <div
+            className={`fixed inset-0 z-50 transition-opacity duration-500 ${open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+            style={{ background: 'var(--ink)' }}
+            role="dialog" aria-modal="true" aria-label="Menu"
+        >
+            <div className="u-page flex items-center justify-between" style={{ paddingBlock: 'var(--s4)' }}>
+                <span className="t-label c-32">Yōkoso</span>
+                <button onClick={onClose} className="tap t-label c-60" aria-label="Close menu">Close</button>
             </div>
-            {!compact && (
-                <div className="flex flex-wrap gap-x-2 gap-y-0.5 items-center">
-                    {dish.signature && <SignatureStar active={true} />}
-                    <SpiceIcons level={dish.spice} />
-                </div>
-            )}
-            {!compact && <p className="sans-body text-xs text-forest-light/80 mt-0.5 line-clamp-2">{dish.desc}</p>}
+            <nav className="u-page flex flex-col" style={{ gap: 'var(--s4)', marginTop: 'var(--s8)' }}>
+                <a href="menu.html" className="t-xl c-bone">Menu</a>
+                <a href="index.html#reserve" onClick={onClose} className="t-xl c-bone">Reserve</a>
+                <div className="rule" style={{ marginBlock: 'var(--s4)' }} />
+                <a href={`tel:+${RESERVATION_PHONE}`} className="t-sm c-60">01841965676</a>
+                <p className="t-sm c-32">Al Madani Tower (2nd Floor), Mirboxtula, Sylhet</p>
+            </nav>
+        </div>,
+        document.body
+    );
+};
+
+/* ============================================================
+   SiteHeader
+   ============================================================ */
+const SiteHeader = () => {
+    const [scrolled, setScrolled] = useState(false);
+    const [navOpen, setNavOpen] = useState(false);
+
+    useEffect(() => {
+        const onScroll = () => setScrolled(window.scrollY > 80);
+        onScroll();
+        window.addEventListener('scroll', onScroll, { passive: true });
+        return () => window.removeEventListener('scroll', onScroll);
+    }, []);
+
+    return (
+        <header
+            className="vt-header fixed top-0 left-0 right-0 z-40"
+            style={{
+                background: scrolled ? 'rgba(10,14,12,0.86)' : 'transparent',
+                backdropFilter: scrolled ? 'blur(12px)' : 'none',
+                WebkitBackdropFilter: scrolled ? 'blur(12px)' : 'none',
+                borderBottom: scrolled ? '1px solid var(--hairline)' : '1px solid transparent',
+                transition: 'background .5s var(--ease), border-color .5s var(--ease)'
+            }}
+        >
+            <div className="u-page flex items-center justify-between" style={{ paddingBlock: 'var(--s3)' }}>
+                <a href="index.html" className="flex items-center tap" style={{ gap: 'var(--s2)' }} aria-label="Yōkoso — home">
+                    <img
+                        src="https://raw.githubusercontent.com/saqibfarabi14-del/Yokoso/main/assets/yokoso-mark-180.png"
+                        alt="" width="34" height="34" style={{ width: 34, height: 34 }} />
+                    <span className="t-label c-bone hidden sm:inline">Yōkoso</span>
+                </a>
+
+                <nav className="hidden md:flex items-center" style={{ gap: 'var(--s5)' }}>
+                    <a href="menu.html" className="t-label c-60 link-u">Menu</a>
+                    <a href="index.html#reserve" className="t-label c-60 link-u">Reserve</a>
+                </nav>
+
+                <button
+                    onClick={() => setNavOpen(true)}
+                    className="md:hidden tap flex flex-col items-end justify-center"
+                    style={{ gap: 5 }}
+                    aria-label="Open menu" aria-expanded={navOpen}
+                >
+                    <span style={{ display: 'block', width: 22, height: 1, background: 'var(--bone)' }} />
+                    <span style={{ display: 'block', width: 14, height: 1, background: 'var(--bone)' }} />
+                </button>
+            </div>
+
+            <MobileNav open={navOpen} onClose={() => setNavOpen(false)} />
+        </header>
+    );
+};
+
+/* ============================================================
+   DishRow
+   ============================================================ */
+const DishRow = memo(({ dish, onClick }) => {
+    const price = dish.hasHalfFull
+        ? `${dish.priceHalf} / ${dish.priceFull}`
+        : dish.price;
+
+    return (
+        <button
+            onClick={() => onClick && onClick(dish)}
+            className="w-full text-left flex items-baseline"
+            style={{ paddingBlock: 'var(--s2)', borderBottom: '1px solid var(--hairline)' }}
+        >
+            <span className="t-m c-bone" style={{ flexShrink: 1, minWidth: 0 }}>
+                {dish.name}
+                {dish.signature && <span style={{ marginLeft: 8, display: 'inline-flex', verticalAlign: 'middle' }}><SigMark /></span>}
+                {dish.spice > 0 && <span style={{ marginLeft: 8, display: 'inline-flex', verticalAlign: 'middle' }}><SpiceMark level={dish.spice} /></span>}
+            </span>
+            <span className="leader" aria-hidden="true" />
+            <span className="t-sm c-60" style={{ whiteSpace: 'nowrap', flexShrink: 0 }}>{price} BDT</span>
         </button>
     );
 });
 
-const DishDetail = ({ dish, isOpen, onClose }) => {
+/* ============================================================
+   DishSheet
+   ============================================================ */
+const DishSheet = ({ dish, isOpen, onClose }) => {
     const isTouch = useIsTouch();
     const sheetRef = useRef(null);
-    const dragStartY = useRef(0);
-    const currentY = useRef(0);
-    const isDragging = useRef(false);
+    const startY = useRef(0);
+    const curY = useRef(0);
+    const dragging = useRef(false);
 
     useEffect(() => {
         if (!isOpen) return;
@@ -162,66 +246,77 @@ const DishDetail = ({ dish, isOpen, onClose }) => {
         return () => window.removeEventListener('keydown', onKey);
     }, [isOpen, onClose]);
 
-    useEffect(() => {
-        if (!isOpen) return;
-        const prev = document.activeElement;
-        document.body.style.overflow = 'hidden';
-        return () => {
-            document.body.style.overflow = '';
-            if (prev && prev.focus) prev.focus();
-        };
-    }, [isOpen]);
-
-    const handleTouchStart = (e) => {
+    const onTouchStart = (e) => {
         if (!isTouch || !sheetRef.current) return;
-        dragStartY.current = e.touches[0].clientY;
-        isDragging.current = true;
+        startY.current = e.touches[0].clientY;
+        dragging.current = true;
         sheetRef.current.style.transition = 'none';
     };
-    const handleTouchMove = (e) => {
-        if (!isDragging.current || !sheetRef.current) return;
-        const deltaY = e.touches[0].clientY - dragStartY.current;
-        if (deltaY > 0) {
-            currentY.current = deltaY;
-            sheetRef.current.style.transform = `translateY(${deltaY}px)`;
-        }
+    const onTouchMove = (e) => {
+        if (!dragging.current || !sheetRef.current) return;
+        const dy = e.touches[0].clientY - startY.current;
+        if (dy > 0) { curY.current = dy; sheetRef.current.style.transform = `translateY(${dy}px)`; }
     };
-    const handleTouchEnd = () => {
-        if (!isDragging.current || !sheetRef.current) return;
-        isDragging.current = false;
-        sheetRef.current.style.transition = 'transform 0.3s cubic-bezier(0.23,1,0.32,1)';
-        if (currentY.current > 100) onClose();
+    const onTouchEnd = () => {
+        if (!dragging.current || !sheetRef.current) return;
+        dragging.current = false;
+        sheetRef.current.style.transition = 'transform .4s var(--ease)';
+        if (curY.current > 100) onClose();
         else sheetRef.current.style.transform = 'translateY(0px)';
-        currentY.current = 0;
+        curY.current = 0;
     };
-    const resetSheet = () => { if (sheetRef.current) sheetRef.current.style.transform = 'translateY(0px)'; };
+    const reset = () => { if (sheetRef.current) sheetRef.current.style.transform = 'translateY(0px)'; };
 
     if (!dish) return null;
+
+    const price = dish.hasHalfFull ? `${dish.priceHalf} / ${dish.priceFull}` : dish.price;
+
     return ReactDOM.createPortal(
         <div
-            className={`fixed inset-0 z-50 flex items-end sm:items-center justify-center transition-opacity duration-300 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
-            role="dialog" aria-modal="true" aria-label={dish.name}
-            onTouchStart={isTouch ? handleTouchStart : undefined}
-            onTouchMove={isTouch ? handleTouchMove : undefined}
-            onTouchEnd={isTouch ? handleTouchEnd : undefined}
+            className={`fixed inset-0 z-50 flex items-end sm:items-center justify-center transition-opacity duration-400 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+            onTouchStart={isTouch ? onTouchStart : undefined}
+            onTouchMove={isTouch ? onTouchMove : undefined}
+            onTouchEnd={isTouch ? onTouchEnd : undefined}
         >
-            <div className="absolute inset-0 bg-forest/40 backdrop-blur-sm transition-opacity duration-300" onClick={onClose} />
-            <div ref={sheetRef} className={`relative w-full sm:max-w-xl sm:w-full bg-bone rounded-t-2xl sm:rounded-none shadow-2xl transform transition-all duration-[420ms] ${isOpen ? 'translate-y-0 sm:scale-100 opacity-100' : 'translate-y-full sm:translate-y-0 sm:scale-[0.96] opacity-0 sm:opacity-0'}`} style={{ maxHeight: '90vh', display: 'flex', flexDirection: 'column', transitionTimingFunction: 'cubic-bezier(0.16,1,0.3,1)', boxShadow: '0 40px 80px -20px rgba(14,26,23,0.45)' }} onTransitionEnd={resetSheet}>
-                <div className="h-[3px] w-full bg-vermilion shrink-0" />
-                {isTouch && (<div className="drag-handle w-10 h-1 bg-forest/20 rounded-full mx-auto mt-2 mb-1 flex-shrink-0"></div>)}
-                <div className="p-5 sm:p-8 overflow-y-auto flex-1">
-                    <div className="flex justify-between items-start gap-4">
+            <div className="absolute inset-0" style={{ background: 'rgba(10,14,12,0.82)', backdropFilter: 'blur(6px)' }} onClick={onClose} />
+
+            <div
+                ref={sheetRef}
+                onTransitionEnd={reset}
+                className={`relative w-full sm:max-w-[520px] transform transition-all ${isOpen ? 'translate-y-0 sm:scale-100 opacity-100' : 'translate-y-full sm:translate-y-0 sm:scale-[0.97] opacity-0'}`}
+                style={{
+                    background: 'var(--ink-2)',
+                    maxHeight: '88vh',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    transitionDuration: '420ms',
+                    transitionTimingFunction: 'cubic-bezier(0.16,1,0.30,1)',
+                    boxShadow: '0 40px 90px -20px rgba(0,0,0,0.7)'
+                }}
+            >
+                <div style={{ height: 3, background: 'var(--vermilion)', flexShrink: 0 }} />
+
+                <div style={{ padding: 'var(--s5)', overflowY: 'auto' }}>
+                    <div className="flex items-start justify-between" style={{ gap: 'var(--s3)' }}>
                         <div>
-                            <p className="sans-body text-[10px] uppercase tracking-[0.22em] text-forest-light/50 mb-2">Yokoso</p>
-                            <h3 className="script-head text-3xl sm:text-4xl text-forest leading-[1.1]">{dish.name}</h3>
+                            <p className="t-label c-32" style={{ marginBottom: 'var(--s1)' }}>Yōkoso</p>
+                            <h3 className="t-l c-bone">{dish.name}</h3>
                         </div>
-                        <button onClick={onClose} className="tap-target w-10 h-10 rounded-full bg-forest/10 hover:bg-forest/20 active:bg-forest/30 transition-colors flex items-center justify-center text-forest/80 text-lg" aria-label="Close">✕</button>
+                        <button onClick={onClose} className="tap t-label c-60" aria-label="Close">Close</button>
                     </div>
-                    <div className="flex gap-3 mt-2">{dish.signature && <SignatureStar active={true} />}<SpiceIcons level={dish.spice} /></div>
-                    <p className="sans-body text-base sm:text-lg text-forest-light/80 mt-4 leading-relaxed">{dish.desc}</p>
-                    <div className="mt-6 pt-4 border-t border-forest/10 flex justify-between items-center">
-                        <span className="sans-body text-sm uppercase tracking-widest text-forest-light/80">Price</span>
-                        <span className="serif-head text-2xl text-forest">{dish.hasHalfFull ? `${dish.priceHalf} / ${dish.priceFull}` : dish.price} BDT</span>
+
+                    {(dish.signature || dish.spice > 0) && (
+                        <div className="flex items-center" style={{ gap: 'var(--s2)', marginTop: 'var(--s2)' }}>
+                            {dish.signature && <SigMark />}
+                            <SpiceMark level={dish.spice} />
+                        </div>
+                    )}
+
+                    <p className="t-body c-60" style={{ marginTop: 'var(--s3)' }}>{dish.desc}</p>
+
+                    <div className="flex items-center justify-between" style={{ marginTop: 'var(--s5)', paddingTop: 'var(--s3)', borderTop: '1px solid var(--hairline)' }}>
+                        <span className="t-label c-32">Price</span>
+                        <span className="t-m c-bone">{price} BDT</span>
                     </div>
                 </div>
             </div>
@@ -230,340 +325,10 @@ const DishDetail = ({ dish, isOpen, onClose }) => {
     );
 };
 
-// ---- Location (shared footer, used by both index.html and menu.html) ----
-const Location = ({ showReservationCTA = true }) => {
-    return (
-        <footer id="location" className="py-16 sm:py-24 px-4 sm:px-8 bg-bone-dark/40 border-t border-forest/5">
-            <div className="max-w-3xl mx-auto text-center">
-                <Reveal variant="stamp" as="div" className="inline-block mx-auto mb-4">
-                    <span className="seal-mark seal-mark-sm">〒</span>
-                </Reveal>
-                <Reveal variant="rise" stagger={0.12} as="div">
-                    <h2 className="script-head text-4xl sm:text-6xl text-forest">Find Us</h2>
-                    <p className="serif-head text-lg sm:text-xl text-forest-light/80 mt-1">Al Madani Tower (2nd Floor), Mirboxtula, Sylhet.</p>
-                    {showReservationCTA && (
-                        <p className="sans-body text-xs sm:text-sm text-forest-light/80 mt-3">
-                            Open daily · 12:30 PM – 11:00 PM (Fri from 2:00 PM)
-                        </p>
-                    )}
-                    <p className="sans-body text-xs sm:text-sm text-forest-light/80 mt-3">
-                        <a href={`tel:+${RESERVATION_PHONE}`} className="underline-draw">01841965676</a>
-                        {CONTACT_EMAIL && <> · <a href={`mailto:${CONTACT_EMAIL}`} className="underline-draw">{CONTACT_EMAIL}</a></>}
-                    </p>
-                    {showReservationCTA && (
-                        <a href={WHATSAPP_RESERVE_URL} target="_blank" rel="noopener noreferrer" className="magnetic-btn mt-6 inline-flex">Reserve on WhatsApp</a>
-                    )}
-                    <div className="flex justify-center flex-wrap gap-4 sm:gap-6 mt-6 sm:mt-8">
-                        <a href="https://www.facebook.com/share/192xaTJHwX/" target="_blank" rel="noopener noreferrer" className="underline-draw text-xs sm:text-sm text-forest-light/80 transition-colors tap-target">Facebook</a>
-                        <a href="https://www.instagram.com/yokosobd?igsh=MTQ4bHp4Mm1sbjNwYg==" target="_blank" rel="noopener noreferrer" className="underline-draw text-xs sm:text-sm text-forest-light/80 transition-colors tap-target">Instagram</a>
-                        {DELIVERY_URL && <a href={DELIVERY_URL} target="_blank" rel="noopener noreferrer" className="underline-draw text-xs sm:text-sm text-forest-light/80 transition-colors tap-target">Delivery</a>}
-                    </div>
-                    <p className="text-[10px] sm:text-xs text-forest-light/80 mt-8 sm:mt-10">© {new Date().getFullYear()} Yokoso · Sylhet</p>
-                </Reveal>
-            </div>
-        </footer>
-    );
-};
-
-
-// ---- ChefSignatures ----
-const ChefSignatures = ({ onDishClick }) => {
-    const ref = useRef(null);
-    const signatureDishes = Object.values(MENU).flat().filter(dish => dish.signature === true);
-
-    if (signatureDishes.length === 0) return null;
-    return (
-        <section ref={ref} className="py-12 sm:py-24 px-2 sm:px-6 max-w-7xl mx-auto overflow-hidden">
-            <div className="text-center mb-8 sm:mb-16">
-                <Reveal variant="stamp" as="div" className="inline-block mx-auto mb-4">
-                    <span className="seal-mark seal-mark-sm">星</span>
-                </Reveal>
-                <h2 className="script-head text-3xl sm:text-5xl md:text-6xl text-forest">Chef's Signatures</h2>
-                <p className="sans-body text-sm text-forest-light/80 mt-4">The dishes that define us — marked with the vermilion seal</p>
-            </div>
-            <div className="relative">
-                <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-bone to-transparent pointer-events-none z-10 hidden sm:block"></div>
-                <Reveal variant="rise" stagger={0.08} as="div" className="snap-container hide-scrollbar flex overflow-x-auto gap-4 sm:gap-6 px-3 sm:px-8 pb-4 pt-2 touch-pan-x">
-                    {signatureDishes.map((dish) => (
-                        <div key={dish.id} role="button" tabIndex={0} aria-label={`${dish.name} — view details`} className="snap-item signature-card min-w-[280px] sm:min-w-[340px] md:min-w-[380px] flex-shrink-0 border border-forest/10 bg-bone/30 p-5 sm:p-8 flex flex-col gap-3 cursor-pointer" onClick={() => onDishClick && onDishClick(dish)} onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onDishClick && onDishClick(dish); } }}>
-                            <div className="flex justify-between items-start gap-2">
-                                <h4 className="serif-dish text-xl sm:text-2xl text-forest font-medium leading-tight">{dish.name}</h4>
-                                <div className="w-8 h-8 rounded-full bg-vermilion flex items-center justify-center shrink-0 shadow-sm" aria-hidden="true">
-                                    <svg width="9" height="9" viewBox="0 0 8 8" focusable="false"><path d="M4 0 L8 4 L4 8 L0 4 Z" fill="#F7F2E8" /></svg>
-                                </div>
-                            </div>
-                            <p className="sans-body text-sm sm:text-base text-forest-light/80 leading-relaxed flex-1 line-clamp-3">{dish.desc}</p>
-                            <div className="flex justify-between items-center pt-4 border-t border-forest/10">
-                                <div className="flex gap-2"><SpiceIcons level={dish.spice} /></div>
-                                <span className="sans-body text-[10px] sm:text-xs uppercase tracking-widest font-medium text-forest/80 whitespace-nowrap">{dish.hasHalfFull ? `${dish.priceHalf} / ${dish.priceFull}` : dish.price} BDT</span>
-                            </div>
-                        </div>
-                    ))}
-                </Reveal>
-                <p className="sans-body text-xs text-forest-light/80 text-right mt-3 pr-2 sm:hidden">Swipe →</p>
-            </div>
-        </section>
-    );
-};
-
-// ---- CinematicCollections ----
-const CinematicCollections = () => {
-    const ref = useRef(null);
-    const collections = [...MENU.sushiCombos.map(item => ({ ...item, category: 'Sushi Set' })), ...MENU.bento.map(item => ({ ...item, category: 'Bento' }))];
-
-    return (
-        <section ref={ref} className="py-12 sm:py-24 px-3 sm:px-6 max-w-7xl mx-auto">
-            <div className="text-center mb-8 sm:mb-16">
-                <Reveal variant="stamp" as="div" className="inline-block mx-auto mb-4">
-                    <span className="seal-mark seal-mark-sm">集</span>
-                </Reveal>
-                <h2 className="script-head text-3xl sm:text-5xl md:text-6xl text-forest">Curated Collections</h2>
-                <p className="sans-body text-sm text-forest-light/80 mt-4">Our grandest sets — meticulously crafted</p>
-                <div className="h-px bg-forest/5 max-w-xs mx-auto mt-6" />
-            </div>
-            <Reveal variant="scale" stagger={0.15} as="div" className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
-                {collections.map((item) => {
-                    const itemList = item.desc.split(',').map(s => s.trim().replace(/\.$/, ''));
-                    return (
-                        <div key={item.id} className="collection-card border border-forest/10 bg-bone/30 p-5 sm:p-8 flex flex-col gap-4">
-                            <div className="flex justify-between items-start gap-2">
-                                <div className="min-w-0">
-                                    <span className="sans-body text-[10px] sm:text-xs uppercase tracking-widest text-forest-light/80 font-medium block">{item.category}</span>
-                                    <h3 className="script-head text-3xl sm:text-4xl text-forest mt-0.5 leading-tight line-clamp-2">{item.name}</h3>
-                                </div>
-                                <span className="sans-body text-xs sm:text-sm uppercase tracking-widest font-semibold text-forest/80 whitespace-nowrap shrink-0">{item.price} BDT</span>
-                            </div>
-                            <div className="mt-1 mb-3 flex-grow">
-                                <p className="sans-body text-xs sm:text-sm text-forest-light/80 mb-2 font-medium">Includes:</p>
-                                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1">
-                                    {itemList.map((subItem, idx) => (
-                                        <li key={idx} className="sans-body text-sm text-forest/90 flex items-start gap-2"><span className="text-vermilion text-[10px] mt-1 shrink-0">✦</span> <span className="break-words">{subItem}</span></li>
-                                    ))}
-                                </ul>
-                            </div>
-                            <div className="mt-auto pt-4 border-t border-forest/10 flex justify-end"><span className="seal-mark seal-mark-sm text-xs opacity-50">薦</span></div>
-                        </div>
-                    );
-                })}
-            </Reveal>
-        </section>
-    );
-};
-
-// ---- MenuCompass ----
-const CompassPanel = ({ chapter, idx, isMobile }) => (
-        <div className={`compass-panel ${isMobile ? 'snap-item w-screen' : 'w-screen'} flex-shrink-0 h-screen flex items-center justify-center px-6 sm:px-12 ${idx % 2 === 1 ? 'bg-bone-dark/30' : ''}`}>
-            <div className="text-center max-w-lg mx-auto">
-                <div className="mb-6">
-                    <span className="seal-mark seal-mark-lg">{chapter.seal}</span>
-                </div>
-                <div>
-                    <p className="jp-mark text-2xl sm:text-3xl text-forest-light/70">{chapter.native}</p>
-                    <h3 className="serif-head text-3xl sm:text-5xl text-forest mt-2">{chapter.name}</h3>
-                    <p className="sans-body text-sm sm:text-base text-forest-light/80 mt-4 max-w-md mx-auto">{chapter.desc}</p>
-                    <p className="sans-body text-xs uppercase tracking-widest text-forest-light/80 mt-3">{chapter.count} dishes</p>
-                    <a
-                        href={`menu.html#${chapter.anchorId}`}
-                        className="magnetic-btn magnetic-btn-outline mt-6 text-sm"
-                    >
-                        View Chapter
-                    </a>
-                </div>
-            </div>
-        </div>
-);
-
-const MenuCompass = () => {
-    const sectionRef = useRef(null);
-    const trackRef = useRef(null);
-    const isMobile = useMobile();
-
-    useEffect(() => {
-        if (!HAS_GSAP) return;
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-        if (isMobile) return;
-
-        const ctx = gsap.context(() => {
-            const panels = gsap.utils.toArray('.compass-panel', trackRef.current);
-            gsap.to(panels, {
-                xPercent: -100 * (panels.length - 1),
-                ease: 'none',
-                scrollTrigger: {
-                    trigger: sectionRef.current,
-                    pin: true,
-                    scrub: 1,
-                    snap: { snapTo: 1 / (panels.length - 1), duration: 0.4, ease: 'power1.inOut' },
-                    end: () => '+=' + (sectionRef.current.offsetWidth * (panels.length - 1)),
-                    invalidateOnRefresh: true
-                }
-            });
-        }, sectionRef);
-        return () => ctx.revert();
-    }, [isMobile]);
-
-    const reduceMotion = !HAS_GSAP || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-
-    if (reduceMotion) {
-        return (
-            <section className="w-full">
-                {COMPASS_CHAPTERS.map((chapter, idx) => (
-                    <div key={chapter.name} className={`w-full py-16 px-6 flex items-center justify-center ${idx % 2 === 1 ? 'bg-bone-dark/30' : ''}`}>
-                        <div className="text-center max-w-lg mx-auto">
-                            <span className="seal-mark seal-mark-lg inline-block mb-4">{chapter.seal}</span>
-                            <p className="jp-mark text-2xl text-forest-light/70">{chapter.native}</p>
-                            <h3 className="serif-head text-3xl sm:text-4xl text-forest mt-2">{chapter.name}</h3>
-                            <p className="sans-body text-sm text-forest-light/80 mt-3 max-w-md mx-auto">{chapter.desc}</p>
-                            <p className="sans-body text-xs uppercase tracking-widest text-forest-light/80 mt-2">{chapter.count} dishes</p>
-                            <a href={`menu.html#${chapter.anchorId}`} className="magnetic-btn magnetic-btn-outline mt-4 text-sm">View Chapter</a>
-                        </div>
-                    </div>
-                ))}
-            </section>
-        );
-    }
-
-    if (isMobile) {
-        return (
-            <section className="w-full py-8 overflow-hidden">
-                <div className="snap-container hide-scrollbar flex overflow-x-auto" style={{ touchAction: 'pan-x pan-y' }}>
-                    {COMPASS_CHAPTERS.map((chapter, idx) => (
-                        <CompassPanel key={chapter.anchorId} chapter={chapter} idx={idx} isMobile={isMobile} />
-                    ))}
-                </div>
-                <div className="flex justify-center gap-2 mt-4" aria-hidden="true">
-                    {COMPASS_CHAPTERS.map((_, i) => (
-                        <span key={i} className="w-1.5 h-1.5 rounded-full bg-forest/20" />
-                    ))}
-                </div>
-            </section>
-        );
-    }
-
-    return (
-        <section ref={sectionRef} className="relative w-full h-screen overflow-hidden">
-            <div ref={trackRef} className="flex h-full" style={{ width: `${COMPASS_CHAPTERS.length * 100}vw` }}>
-                {COMPASS_CHAPTERS.map((chapter, idx) => (
-                    <CompassPanel key={chapter.anchorId} chapter={chapter} idx={idx} isMobile={isMobile} />
-                ))}
-            </div>
-        </section>
-    );
-};
-
-// ---- SiteHeader + MobileDrawer ----
-const SiteHeader = () => {
-    const [scrolled, setScrolled] = useState(false);
-    const [drawerOpen, setDrawerOpen] = useState(false);
-
-    useEffect(() => {
-        const hasHero = !!document.querySelector('.hero-line');
-        const threshold = hasHero ? window.innerHeight * 0.7 : 24;
-        const handleScroll = () => setScrolled(window.scrollY > threshold);
-        handleScroll();
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-
-    const scrollToTop = () => {
-        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
-    };
-
-    const navItems = [
-        { label: 'Menu', href: 'menu.html' },
-        { label: 'Our Story', href: 'story.html' },
-        { label: 'Visit', id: 'location' },
-    ];
-
-    return (
-        <header className={`site-header-vt fixed top-0 left-0 right-0 z-40 transition-colors duration-300 ${scrolled ? 'bg-bone/95 backdrop-blur-md border-b border-forest/5 py-3' : 'bg-transparent py-5'}`}>
-            <nav className="max-w-6xl mx-auto px-4 sm:px-8 flex items-center justify-between">
-                <a href="index.html" className="flex items-center gap-2 tap-target" aria-label="Yōkoso — home">
-                    <img src="assets/yokoso-mark-180.png" alt="" width="40" height="40" className="w-10 h-10" />
-                    <span className="script-head text-base text-forest hidden sm:inline tracking-[0.18em]">YŌKOSO</span>
-                </a>
-
-                <div className="hidden md:flex items-center gap-8">
-                    {navItems.map(item => (
-                        item.href ? (
-                            <a key={item.label} href={item.href} className="underline-draw sans-body text-sm text-forest/80">
-                                {item.label}
-                            </a>
-                        ) : (
-                            <button key={item.id} onClick={() => scrollToEl(document.getElementById(item.id), -80)} className="underline-draw sans-body text-sm text-forest/80">
-                                {item.label}
-                            </button>
-                        )
-                    ))}
-                    <a href={WHATSAPP_RESERVE_URL} target="_blank" rel="noopener noreferrer" className="magnetic-btn text-sm">Reserve</a>
-                </div>
-
-                <button onClick={() => setDrawerOpen(true)} className="md:hidden tap-target w-10 h-10 flex flex-col items-center justify-center gap-1.5" aria-label="Open menu" aria-expanded={drawerOpen}>
-                    <span className="block w-6 h-0.5 bg-forest" />
-                    <span className="block w-6 h-0.5 bg-forest" />
-                </button>
-            </nav>
-
-            <MobileDrawer isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} navItems={navItems} />
-        </header>
-    );
-};
-
-const MobileDrawer = ({ isOpen, onClose, navItems }) => {
-    useEffect(() => {
-        document.body.style.overflow = isOpen ? 'hidden' : '';
-        return () => { document.body.style.overflow = ''; };
-    }, [isOpen]);
-
-    useEffect(() => {
-        if (!isOpen) return;
-        const handleKey = (e) => { if (e.key === 'Escape') onClose(); };
-        window.addEventListener('keydown', handleKey);
-        return () => window.removeEventListener('keydown', handleKey);
-    }, [isOpen, onClose]);
-
-    const handleLinkClick = (id) => {
-        onClose();
-        setTimeout(() => scrollToEl(document.getElementById(id), -80), 300);
-    };
-
-    return ReactDOM.createPortal(
-        <div
-            className={`fixed inset-0 z-50 flex transition-opacity duration-300 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
-            role="dialog" aria-modal="true" aria-label="Navigation menu"
-        >
-            <div className="absolute inset-0 bg-forest/40 backdrop-blur-sm" onClick={onClose} />
-            <div className={`relative ml-auto w-4/5 max-w-xs h-full bg-bone shadow-2xl flex flex-col p-6 transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-                <button onClick={onClose} className="self-end tap-target w-10 h-10 flex items-center justify-center text-forest/80 text-lg" aria-label="Close menu">✕</button>
-                <nav className="flex flex-col gap-6 mt-8">
-                    {navItems.map(item => (
-                        item.href ? (
-                            <a key={item.label} href={item.href} className="script-head text-3xl text-forest text-left">
-                                {item.label}
-                            </a>
-                        ) : (
-                            <button key={item.id} onClick={() => handleLinkClick(item.id)} className="script-head text-3xl text-forest text-left">
-                                {item.label}
-                            </button>
-                        )
-                    ))}
-                    <a href={WHATSAPP_RESERVE_URL} target="_blank" rel="noopener noreferrer" className="magnetic-btn text-center mt-4">Reserve a Table</a>
-                </nav>
-            </div>
-        </div>,
-        document.body
-    );
-};
-
-// ---- LazyLoad Wrapper ----
-const LazySection = ({ children, className }) => {
-    const { ref, isVisible } = useLazyLoad();
-    return <div ref={ref} className={className}>{isVisible ? children : <div className="h-screen w-full"></div>}</div>;
-};
-
-// ---- ReservationFlow: quiet multi-step booking ----
-const ReservationFlow = () => {
+/* ============================================================
+   Reserve — three-step flow
+   ============================================================ */
+const Reserve = () => {
     const [step, setStep] = useState(0);
     const [party, setParty] = useState(null);
     const [day, setDay] = useState(null);
@@ -571,56 +336,51 @@ const ReservationFlow = () => {
 
     const DAYS = (() => {
         const out = [];
-        const d = new Date();
-        for (let i = 0; i < 14; i++) out.push(new Date(d.getFullYear(), d.getMonth(), d.getDate() + i));
+        const n = new Date();
+        for (let i = 0; i < 14; i++) out.push(new Date(n.getFullYear(), n.getMonth(), n.getDate() + i));
         return out;
     })();
 
-    // Friday (day 5) opens 14:00; every other day 12:30. Last seating 22:00.
-    const timesFor = (date) => {
-        if (!date) return [];
-        const fri = date.getDay() === 5;
-        const slots = [];
+    /* Friday (day 5) opens 14:00; all other days 12:30. Last seating 22:00. */
+    const timesFor = (d) => {
+        if (!d) return [];
+        const fri = d.getDay() === 5;
+        const out = [];
         let h = fri ? 14 : 12, m = fri ? 0 : 30;
         while (h < 22 || (h === 22 && m === 0)) {
-            slots.push(String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0'));
+            out.push(String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0'));
             m += 30; if (m >= 60) { m = 0; h += 1; }
         }
-        return slots;
+        return out;
     };
 
-    const fmtDay = (d) => d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
+    const fmt = (d) => d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
 
-    const waHref = () => {
+    const href = () => {
         const msg =
             "Hi Yokoso, I'd like to reserve a table.\n\n" +
-            "Party: " + party + " " + (party === 1 ? 'guest' : 'guests') + "\n" +
-            "Date: " + (day ? fmtDay(day) : '') + "\n" +
-            "Time: " + (time || '') + "\n\n" +
-            "Please confirm availability. Thank you.";
+            'Party: ' + party + ' ' + (party === 1 ? 'guest' : 'guests') + '\n' +
+            'Date: ' + (day ? fmt(day) : '') + '\n' +
+            'Time: ' + (time || '') + '\n\n' +
+            'Please confirm availability. Thank you.';
         return 'https://wa.me/' + RESERVATION_PHONE + '?text=' + encodeURIComponent(msg);
     };
 
-    const Pill = ({ active, children, onClick }) => (
-        <button
-            onClick={onClick}
-            className={`sans-body text-sm px-4 py-2.5 rounded-full border transition-colors min-h-[44px] ${
-                active ? 'border-vermilion bg-vermilion text-bone' : 'border-bone/25 text-bone/75 hover:border-bone/50'
-            }`}
-        >{children}</button>
+    const Pill = ({ active, onClick, children }) => (
+        <button onClick={onClick} className={`btn btn-sm ${active ? 'btn-solid' : ''}`}>{children}</button>
     );
 
-    const stepLabel = ['How many?', 'Which day?', 'What time?'][step] || '';
+    const labels = ['Party size', 'Date', 'Time'];
 
     return (
-        <div className="max-w-xl mx-auto">
-            <p className="sans-body text-[10px] uppercase tracking-[0.28em] text-bone/45 mb-5">
-                {step < 3 ? 'Step ' + (step + 1) + ' of 3 · ' + stepLabel : 'Ready'}
+        <div style={{ border: '1px solid var(--hairline)', padding: 'clamp(24px, 5vw, 64px)' }}>
+            <p className="t-label c-32" style={{ marginBottom: 'var(--s4)' }}>
+                {step < 3 ? `Step ${step + 1} of 3 — ${labels[step]}` : 'Confirm'}
             </p>
 
             {step === 0 && (
-                <div className="flex flex-wrap justify-center gap-2.5">
-                    {[1,2,3,4,5,6,7,8].map(n => (
+                <div className="flex flex-wrap justify-center" style={{ gap: 'var(--s1)' }}>
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map(n => (
                         <Pill key={n} active={party === n} onClick={() => { setParty(n); setStep(1); }}>
                             {n === 8 ? '8+' : n}
                         </Pill>
@@ -629,17 +389,17 @@ const ReservationFlow = () => {
             )}
 
             {step === 1 && (
-                <div className="flex flex-wrap justify-center gap-2.5 max-h-[168px] overflow-y-auto">
+                <div className="flex flex-wrap justify-center hide-sb" style={{ gap: 'var(--s1)', maxHeight: 180, overflowY: 'auto' }}>
                     {DAYS.map((d, i) => (
                         <Pill key={i} active={day && day.getTime() === d.getTime()} onClick={() => { setDay(d); setTime(null); setStep(2); }}>
-                            {i === 0 ? 'Today' : i === 1 ? 'Tomorrow' : fmtDay(d)}
+                            {i === 0 ? 'Today' : i === 1 ? 'Tomorrow' : fmt(d)}
                         </Pill>
                     ))}
                 </div>
             )}
 
             {step === 2 && (
-                <div className="flex flex-wrap justify-center gap-2.5 max-h-[168px] overflow-y-auto">
+                <div className="flex flex-wrap justify-center hide-sb" style={{ gap: 'var(--s1)', maxHeight: 180, overflowY: 'auto' }}>
                     {timesFor(day).map(t => (
                         <Pill key={t} active={time === t} onClick={() => { setTime(t); setStep(3); }}>{t}</Pill>
                     ))}
@@ -648,77 +408,43 @@ const ReservationFlow = () => {
 
             {step === 3 && (
                 <div className="text-center">
-                    <p className="serif-dish text-lg sm:text-xl text-bone/90 mb-6">
-                        {party} {party === 1 ? 'guest' : 'guests'} · {day ? fmtDay(day) : ''} · {time}
+                    <p className="t-m c-bone" style={{ marginBottom: 'var(--s4)' }}>
+                        {party} {party === 1 ? 'guest' : 'guests'} — {day ? fmt(day) : ''} — {time}
                     </p>
-                    <a href={waHref()} target="_blank" rel="noopener noreferrer"
-                       className="magnetic-btn inline-flex" style={{ background: '#D43A2F' }}>
+                    <a href={href()} target="_blank" rel="noopener noreferrer" className="btn btn-solid">
                         Confirm on WhatsApp
                     </a>
                 </div>
             )}
 
             {step > 0 && (
-                <button
-                    onClick={() => setStep(s => Math.max(0, s - 1))}
-                    className="sans-body text-[11px] uppercase tracking-[0.2em] text-bone/40 hover:text-bone/70 mt-7 transition-colors"
-                >← Back</button>
+                <div className="text-center" style={{ marginTop: 'var(--s4)' }}>
+                    <button onClick={() => setStep(s => Math.max(0, s - 1))} className="t-label c-32 tap">← Back</button>
+                </div>
             )}
         </div>
     );
 };
 
-// ---- Plate: full-bleed dark photographic moment ----
-const Plate = ({ src, seal, kicker, line, align = 'center', height = 'tall' }) => {
-    const ref = useRef(null);
-    const imgRef = useRef(null);
-
-    useEffect(() => {
-        if (!HAS_GSAP) return;
-        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-        const el = ref.current, img = imgRef.current;
-        if (!el || !img) return;
-        const ctx = gsap.context(() => {
-            gsap.fromTo(img,
-                { scale: 1.12, yPercent: -4 },
-                {
-                    scale: 1, yPercent: 4, ease: 'none',
-                    scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: 1.2 }
-                }
-            );
-        }, el);
-        return () => ctx.revert();
-    }, []);
-
-    const h = height === 'tall' ? 'min-h-[78vh]' : 'min-h-[52vh]';
-
-    return (
-        <section ref={ref} className={`relative w-full ${h} overflow-hidden bg-ink flex items-center justify-center`}>
-            <div className="absolute inset-0 overflow-hidden">
-                <img
-                    ref={imgRef}
-                    src={src}
-                    alt=""
-                    aria-hidden="true"
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-full object-cover will-change-transform"
-                    style={{ opacity: 0.38 }}
-                />
-                <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(14,26,23,0.82) 0%, rgba(14,26,23,0.62) 45%, rgba(14,26,23,0.92) 100%)' }} />
+/* ============================================================
+   Footer
+   ============================================================ */
+const Footer = () => (
+    <footer style={{ borderTop: '1px solid var(--hairline)' }}>
+        <div className="u-page flex flex-col md:flex-row md:items-center md:justify-between text-center md:text-left"
+             style={{ paddingBlock: 'var(--s6)', gap: 'var(--s3)' }}>
+            <div>
+                <p className="t-sm c-60">Al Madani Tower (2nd Floor), Mirboxtula, Sylhet</p>
+                <p className="t-sm c-32" style={{ marginTop: 4 }}>Open daily 12:30 – 23:00 · Friday from 14:00</p>
             </div>
-
-            <div className={`relative z-10 max-w-2xl px-6 sm:px-10 ${align === 'left' ? 'text-left mr-auto ml-6 sm:ml-16' : 'text-center'}`}>
-                {seal && (
-                    <Reveal variant="stamp" as="div" className="inline-block mb-5">
-                        <span className="seal-mark seal-mark-sm" style={{ borderColor: 'rgba(247,242,232,0.55)', color: '#F7F2E8', background: 'rgba(247,242,232,0.04)' }}>{seal}</span>
-                    </Reveal>
-                )}
-                <Reveal variant="rise" stagger={0.12} as="div">
-                    {kicker && <p className="sans-body text-[10px] uppercase tracking-[0.28em] text-bone/50 mb-3">{kicker}</p>}
-                    {line && <p className="script-head text-3xl sm:text-5xl text-bone leading-[1.15]">{line}</p>}
-                </Reveal>
+            <div className="flex items-center justify-center" style={{ gap: 'var(--s4)' }}>
+                <a href={`tel:+${RESERVATION_PHONE}`} className="t-label c-60 link-u">01841965676</a>
+                <a href="https://www.facebook.com/share/192xaTJHwX/" target="_blank" rel="noopener noreferrer" className="t-label c-60 link-u">Facebook</a>
+                <a href="https://www.instagram.com/yokosobd?igsh=MTQ4bHp4Mm1sbjNwYg==" target="_blank" rel="noopener noreferrer" className="t-label c-60 link-u">Instagram</a>
             </div>
-        </section>
-    );
-};
+        </div>
+        <div className="u-page" style={{ paddingBottom: 'var(--s5)' }}>
+            <p className="t-label c-32 text-center md:text-left">© {new Date().getFullYear()} Yōkoso · Sylhet</p>
+        </div>
+    </footer>
+);
