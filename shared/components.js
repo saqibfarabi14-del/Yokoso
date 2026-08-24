@@ -138,10 +138,10 @@ const MobileNav = ({ open, onClose }) => {
                 <span className="t-label c-32">Yōkoso</span>
                 <button onClick={onClose} className="tap t-label c-60" aria-label="Close menu">Close</button>
             </div>
-            <nav className="u-page flex flex-col" style={{ gap: 'var(--s4)', marginTop: 'var(--s8)' }}>
-                <a href="menu.html" className="t-xl c-bone">Menu</a>
-                <a href="index.html#reserve" onClick={onClose} className="t-xl c-bone">Reserve</a>
-                <div className="rule" style={{ marginBlock: 'var(--s4)' }} />
+            <nav className="u-page flex flex-col" style={{ gap: 'var(--s5)', marginTop: 'var(--s8)' }}>
+                <a href="menu.html" className="t-xl c-bone link-u">Menu</a>
+                <a href="index.html#reserve" onClick={onClose} className="t-xl c-bone link-u">Reserve</a>
+                <div style={{ width: 40, height: 1, background: 'var(--vermilion)', marginBlock: 'var(--s3)', opacity: 0.5 }} />
                 <a href={`tel:+${RESERVATION_PHONE}`} className="t-sm c-60">01841965676</a>
                 <p className="t-sm c-32">Al Madani Tower (2nd Floor), Mirboxtula, Sylhet</p>
             </nav>
@@ -215,8 +215,8 @@ const DishRow = memo(({ dish, onClick }) => {
     return (
         <button
             onClick={() => onClick && onClick(dish)}
-            className="w-full text-left flex items-baseline"
-            style={{ paddingBlock: 'var(--s2)', borderBottom: '1px solid var(--hairline)' }}
+            className="w-full text-left flex items-baseline group"
+            style={{ paddingBlock: 'var(--s2)', borderBottom: '1px solid var(--hairline)', transition: 'padding-left .3s var(--ease)' }}
         >
             <span className="t-m c-bone" style={{ flexShrink: 1, minWidth: 0 }}>
                 {dish.name}
@@ -430,7 +430,8 @@ const Reserve = () => {
    Footer
    ============================================================ */
 const Footer = () => (
-    <footer style={{ borderTop: '1px solid var(--hairline)' }}>
+    <footer style={{ borderTop: '1px solid var(--hairline)', position: 'relative' }}>
+        <div style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: 40, height: 1, background: 'var(--vermilion)', opacity: 0.6 }} />
         <div className="u-page flex flex-col md:flex-row md:items-center md:justify-between text-center md:text-left"
              style={{ paddingBlock: 'var(--s6)', gap: 'var(--s3)' }}>
             <div>
