@@ -1,263 +1,239 @@
 <!DOCTYPE html>
-<html lang="en" class="">
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="description" content="Yōkoso — Full Menu. Pan-Asian dishes from dim sum to sushi, Sylhet." />
-    <meta property="og:title" content="Yōkoso — Menu" />
-    <meta property="og:description" content="Al Madani Tower (2nd Floor), Mirboxtula, Sylhet." />
+    <meta name="description" content="Yōkoso — the full menu. One hundred and twenty-one dishes, in five chapters. Sylhet." />
+    <meta name="theme-color" content="#0A0E0C" />
+
     <meta property="og:type" content="website" />
+    <meta property="og:title" content="Yōkoso — The Menu" />
+    <meta property="og:description" content="One hundred and twenty-one dishes, in five chapters." />
     <meta property="og:url" content="https://saqibfarabi14-del.github.io/Yokoso/menu.html" />
-    <meta property="og:site_name" content="Yōkoso" />
-    <meta property="og:locale" content="en_US" />
     <meta property="og:image" content="https://saqibfarabi14-del.github.io/Yokoso/assets/yokoso-og.jpg" />
-    <meta property="og:image:secure_url" content="https://saqibfarabi14-del.github.io/Yokoso/assets/yokoso-og.jpg" />
-    <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="Yōkoso — full Pan-Asian menu, Sylhet" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="https://saqibfarabi14-del.github.io/Yokoso/assets/yokoso-og.jpg" />
-    <meta name="theme-color" content="#F7F2E8" />
-    <link rel="canonical" href="https://saqibfarabi14-del.github.io/Yokoso/menu.html" />
-    <script type="application/ld+json">
-{
-          "@context": "https://schema.org",
-          "@type": "Menu",
-          "@id": "https://saqibfarabi14-del.github.io/Yokoso/menu.html#menu",
-          "name": "Yōkoso Menu",
-          "url": "https://saqibfarabi14-del.github.io/Yokoso/menu.html",
-          "inLanguage": "en",
-          "provider": {
-                "@type": "Restaurant",
-                "@id": "https://saqibfarabi14-del.github.io/Yokoso/#restaurant",
-                "name": "Yōkoso"
-          }
-    }
-    </script>
+
+    <link rel="icon" type="image/png" sizes="32x32" href="https://raw.githubusercontent.com/saqibfarabi14-del/Yokoso/main/assets/yokoso-mark-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="https://raw.githubusercontent.com/saqibfarabi14-del/Yokoso/main/assets/yokoso-mark-16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="https://raw.githubusercontent.com/saqibfarabi14-del/Yokoso/main/assets/yokoso-mark-180.png" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/greatvibes/v21/RWmMoKWR9v4ksMfaWd_JN9XLiaQ6DQ.woff2" />
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/yokoso-mark-32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="assets/yokoso-mark-16.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/yokoso-mark-180.png" />
-    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..500&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&family=Noto+Serif+JP:wght@400;500;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..600&family=Spectral:wght@300;400;500&family=Inter:wght@300;400;500&family=Noto+Serif+JP:wght@400;500&display=swap" rel="stylesheet" />
+
     <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="shared/tailwind-config.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/CustomEase.min.js"></script>
     <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
+
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+    <link rel="stylesheet" href="shared/tokens.css" />
     <link rel="stylesheet" href="shared/styles.css" />
 </head>
 <body>
+
     <div id="root"></div>
     <div id="portal-root"></div>
+
     <script src="shared/core.js"></script>
     <script src="shared/menu-data.js"></script>
     <script src="shared/hooks.js"></script>
     <script type="text/babel" data-presets="react" src="shared/components.js"></script>
+
     <script type="text/babel" data-presets="react">
         'use strict';
 
-        const MenuIntro = () => (
-            <section className="pt-32 pb-16 sm:pt-40 sm:pb-24 px-6 max-w-3xl mx-auto text-center">
-                <Reveal variant="stamp" as="div" className="inline-block mb-8">
-                    <span className="seal-mark seal-mark-lg jp-mark">味</span>
-                </Reveal>
-                <Reveal variant="rise" as="div">
-                    <p className="jp-mark text-base text-forest-light/50 tracking-[0.3em]">お品書き</p>
-                    <h1 className="script-head text-5xl sm:text-7xl text-forest mt-3">The Menu</h1>
-                    <div className="h-px w-16 bg-vermilion/40 mx-auto my-7" />
-                    <p className="serif-dish text-base sm:text-lg text-forest-light/75 max-w-md mx-auto leading-relaxed italic">
-                        One hundred and twenty-one dishes, drawn from Japan, China,
-                        Thailand and beyond — served in five chapters.
-                    </p>
-                </Reveal>
+        const ASSETS = 'https://raw.githubusercontent.com/saqibfarabi14-del/Yokoso/main/assets/';
+
+        const CHAPTER_PHOTOS = {
+            'dim-sum':    ASSETS + 'yokoso-dimsum.jpg',
+            'noodles':    ASSETS + 'yokoso-ramen.jpg',
+            'chicken':    ASSETS + 'yokoso-wok.jpg',
+            'sushi-half': ASSETS + 'yokoso-sushi.jpg'
+            // 'desserts' has no photo — the sequence ends type-only, deliberately
+        };
+
+        /* Every dish appears exactly once. Total = 121. */
+        const STRUCTURE = [
+            { chapter: COMPASS_CHAPTERS[0], cats: [
+                { id: 'dimSum',      title: 'Dim Sum',            items: MENU.dimSum },
+                { id: 'appetizers',  title: 'Appetizers',         items: MENU.appetizers },
+                { id: 'soup',        title: 'Soup',               items: MENU.soup },
+                { id: 'salads',      title: 'Salads',             items: MENU.salads }
+            ]},
+            { chapter: COMPASS_CHAPTERS[1], cats: [
+                { id: 'noodles',     title: 'Noodles',            items: MENU.noodles },
+                { id: 'ramen',       title: 'Ramen',              items: MENU.ramen },
+                { id: 'rice',        title: 'Rice',               items: MENU.rice }
+            ]},
+            { chapter: COMPASS_CHAPTERS[2], cats: [
+                { id: 'chicken',     title: 'Chicken',            items: MENU.chicken },
+                { id: 'beef',        title: 'Beef',               items: MENU.beef },
+                { id: 'seafood',     title: 'Seafood',            items: MENU.seafood },
+                { id: 'wholeFish',   title: 'Whole Fish',         items: MENU.wholeFish },
+                { id: 'vegetable',   title: 'Vegetable',          items: MENU.vegetable }
+            ]},
+            { chapter: COMPASS_CHAPTERS[3], cats: [
+                { id: 'sushiHF',     title: 'Sushi — Half / Full', items: MENU.sushi.filter(d => d.hasHalfFull) },
+                { id: 'sushiOne',    title: 'Sushi',              items: MENU.sushi.filter(d => !d.hasHalfFull) },
+                { id: 'sushiCombos', title: 'Sushi Combos',       items: MENU.sushiCombos },
+                { id: 'bento',       title: 'Bento',              items: MENU.bento }
+            ]},
+            { chapter: COMPASS_CHAPTERS[4], cats: [
+                { id: 'desserts',    title: 'Desserts',           items: MENU.desserts },
+                { id: 'beverages',   title: 'Zero-Proof Bar',     items: MENU.beverages }
+            ]}
+        ];
+
+        /* ===== Title ===== */
+        const Title = () => (
+            <section className="u-section" style={{ paddingTop: 'clamp(140px, 20vh, 220px)' }}>
+                <div className="u-read text-center flex flex-col items-center">
+                    <Seal size="l">味</Seal>
+                    <Reveal className="flex flex-col items-center" stagger={0.08}>
+                        <p className="t-jp t-label c-32" style={{ marginTop: 'var(--s3)' }}>お品書き</p>
+                        <h1 className="t-xl c-bone" style={{ marginTop: 'var(--s2)' }}>The Menu</h1>
+                    </Reveal>
+                    <div className="rule" style={{ maxWidth: 64, marginTop: 'var(--s4)' }} />
+                    <Reveal delay={0.15}>
+                        <p className="t-body c-60" style={{ marginTop: 'var(--s4)' }}>
+                            One hundred and twenty-one dishes, in five chapters.
+                        </p>
+                    </Reveal>
+                </div>
             </section>
         );
 
+        /* ===== Sticky chapter nav ===== */
         const ChapterNav = () => (
-            <div className="sticky top-16 z-20 bg-bone/95 backdrop-blur-md py-3 border-b border-forest/5 w-full">
-                <div className="snap-container hide-scrollbar flex overflow-x-auto justify-center gap-2 px-4 sm:px-8 touch-pan-x">
-                    {COMPASS_CHAPTERS.map(chapter => (
-                        <a
-                            key={chapter.anchorId}
-                            href={`#${chapter.anchorId}`}
-                            className="snap-item tap-target flex-shrink-0 px-4 py-2 rounded-full border border-forest/10 text-xs sm:text-sm text-forest/80 font-medium transition-colors hover:bg-forest/5 active:bg-forest/10 whitespace-nowrap min-h-[40px] flex items-center gap-1.5"
-                        >
-                            <span className="text-vermilion">{chapter.seal}</span> {chapter.name}
-                        </a>
-                    ))}
+            <div className="sticky top-0 z-30"
+                 style={{ background: 'rgba(10,14,12,0.90)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderBottom: '1px solid var(--hairline)' }}>
+                <div className="u-page">
+                    <div className="snap-x hide-sb flex lg:justify-center overflow-x-auto"
+                         style={{ gap: 'var(--s1)', paddingBlock: 'var(--s2)' }}>
+                        {COMPASS_CHAPTERS.map(c => (
+                            <a key={c.anchorId} href={`#${c.anchorId}`}
+                               className="snap-i btn btn-sm"
+                               style={{ gap: 8 }}>
+                                <span className="t-jp c-verm" style={{ marginRight: 8 }}>{c.seal}</span>
+                                {c.name}
+                            </a>
+                        ))}
+                    </div>
                 </div>
             </div>
         );
 
-        const MenuChapter = ({ chapter, categories, onDishClick, photo }) => (
-            <section id={chapter.anchorId} className="scroll-mt-20 py-10 sm:py-16 px-4 sm:px-8 max-w-3xl mx-auto">
-                {photo ? (
-                    <div className="relative mb-12 sm:mb-16 overflow-hidden bg-ink" style={{ width: '100vw', marginLeft: 'calc(50% - 50vw)', marginRight: 'calc(50% - 50vw)' }}>
-                        <div className="absolute inset-0">
-                            <img src={photo} alt="" aria-hidden="true" loading="lazy" decoding="async"
-                                 className="w-full h-full object-cover" style={{ opacity: 0.34 }} />
-                            <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(14,26,23,0.86) 0%, rgba(14,26,23,0.68) 50%, rgba(14,26,23,0.93) 100%)' }} />
-                        </div>
-                        <div className="relative z-10 text-center py-24 sm:py-36 px-6">
-                            <Reveal variant="stamp" as="div" className="inline-block mb-3">
-                                <span className="seal-mark seal-mark-sm" style={{ borderColor: 'rgba(247,242,232,0.55)', color: '#F7F2E8', background: 'rgba(247,242,232,0.04)' }}>{chapter.seal}</span>
-                            </Reveal>
-                            <Reveal variant="rise" as="div">
-                                <p className="jp-mark text-lg sm:text-xl text-bone/60">{chapter.native}</p>
-                                <h2 className="script-head text-4xl sm:text-6xl text-bone mt-1">{chapter.name}</h2>
-                                <p className="sans-body text-xs sm:text-sm text-bone/60 mt-3 max-w-md mx-auto">{chapter.desc}</p>
-                            </Reveal>
-                        </div>
-                    </div>
-                ) : (
-                    <div className="text-center mb-8 sm:mb-12">
-                        <Reveal variant="stamp" as="div" className="inline-block mb-3">
-                            <span className="seal-mark seal-mark-sm">{chapter.seal}</span>
-                        </Reveal>
-                        <Reveal variant="rise" as="div">
-                            <p className="jp-mark text-lg sm:text-xl text-forest-light/80">{chapter.native}</p>
-                            <h2 className="serif-head text-3xl sm:text-5xl text-forest mt-1">{chapter.name}</h2>
-                            <p className="sans-body text-xs sm:text-sm text-forest-light/80 mt-2 max-w-md mx-auto">{chapter.desc}</p>
-                        </Reveal>
-                    </div>
-                )}
-                {categories.map(cat => (
-                    <div key={cat.id} className="mb-8 sm:mb-10 last:mb-0">
-                        <h3 className="serif-head text-lg sm:text-xl text-forest/70 mb-2 sm:mb-3 uppercase tracking-wide text-sm">{cat.title}</h3>
-                        <div>
-                            {cat.items.map(dish => (
-                                <DishCard key={dish.id} dish={dish} onClick={onDishClick} compact={true} />
-                            ))}
-                        </div>
-                    </div>
-                ))}
-            </section>
+        /* ===== Legend ===== */
+        const Legend = () => (
+            <div className="u-page" style={{ paddingBlock: 'var(--s4)' }}>
+                <p className="t-label c-32 flex items-center justify-center" style={{ gap: 'var(--s4)' }}>
+                    <span className="inline-flex items-center" style={{ gap: 8 }}><SigMark /> Chef's signature</span>
+                    <span className="inline-flex items-center" style={{ gap: 8 }}><SpiceMark level={3} /> Heat</span>
+                </p>
+            </div>
         );
 
-        const MENU_STRUCTURE = [
-            { chapter: COMPASS_CHAPTERS[0], categories: [
-                { id: 'dim-sum', title: 'Dim Sum', items: MENU.dimSum },
-                { id: 'appetizers', title: 'Appetizers', items: MENU.appetizers },
-                { id: 'soup', title: 'Soup', items: MENU.soup },
-                { id: 'salads', title: 'Salads', items: MENU.salads },
-            ]},
-            { chapter: COMPASS_CHAPTERS[1], categories: [
-                { id: 'noodles', title: 'Noodles', items: MENU.noodles },
-                { id: 'ramen', title: 'Ramen', items: MENU.ramen },
-                { id: 'rice', title: 'Rice', items: MENU.rice },
-            ]},
-            { chapter: COMPASS_CHAPTERS[2], categories: [
-                { id: 'chicken', title: 'Chicken', items: MENU.chicken },
-                { id: 'beef', title: 'Beef', items: MENU.beef },
-                { id: 'seafood', title: 'Seafood', items: MENU.seafood },
-                { id: 'whole-fish', title: 'Whole Fish', items: MENU.wholeFish },
-                { id: 'vegetable', title: 'Vegetable', items: MENU.vegetable },
-            ]},
-            { chapter: COMPASS_CHAPTERS[3], categories: [
-                { id: 'sushi-half', title: 'Sushi (Half / Full)', items: MENU.sushi.filter(i => i.hasHalfFull) },
-                { id: 'sushi-single', title: 'Sushi (Single Price)', items: MENU.sushi.filter(i => !i.hasHalfFull) },
-                { id: 'sushi-combos', title: 'Sushi Combos', items: MENU.sushiCombos },
-                { id: 'bento', title: 'Bento', items: MENU.bento },
-            ]},
-            { chapter: COMPASS_CHAPTERS[4], categories: [
-                { id: 'desserts', title: 'Desserts', items: MENU.desserts },
-                { id: 'beverages', title: 'Zero-Proof Bar', items: MENU.beverages },
-            ]},
-        ];
-
-        // ---- ChapterRail: fixed progress marker (desktop only) ----
-        const ChapterRail = ({ chapters }) => {
-            const [active, setActive] = useState(0);
-            const isMobile = useMobile();
+        /* ===== Chapter ===== */
+        const Chapter = ({ chapter, cats, photo, onDishClick }) => {
+            const plateRef = useRef(null);
+            const imgRef = useRef(null);
 
             useEffect(() => {
-                const ids = chapters.map(c => c.anchorId);
-                const onScroll = () => {
-                    let current = 0;
-                    ids.forEach((id, i) => {
-                        const el = document.getElementById(id);
-                        if (el && el.getBoundingClientRect().top <= window.innerHeight * 0.35) current = i;
+                if (!photo || !HAS_GSAP) return;
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+                const ctx = gsap.context(() => {
+                    gsap.fromTo(imgRef.current, { scale: 1.12 }, {
+                        scale: 1, ease: 'none',
+                        scrollTrigger: { trigger: plateRef.current, start: 'top bottom', end: 'bottom top', scrub: 1.2 }
                     });
-                    setActive(current);
-                };
-                onScroll();
-                window.addEventListener('scroll', onScroll, { passive: true });
-                return () => window.removeEventListener('scroll', onScroll);
-            }, [chapters]);
-
-            if (isMobile) return null;
+                }, plateRef);
+                return () => ctx.revert();
+            }, [photo]);
 
             return (
-                <nav className="fixed right-7 top-1/2 -translate-y-1/2 z-30 hidden lg:flex flex-col gap-4" aria-label="Chapter progress">
-                    {chapters.map((c, i) => (
-                        <a
-                            key={c.anchorId}
-                            href={`#${c.anchorId}`}
-                            className="group flex items-center justify-end gap-3"
-                            aria-current={i === active ? 'true' : undefined}
-                        >
-                            <span className={`sans-body text-[10px] uppercase tracking-[0.18em] transition-all duration-300 ${i === active ? 'opacity-70' : 'opacity-0 group-hover:opacity-40'}`}>
-                                {c.name}
-                            </span>
-                            <span className={`block rounded-full transition-all duration-300 ${i === active ? 'w-2 h-2 bg-vermilion' : 'w-1.5 h-1.5 bg-forest/25 group-hover:bg-forest/50'}`} />
-                        </a>
-                    ))}
-                </nav>
+                <section id={chapter.anchorId} className="anchor-offset" style={{ paddingBottom: 'clamp(64px, 9vh, 120px)' }}>
+                    {photo ? (
+                        <div ref={plateRef} className="u-bleed relative overflow-hidden" style={{ background: 'var(--ink)' }}>
+                            <div className="absolute inset-0 overflow-hidden">
+                                <img ref={imgRef} src={photo} alt="" aria-hidden="true" loading="lazy" decoding="async"
+                                     className="w-full h-full object-cover" style={{ opacity: 0.40 }} />
+                                <div className="absolute inset-0"
+                                     style={{ background: 'linear-gradient(180deg, rgba(10,14,12,0.86) 0%, rgba(10,14,12,0.62) 50%, rgba(10,14,12,0.94) 100%)' }} />
+                            </div>
+                            <div className="relative u-page text-center flex flex-col items-center"
+                                 style={{ paddingBlock: 'clamp(96px, 16vh, 200px)' }}>
+                                <Seal size="s" light>{chapter.seal}</Seal>
+                                <Reveal className="flex flex-col items-center" stagger={0.08}>
+                                    <p className="t-jp t-sm c-60" style={{ marginTop: 'var(--s3)' }}>{chapter.native}</p>
+                                    <h2 className="t-xl c-bone" style={{ marginTop: 'var(--s1)' }}>{chapter.name}</h2>
+                                    <p className="t-sm c-60" style={{ marginTop: 'var(--s2)', maxWidth: '38ch' }}>{chapter.desc}</p>
+                                </Reveal>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="u-page text-center flex flex-col items-center"
+                             style={{ paddingBlock: 'clamp(72px, 12vh, 140px)' }}>
+                            <Seal size="s">{chapter.seal}</Seal>
+                            <Reveal className="flex flex-col items-center" stagger={0.08}>
+                                <p className="t-jp t-sm c-60" style={{ marginTop: 'var(--s3)' }}>{chapter.native}</p>
+                                <h2 className="t-xl c-bone" style={{ marginTop: 'var(--s1)' }}>{chapter.name}</h2>
+                                <p className="t-sm c-60" style={{ marginTop: 'var(--s2)', maxWidth: '38ch' }}>{chapter.desc}</p>
+                            </Reveal>
+                        </div>
+                    )}
+
+                    <div className="u-page menu-cols" style={{ marginTop: 'var(--s7)' }}>
+                        {cats.map(cat => (
+                            <div key={cat.id} style={{ marginBottom: 'var(--s7)' }}>
+                                <p className="t-label c-32" style={{ marginBottom: 'var(--s2)' }}>{cat.title}</p>
+                                <div className="rule" style={{ marginBottom: 'var(--s1)' }} />
+                                {cat.items.map(dish => (
+                                    <DishRow key={dish.id} dish={dish} onClick={onDishClick} />
+                                ))}
+                            </div>
+                        ))}
+                    </div>
+                </section>
             );
         };
 
-        const ASSET_BASE = 'https://raw.githubusercontent.com/saqibfarabi14-del/Yokoso/main/assets/';
-        const CHAPTER_PHOTOS = {
-            'dim-sum':    ASSET_BASE + 'yokoso-dimsum.jpg',
-            'noodles':    ASSET_BASE + 'yokoso-ramen.jpg',
-            'chicken':    ASSET_BASE + 'yokoso-wok.jpg',
-            'sushi-half': ASSET_BASE + 'yokoso-sushi.jpg',
-            // 'desserts' intentionally has no photo — Sweet & Cool stays
-            // purely typographic, giving the sequence a quiet ending
-        };
-
+        /* ===== APP ===== */
         const App = () => {
-            const [selectedDish, setSelectedDish] = useState(null);
+            const [selected, setSelected] = useState(null);
 
-            // Landing here first counts as having entered the site — prevents the
-            // homepage threshold firing later in the same session on internal nav.
             useEffect(() => {
-                try { sessionStorage.setItem('yokoso-entered', '1'); } catch (e) {}
+                const t = setTimeout(() => { if (HAS_GSAP) ScrollTrigger.refresh(); }, 400);
+                return () => clearTimeout(t);
             }, []);
 
             return (
                 <>
                     <SiteHeader />
                     <main id="main-content">
-                        <MenuIntro />
+                        <Title />
                         <ChapterNav />
-                        <div className="max-w-3xl mx-auto px-4 sm:px-8 pt-6 pb-2">
-                            <p className="sans-body text-[10px] uppercase tracking-[0.18em] text-forest-light/45 flex items-center justify-center gap-5">
-                                <span className="inline-flex items-center gap-1.5"><SignatureStar active={true} /> Chef's signature</span>
-                                <span className="inline-flex items-center gap-1.5"><SpiceIcons level={3} /> Heat</span>
-                            </p>
-                        </div>
-                        {MENU_STRUCTURE.map(({ chapter, categories }) => (
-                            <MenuChapter
-                                key={chapter.anchorId}
-                                chapter={chapter}
-                                categories={categories}
-                                onDishClick={setSelectedDish}
-                                photo={CHAPTER_PHOTOS[chapter.anchorId]}
-                            />
+                        <Legend />
+                        {STRUCTURE.map(({ chapter, cats }) => (
+                            <Chapter key={chapter.anchorId}
+                                     chapter={chapter}
+                                     cats={cats}
+                                     photo={CHAPTER_PHOTOS[chapter.anchorId]}
+                                     onDishClick={setSelected} />
                         ))}
                     </main>
-                    <ChapterRail chapters={COMPASS_CHAPTERS} />
-                    <Location />
-                    <DishDetail dish={selectedDish} isOpen={!!selectedDish} onClose={() => setSelectedDish(null)} />
+                    <Footer />
+                    <DishSheet dish={selected} isOpen={!!selected} onClose={() => setSelected(null)} />
                 </>
             );
         };
@@ -265,8 +241,8 @@
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
 
-        requestAnimationFrame(() => setTimeout(() => ScrollTrigger.refresh(), 200));
-        window.addEventListener('load', () => setTimeout(() => ScrollTrigger.refresh(), 400));
+        requestAnimationFrame(() => setTimeout(() => { if (HAS_GSAP) ScrollTrigger.refresh(); }, 200));
+        window.addEventListener('load', () => setTimeout(() => { if (HAS_GSAP) ScrollTrigger.refresh(); }, 400));
     </script>
 </body>
 </html>
