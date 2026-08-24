@@ -44,7 +44,7 @@ a, button { cursor: pointer; color: inherit; text-decoration: none; }
 /* ---- scrollbar ---- */
 ::-webkit-scrollbar { width: 3px; }
 ::-webkit-scrollbar-track { background: var(--ink); }
-::-webkit-scrollbar-thumb { background: rgba(242,237,228,0.2); }
+::-webkit-scrollbar-thumb { background: rgba(242,237,228,0.2); border-radius: 4px; }
 
 /* ---- paper grain, very subtle on dark ---- */
 body::after {
@@ -71,6 +71,10 @@ body::after {
 .seal-s { width: 40px; height: 40px; font-size: 15px; }
 .seal-l { width: 68px; height: 68px; font-size: 24px; }
 .seal-light { border-color: rgba(242,237,228,0.5); color: var(--bone); }
+.seal { transition: transform .4s var(--ease), box-shadow .4s var(--ease); }
+@media (hover: hover) and (pointer: fine) {
+  .seal:hover { transform: scale(1.06); box-shadow: 0 0 0 4px rgba(214,64,47,0.12); }
+}
 
 /* ============================================================
    BUTTON
@@ -86,9 +90,10 @@ body::after {
   border: 1px solid var(--hairline);
   color: var(--bone);
   background: transparent;
-  transition: border-color .4s var(--ease), background .4s var(--ease), color .4s var(--ease);
+  transition: border-color .4s var(--ease), background .4s var(--ease), color .4s var(--ease), transform .3s var(--ease);
   white-space: nowrap;
 }
+.btn:active { transform: scale(0.97); }
 .btn:hover { border-color: var(--bone-60); background: rgba(242,237,228,0.04); }
 .btn-solid { background: var(--vermilion); border-color: var(--vermilion); color: var(--bone); }
 .btn-solid:hover { background: #C2382A; border-color: #C2382A; }
@@ -112,7 +117,7 @@ body::after {
 .leader {
   flex: 1 1 auto;
   min-width: 12px;
-  border-bottom: 1px dotted var(--hairline);
+  border-bottom: 1px dotted var(--bone-32);
   margin-inline: var(--s2);
   transform: translateY(-4px);
 }
@@ -150,3 +155,29 @@ body::after {
 
 .lenis.lenis-smooth { scroll-behavior: auto; }
 .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+
+/* section divider — soft gradient fade between major sections */
+.section-fade {
+  height: clamp(80px, 12vh, 160px);
+  background: linear-gradient(180deg, transparent 0%, rgba(242,237,228,0.03) 50%, transparent 100%);
+  pointer-events: none;
+}
+
+/* text selection styling */
+::selection { background: rgba(214,64,47,0.25); color: var(--bone); }
+::-moz-selection { background: rgba(214,64,47,0.25); color: var(--bone); }
+
+/* smooth image loading */
+img[loading="lazy"] { transition: opacity .6s var(--ease); }
+
+/* hero seal entry pulse */
+@keyframes seal-entry-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(214,64,47,0.35); }
+  100% { box-shadow: 0 0 0 18px rgba(214,64,47,0); }
+}
+.hero-seal-ring {
+  animation: seal-entry-pulse 1.2s var(--ease) 0.8s 1 both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-seal-ring { animation: none; }
+}
