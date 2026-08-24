@@ -1,360 +1,291 @@
 <!DOCTYPE html>
-<html lang="en" class="">
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="description" content="Yōkoso — Pan-Asian Restaurant in Sylhet. Japanese, Chinese, and Thai flavours, from dim sum to sushi." />
+    <meta name="description" content="Yōkoso — Pan-Asian Restaurant in Sylhet. Japanese, Chinese and Thai, from dim sum to sushi." />
+    <meta name="theme-color" content="#0A0E0C" />
+
+    <meta property="og:type" content="website" />
     <meta property="og:title" content="Yōkoso — Pan-Asian Restaurant" />
     <meta property="og:description" content="Al Madani Tower (2nd Floor), Mirboxtula, Sylhet." />
-    <meta property="og:type" content="website" />
     <meta property="og:url" content="https://saqibfarabi14-del.github.io/Yokoso/" />
-    <meta property="og:site_name" content="Yōkoso" />
-    <meta property="og:locale" content="en_US" />
     <meta property="og:image" content="https://saqibfarabi14-del.github.io/Yokoso/assets/yokoso-og.jpg" />
-    <meta property="og:image:secure_url" content="https://saqibfarabi14-del.github.io/Yokoso/assets/yokoso-og.jpg" />
-    <meta property="og:image:type" content="image/jpeg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Yōkoso — Pan-Asian Restaurant, Al Madani Tower, Mirboxtula, Sylhet" />
+    <meta property="og:image:alt" content="Yōkoso — Pan-Asian Restaurant, Sylhet" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="https://saqibfarabi14-del.github.io/Yokoso/assets/yokoso-og.jpg" />
-    <meta name="theme-color" content="#F7F2E8" />
-    <link rel="canonical" href="https://saqibfarabi14-del.github.io/Yokoso/" />
-    <script type="application/ld+json">
-{
-          "@context": "https://schema.org",
-          "@type": "Restaurant",
-          "@id": "https://saqibfarabi14-del.github.io/Yokoso/#restaurant",
-          "name": "Yōkoso",
-          "alternateName": "Yokoso",
-          "url": "https://saqibfarabi14-del.github.io/Yokoso/",
-          "image": "https://saqibfarabi14-del.github.io/Yokoso/assets/yokoso-og.jpg",
-          "description": "Pan-Asian restaurant in Sylhet — Japanese, Chinese and Thai flavours, from dim sum to sushi.",
-          "telephone": "+8801841965676",
-          "address": {
-                "@type": "PostalAddress",
-                "streetAddress": "Al Madani Tower (2nd Floor), Mirboxtula",
-                "addressLocality": "Sylhet",
-                "addressCountry": "BD"
-          },
-          "servesCuisine": [
-                "Pan-Asian",
-                "Japanese",
-                "Chinese",
-                "Thai"
-          ],
-          "priceRange": "৳৳",
-          "currenciesAccepted": "BDT",
-          "hasMenu": "https://saqibfarabi14-del.github.io/Yokoso/menu.html",
-          "acceptsReservations": "https://wa.me/8801841965676",
-          "openingHoursSpecification": [
-                {
-                      "@type": "OpeningHoursSpecification",
-                      "dayOfWeek": [
-                            "Saturday",
-                            "Sunday",
-                            "Monday",
-                            "Tuesday",
-                            "Wednesday",
-                            "Thursday"
-                      ],
-                      "opens": "12:30",
-                      "closes": "23:00"
-                },
-                {
-                      "@type": "OpeningHoursSpecification",
-                      "dayOfWeek": "Friday",
-                      "opens": "14:00",
-                      "closes": "23:00"
-                }
-          ]
-    }
-    </script>
 
-    <!-- Preload Hero Font -->
+    <link rel="icon" type="image/png" sizes="32x32" href="https://raw.githubusercontent.com/saqibfarabi14-del/Yokoso/main/assets/yokoso-mark-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="https://raw.githubusercontent.com/saqibfarabi14-del/Yokoso/main/assets/yokoso-mark-16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="https://raw.githubusercontent.com/saqibfarabi14-del/Yokoso/main/assets/yokoso-mark-180.png" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/greatvibes/v21/RWmMoKWR9v4ksMfaWd_JN9XLiaQ6DQ.woff2" />
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,400..600&family=Spectral:wght@300;400;500&family=Inter:wght@300;400;500&family=Noto+Serif+JP:wght@400;500&display=swap" rel="stylesheet" />
 
-    <!-- Favicons -->
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/yokoso-mark-32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="assets/yokoso-mark-16.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/yokoso-mark-180.png" />
-
-    <!-- Subsetted Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..500&family=Spectral:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&family=Noto+Serif+JP:wght@400;500;600&display=swap" rel="stylesheet" />
-
-    <!-- Babel (React JSX) -->
     <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
-
-    <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="shared/tailwind-config.js"></script>
 
-    <!-- GSAP 3.13 + Bonus Plugins -->
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/CustomEase.min.js"></script>
-
-    <!-- Lenis -->
     <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
 
-    <!-- React -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 
-    <!-- External Styles -->
+    <link rel="stylesheet" href="shared/tokens.css" />
     <link rel="stylesheet" href="shared/styles.css" />
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Restaurant",
+      "name": "Yokoso",
+      "servesCuisine": ["Japanese", "Chinese", "Thai", "Pan-Asian"],
+      "priceRange": "৳৳",
+      "telephone": "+8801841965676",
+      "url": "https://saqibfarabi14-del.github.io/Yokoso/",
+      "hasMenu": "https://saqibfarabi14-del.github.io/Yokoso/menu.html",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Al Madani Tower, 2nd Floor, Mirboxtula",
+        "addressLocality": "Sylhet",
+        "addressCountry": "BD"
+      },
+      "openingHoursSpecification": [
+        { "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Saturday","Sunday","Monday","Tuesday","Wednesday","Thursday"],
+          "opens": "12:30", "closes": "23:00" },
+        { "@type": "OpeningHoursSpecification",
+          "dayOfWeek": "Friday", "opens": "14:00", "closes": "23:00" }
+      ]
+    }
+    </script>
 </head>
 <body>
 
     <div id="root"></div>
     <div id="portal-root"></div>
 
-    <!-- Shared Libraries -->
     <script src="shared/core.js"></script>
     <script src="shared/menu-data.js"></script>
     <script src="shared/hooks.js"></script>
     <script type="text/babel" data-presets="react" src="shared/components.js"></script>
 
-    <!-- Page-Specific Inline Script -->
     <script type="text/babel" data-presets="react">
         'use strict';
 
-        // ---- Hero ----
+        const ASSETS = 'https://raw.githubusercontent.com/saqibfarabi14-del/Yokoso/main/assets/';
+
+        /* ===== §1 HERO ===== */
         const Hero = () => {
-            const heroRef = useRef(null);
-            const sealRef = useRef(null);
-            const textRef = useRef(null);
-            const wordmarkRef = useRef(null);
-            const buttonsRowRef = useRef(null);
+            const secRef = useRef(null);
             const videoRef = useRef(null);
-            const underlineRef = useRef(null);
+            const contentRef = useRef(null);
+            const cueRef = useRef(null);
 
-
-            useEffect(() => {
-                if (!HAS_GSAP) return;
-                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-                let split;
-                const ctx = gsap.context(() => {
-                    const isMobile = window.innerWidth < 768;
-                    const mult = isMobile ? 0.75 : 1;
-                    try {
-                        split = SplitText.create(wordmarkRef.current, { type: 'chars', mask: 'chars' });
-                        gsap.fromTo(split.chars,
-                            { yPercent: 110, opacity: 0 },
-                            { yPercent: 0, opacity: 1, duration: MOTION.dur.xl * mult, stagger: 0.06, ease: MOTION.ease.out, delay: 0.3 }
-                        );
-                    } catch (e) {
-                        gsap.fromTo(wordmarkRef.current, { y: 24, opacity: 0 },
-                            { y: 0, opacity: 1, duration: MOTION.dur.md * mult, ease: MOTION.ease.out, delay: 0.3 }
-                        );
-                    }
-                    const path = underlineRef.current?.querySelector('path');
-                    if (path) {
-                        const len = path.getTotalLength();
-                        gsap.set(path, { strokeDasharray: len, strokeDashoffset: len });
-                        gsap.to(path, { strokeDashoffset: 0, duration: MOTION.dur.xl * mult, ease: MOTION.ease.ink, delay: 0.9 });
-                    }
-                }, heroRef);
-                return () => { ctx.revert(); if (split) split.revert(); };
-            }, []);
+            const showVideo = !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+                && !(navigator.connection && navigator.connection.saveData);
 
             useEffect(() => {
                 if (!HAS_GSAP) return;
                 if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
                 const ctx = gsap.context(() => {
                     const tl = gsap.timeline({
-                        scrollTrigger: { trigger: heroRef.current, start: 'top top', end: 'bottom top', scrub: 1 }
+                        scrollTrigger: { trigger: secRef.current, start: 'top top', end: 'bottom top', scrub: 1 }
                     });
-                    tl.to(textRef.current,      { yPercent: -30, opacity: 0 }, 0)
-                      .to(sealRef.current,      { yPercent: -60, scale: 0.8 }, 0)
-                      .to(buttonsRowRef.current,{ opacity: 0 }, 0);
-                    if (videoRef.current) {
-                        tl.to(videoRef.current, { scale: 1.18, opacity: 0.05 }, 0);
+                    tl.to(contentRef.current, { yPercent: -22, opacity: 0 }, 0);
+                    if (videoRef.current) tl.to(videoRef.current, { scale: 1.15, opacity: 0.04 }, 0);
+
+                    if (cueRef.current) {
+                        gsap.fromTo(cueRef.current,
+                            { scaleY: 0, transformOrigin: 'top' },
+                            { scaleY: 1, duration: 1.2, ease: 'power2.inOut', repeat: -1, yoyo: true, repeatDelay: 0.2 });
                     }
-                }, heroRef);
+                }, secRef);
                 return () => ctx.revert();
             }, []);
 
-            const showVideo = HERO_VIDEO_SRC && !window.matchMedia('(prefers-reduced-motion: reduce)').matches && !(navigator.connection && navigator.connection.saveData);
-
             return (
-                <section ref={heroRef} className="relative min-h-screen flex items-center justify-center px-4 sm:px-8 overflow-hidden">
+                <section ref={secRef} className="relative flex items-center justify-center overflow-hidden"
+                         style={{ minHeight: '100svh' }}>
                     {showVideo && (
-                        <video
-                            ref={videoRef}
-                            className="absolute inset-0 w-full h-full object-cover opacity-[0.18] pointer-events-none"
-                            src={HERO_VIDEO_SRC} autoPlay muted loop playsInline preload="none" aria-hidden="true"
-                        />
+                        <video ref={videoRef}
+                            className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+                            style={{ opacity: 0.22 }}
+                            src={ASSETS + 'yokoso-hero-ink-loop.mp4'}
+                            autoPlay muted loop playsInline preload="none" aria-hidden="true" />
                     )}
-                    <div className="relative z-10 text-center max-w-3xl mx-auto">
-                        <div ref={sealRef} className="flex justify-center mb-6 sm:mb-10">
-                            <Reveal variant="stamp" as="div" className="inline-block">
-                                <div className="seal-mark seal-mark-lg hero-seal relative">歓</div>
-                            </Reveal>
-                        </div>
-                        <div ref={textRef}>
-                            <h1 ref={wordmarkRef} className="script-head text-[clamp(2.2rem,11vw,5.5rem)] text-forest hero-line" style={{ letterSpacing: '0.12em', textIndent: '0.12em' }}>YŌKOSO</h1>
-                            <svg ref={underlineRef} className="mx-auto mt-2 sm:mt-3 block" width="180" height="14" viewBox="0 0 180 14" style={{ maxWidth: '40%' }} aria-hidden="true">
-                                <path d="M4,8 Q45,2 90,7 T176,6" fill="none" stroke="#D43A2F" strokeWidth="2.5" strokeLinecap="round" />
-                            </svg>
-                            <Reveal variant="rise" stagger={0.12} delay={1.1} as="div" className="mt-1 sm:mt-2">
-                                <p className="serif-head text-[clamp(1rem,3vw,2rem)] text-forest-light/80 hero-line tracking-wide">Pan-Asian Restaurant</p>
-                                <p className="sans-body text-xs sm:text-base text-forest-light/80 mt-3 max-w-[280px] sm:max-w-md mx-auto hero-line">Al Madani Tower (2nd Floor), Mirboxtula, Sylhet.</p>
-                            </Reveal>
-                        </div>
-                        <div ref={buttonsRowRef} className="mt-6 sm:mt-10 hero-line flex flex-wrap justify-center gap-3 sm:gap-4">
-                            <Reveal variant="rise" stagger={0.12} delay={1.4} as="div" className="flex flex-wrap justify-center gap-3 sm:gap-4">
-                                <a href={WHATSAPP_RESERVE_URL} target="_blank" rel="noopener noreferrer" className="magnetic-btn text-sm sm:text-base">Reserve a Table</a>
-                                <a href="menu.html" className="magnetic-btn magnetic-btn-outline text-sm sm:text-base">Explore Menu</a>
-                            </Reveal>
-                        </div>
+                    <div className="absolute inset-0 pointer-events-none"
+                         style={{ background: 'radial-gradient(120% 90% at 50% 40%, transparent 0%, var(--ink) 78%)' }} />
+
+                    <div ref={contentRef} className="u-page relative text-center flex flex-col items-center">
+                        <Seal size="l">歓</Seal>
+                        <SplitLine text="YŌKOSO" className="t-hero c-bone" delay={0.3} />
+                        <Reveal className="flex flex-col items-center" delay={1.1} stagger={0.1}>
+                            <p className="t-label c-32" style={{ marginTop: 'var(--s3)' }}>Pan-Asian · Sylhet</p>
+                        </Reveal>
+                        <Reveal className="flex flex-wrap items-center justify-center" delay={1.35} stagger={0.08}>
+                            <span style={{ display: 'inline-flex', gap: 'var(--s2)', marginTop: 'var(--s5)', flexWrap: 'wrap', justifyContent: 'center' }}>
+                                <a href="menu.html" className="btn btn-solid">The Menu</a>
+                                <a href="#reserve" className="btn">Reserve</a>
+                            </span>
+                        </Reveal>
+                    </div>
+
+                    <div className="absolute" style={{ bottom: 'var(--s5)', left: '50%', transform: 'translateX(-50%)' }} aria-hidden="true">
+                        <span ref={cueRef} style={{ display: 'block', width: 1, height: 56, background: 'var(--bone-32)' }} />
                     </div>
                 </section>
             );
         };
 
-        // ---- About (with id="about" and updated hours + tagline) ----
-        const About = () => {
+        /* ===== §2 THE ROOM ===== */
+        const TheRoom = () => {
+            const secRef = useRef(null);
+            const imgRef = useRef(null);
+
+            useEffect(() => {
+                if (!HAS_GSAP) return;
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+                const ctx = gsap.context(() => {
+                    gsap.fromTo(imgRef.current, { scale: 1.14 }, {
+                        scale: 1, ease: 'none',
+                        scrollTrigger: { trigger: secRef.current, start: 'top bottom', end: 'bottom top', scrub: 1.2 }
+                    });
+                }, secRef);
+                return () => ctx.revert();
+            }, []);
+
             return (
-                <section id="about" className="py-12 sm:py-24 px-4 sm:px-8 max-w-4xl mx-auto text-center">
-                    <Reveal variant="ink" as="div" className="w-full">
-                        <div className="relative">
-                            <Reveal variant="rise" stagger={0.15} as="div">
-                                <p className="about-line script-head text-2xl sm:text-3xl text-forest-light/70">一皿 一皿</p>
-                                <p className="about-line serif-head text-xl sm:text-2xl text-forest-light/80 mt-2 italic">Every dish tells a story — from our kitchen to your table.</p>
-                                <h2 className="about-line serif-head text-2xl sm:text-4xl text-forest mt-2">Where the East meets the East</h2>
-                                <p className="about-line sans-body text-sm sm:text-lg text-forest-light/80 mt-3 leading-relaxed max-w-2xl mx-auto">At Yokoso, we honour the culinary threads that bind Asia—from the bustling streets of Tokyo to the spice gardens of Bangkok, from Seoul's fermented traditions to the tropical soul of Manila. Every dish is a conversation, every plate a journey.</p>
-                                <div className="about-line h-px bg-forest/10 w-20 mx-auto my-5" />
-                                <p className="about-line sans-body text-xs sm:text-sm text-forest-light/80">Al Madani Tower (2nd Floor), Mirboxtula, Sylhet.<br />Open daily · 12:30 PM – 11:00 PM (Fri from 2:00 PM)</p>
-                            </Reveal>
-                        </div>
-                    </Reveal>
+                <section ref={secRef} className="relative flex items-end overflow-hidden" style={{ minHeight: '92svh' }}>
+                    <div className="absolute inset-0 overflow-hidden">
+                        <img ref={imgRef} src={ASSETS + 'yokoso-sushi.jpg'} alt="" aria-hidden="true"
+                             loading="lazy" decoding="async"
+                             className="w-full h-full object-cover" style={{ opacity: 0.42 }} />
+                        <div className="absolute inset-0"
+                             style={{ background: 'linear-gradient(180deg, rgba(10,14,12,0.55) 0%, rgba(10,14,12,0.35) 45%, var(--ink) 100%)' }} />
+                    </div>
+
+                    <div className="u-page relative" style={{ paddingBottom: 'var(--s9)' }}>
+                        <Reveal stagger={0.09}>
+                            <p className="t-label c-32" style={{ marginBottom: 'var(--s4)' }}>The Room</p>
+                            <p className="t-xl c-bone">A dark room.</p>
+                            <p className="t-xl c-bone">An open counter.</p>
+                            <p className="t-xl c-bone">One hundred and twenty-one dishes.</p>
+                        </Reveal>
+                        <Reveal delay={0.25}>
+                            <p className="t-body c-60" style={{ marginTop: 'var(--s4)', maxWidth: '44ch' }}>
+                                Yōkoso holds Japan, China and Thailand on a single menu — not as a
+                                compromise, but because the borders were never really there.
+                            </p>
+                        </Reveal>
+                    </div>
                 </section>
             );
         };
 
-        // ---- Reservation ----
-        const Reservation = () => (
-            <section className="py-16 sm:py-28 px-4 sm:px-8 bg-forest text-bone relative overflow-hidden">
-                <div className="relative max-w-2xl mx-auto text-center">
-                    <Reveal variant="stamp" as="div" className="inline-block mb-6">
-                        <span className="seal-mark seal-mark-lg" style={{ borderColor: '#F7F2E8', color: '#F7F2E8' }}>席</span>
-                    </Reveal>
-                    <Reveal variant="rise" stagger={0.12} as="div">
-                        <h2 className="script-head text-4xl sm:text-6xl mb-9">Reserve Your Table</h2>
-                    </Reveal>
-                    <ReservationFlow />
-                    <Reveal variant="rise" as="div">
-                        <p className="sans-body text-xs text-bone/45 mt-9">
-                            Open daily · 12:30 PM – 11:00 PM (Fri from 2:00 PM) · Or call{' '}
-                            <a href={`tel:+${RESERVATION_PHONE}`} className="underline-draw">01841965676</a>
+        /* ===== §3 THE TABLE ===== */
+        const TheTable = ({ onDishClick }) => {
+            const picks = Object.values(MENU).flat().filter(d => d.signature).slice(0, 6);
+
+            return (
+                <section className="u-section">
+                    <div className="u-page">
+                        <Reveal>
+                            <p className="t-label c-32">Chef's Signatures</p>
+                        </Reveal>
+                        <div className="rule" style={{ marginTop: 'var(--s4)' }} />
+
+                        <div>
+                            {picks.map((dish, i) => (
+                                <Reveal key={dish.id}>
+                                    <button
+                                        onClick={() => onDishClick(dish)}
+                                        className="w-full text-left flex items-baseline"
+                                        style={{ paddingBlock: 'var(--s4)', borderBottom: '1px solid var(--hairline)' }}
+                                    >
+                                        <span className="t-label c-32" style={{ width: 46, flexShrink: 0 }}>
+                                            {String(i + 1).padStart(2, '0')}
+                                        </span>
+                                        <span className="t-l c-bone" style={{ flexShrink: 1, minWidth: 0 }}>
+                                            {dish.name}
+                                        </span>
+                                        <span className="leader" aria-hidden="true" />
+                                        <span className="t-sm c-60" style={{ whiteSpace: 'nowrap', flexShrink: 0 }}>
+                                            {dish.hasHalfFull ? `${dish.priceHalf} / ${dish.priceFull}` : dish.price} BDT
+                                        </span>
+                                    </button>
+                                </Reveal>
+                            ))}
+                        </div>
+
+                        <Reveal delay={0.15}>
+                            <p className="t-sm c-60" style={{ marginTop: 'var(--s5)' }}>
+                                Six of one hundred and twenty-one.{' '}
+                                <a href="menu.html" className="link-u c-bone">See the full menu →</a>
+                            </p>
+                        </Reveal>
+                    </div>
+                </section>
+            );
+        };
+
+        /* ===== §4 RESERVE ===== */
+        const ReserveSection = () => (
+            <section id="reserve" className="u-section anchor-offset">
+                <div className="u-read text-center">
+                    <Seal size="l" light>席</Seal>
+                    <Reveal stagger={0.08}>
+                        <h2 className="t-xl c-bone" style={{ marginTop: 'var(--s3)' }}>Reserve</h2>
+                        <p className="t-sm c-60" style={{ marginTop: 'var(--s2)' }}>
+                            Open daily · 12:30 – 23:00 · Friday from 14:00
                         </p>
                     </Reveal>
+                    <div style={{ marginTop: 'var(--s6)' }}>
+                        <Reserve />
+                    </div>
+                    <p className="t-label c-32" style={{ marginTop: 'var(--s4)' }}>
+                        or call <a href={`tel:+${RESERVATION_PHONE}`} className="link-u c-60">01841965676</a>
+                    </p>
                 </div>
             </section>
         );
 
-        // ---- Threshold: first-visit entry sequence ----
-        const Threshold = () => {
-            const [done, setDone] = useState(() => {
-                try { return sessionStorage.getItem('yokoso-entered') === '1'; }
-                catch (e) { return false; }
-            });
-            const rootRef = useRef(null);
-            const ringRef = useRef(null);
-
-            useEffect(() => {
-                if (done) return;
-
-                const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-                const finish = () => {
-                    try { sessionStorage.setItem('yokoso-entered', '1'); } catch (e) {}
-                    setDone(true);
-                    document.body.style.overflow = '';
-                };
-
-                document.body.style.overflow = 'hidden';
-
-                if (reduce || !HAS_GSAP) { finish(); return; }
-
-                const ctx = gsap.context(() => {
-                    const path = ringRef.current;
-                    if (!path) { finish(); return; }
-                    const len = path.getTotalLength();
-                    gsap.set(path, { strokeDasharray: len, strokeDashoffset: len });
-
-                    const tl = gsap.timeline({ onComplete: finish });
-                    tl.to(path, { strokeDashoffset: 0, duration: 0.75, ease: 'power2.inOut' })
-                      .from('.threshold-seal-char', { opacity: 0, scale: 0.8, duration: 0.35, ease: 'back.out(1.7)' }, '-=0.15')
-                      .to('.threshold-seal', { opacity: 0, scale: 1.15, duration: 0.4, ease: 'power2.in' }, '+=0.25')
-                      .to(rootRef.current, { opacity: 0, duration: 0.45, ease: 'power2.inOut' }, '-=0.25');
-                }, rootRef);
-
-                const bail = setTimeout(finish, 3000);
-                return () => { clearTimeout(bail); ctx.revert(); document.body.style.overflow = ''; };
-            }, [done]);
-
-            if (done) return null;
-
-            return (
-                <div ref={rootRef} className="fixed inset-0 z-[100] bg-bone flex items-center justify-center" aria-hidden="true">
-                    <div className="threshold-seal relative w-[92px] h-[92px] flex items-center justify-center">
-                        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 92 92" fill="none">
-                            <circle ref={ringRef} cx="46" cy="46" r="44" stroke="#D43A2F" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-                        </svg>
-                        <span className="threshold-seal-char jp-mark text-[30px]" style={{ color: '#D43A2F' }}>歓</span>
-                    </div>
-                </div>
-            );
-        };
-
-        // ---- App ----
+        /* ===== APP ===== */
         const App = () => {
-            const [selectedDish, setSelectedDish] = useState(null);
-
-            const handleResize = useCallback(() => {
-                ScrollTrigger.refresh();
-            }, []);
+            const [selected, setSelected] = useState(null);
 
             useEffect(() => {
-                window.addEventListener('resize', handleResize);
-                return () => window.removeEventListener('resize', handleResize);
-            }, [handleResize]);
+                const t = setTimeout(() => { if (HAS_GSAP) ScrollTrigger.refresh(); }, 400);
+                return () => clearTimeout(t);
+            }, []);
 
             return (
                 <>
-                    <Threshold />
-                    <a href="menu.html" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:bg-vermilion focus:text-bone focus:px-4 focus:py-2 focus:rounded">Skip to menu</a>
+                    <a href="menu.html" className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 btn">Skip to menu</a>
                     <SiteHeader />
                     <main id="main-content">
                         <Hero />
-                        <About />
-                        <Plate
-                            src="https://raw.githubusercontent.com/saqibfarabi14-del/Yokoso/main/assets/yokoso-sushi.jpg"
-                            seal="鮨"
-                            kicker="The Sushi Counter"
-                            line="Rolled, pressed, and torched to order."
-                        />
-                        <MenuCompass />
-                        <LazySection className="w-full"><ChefSignatures onDishClick={setSelectedDish} /></LazySection>
-                        <LazySection className="w-full"><CinematicCollections /></LazySection>
-                        <Reservation />
+                        <TheRoom />
+                        <TheTable onDishClick={setSelected} />
+                        <ReserveSection />
                     </main>
-                    <Location showReservationCTA={false} />
-                    <DishDetail dish={selectedDish} isOpen={!!selectedDish} onClose={() => setSelectedDish(null)} />
+                    <Footer />
+                    <DishSheet dish={selected} isOpen={!!selected} onClose={() => setSelected(null)} />
                 </>
             );
         };
 
-        // ---- RENDER ----
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
 
-        requestAnimationFrame(() => setTimeout(() => ScrollTrigger.refresh(), 200));
-        window.addEventListener('load', () => setTimeout(() => ScrollTrigger.refresh(), 400));
+        requestAnimationFrame(() => setTimeout(() => { if (HAS_GSAP) ScrollTrigger.refresh(); }, 200));
+        window.addEventListener('load', () => setTimeout(() => { if (HAS_GSAP) ScrollTrigger.refresh(); }, 400));
     </script>
 </body>
 </html>
